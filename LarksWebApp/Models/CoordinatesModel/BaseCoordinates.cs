@@ -1,6 +1,6 @@
-﻿using LarksCoreApi.Model.BaseModels;
+﻿using LarksWebApp.Model.BaseModels;
 
-namespace LarksCoreApi.Models.CoordinatesModel
+namespace LarksWebApp.Models.CoordinatesModel
 {
     public class BaseCoordinates : TimeStampsEntity
     {

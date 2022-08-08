@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LarksCoreApi.Models.CoordinatesModel
+namespace LarksWebApp.Models.CoordinatesModel
 {
     public class StreetCoordinates :BaseCoordinates
     {

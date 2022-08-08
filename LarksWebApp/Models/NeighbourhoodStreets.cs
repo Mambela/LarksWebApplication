@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LarksCoreApi.Models
+namespace LarksWebApp.Models
 {
     public class NeighbourhoodStreets
     {

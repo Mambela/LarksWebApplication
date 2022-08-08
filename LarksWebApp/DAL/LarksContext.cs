@@ -1,7 +1,7 @@
 ﻿
-using LarksCoreApi.Model.BaseModels;
-using LarksCoreApi.Models;
-using LarksCoreApi.Models.CoordinatesModel;
+using LarksWebApp.Model.BaseModels;
+using LarksWebApp.Models;
+using LarksWebApp.Models.CoordinatesModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace LarksWebApp.DAL
@@ -41,9 +41,9 @@ namespace LarksWebApp.DAL
         public DbSet<CityCoordinates> CitiesCoordinates { get; set; }
 
 
-        //public DbSet<CategoryModel> Categories { get; set; }
+        public DbSet<CategoryModel> Categories { get; set; }
 
-        //public DbSet<SubcategoryModel> Subcategories { get; set; }
+        public DbSet<SubcategoryModel> Subcategories { get; set; }
 
 
 

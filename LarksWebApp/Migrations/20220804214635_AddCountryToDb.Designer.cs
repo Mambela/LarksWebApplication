@@ -24,7 +24,7 @@ namespace LarksWebApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("LarksCoreApi.Models.CountryModel", b =>
+            modelBuilder.Entity("LarksWebApp.Models.CountryModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -49,7 +49,7 @@ namespace LarksWebApp.Migrations
                     b.ToTable("Countries");
                 });
 
-            modelBuilder.Entity("LarksCoreApi.Models.ProvinceModel", b =>
+            modelBuilder.Entity("LarksWebApp.Models.ProvinceModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,9 +79,9 @@ namespace LarksWebApp.Migrations
                     b.ToTable("Provinces");
                 });
 
-            modelBuilder.Entity("LarksCoreApi.Models.ProvinceModel", b =>
+            modelBuilder.Entity("LarksWebApp.Models.ProvinceModel", b =>
                 {
-                    b.HasOne("LarksCoreApi.Models.CountryModel", "Country")
+                    b.HasOne("LarksWebApp.Models.CountryModel", "Country")
                         .WithMany("Provinces")
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -90,7 +90,7 @@ namespace LarksWebApp.Migrations
                     b.Navigation("Country");
                 });
 
-            modelBuilder.Entity("LarksCoreApi.Models.CountryModel", b =>
+            modelBuilder.Entity("LarksWebApp.Models.CountryModel", b =>
                 {
                     b.Navigation("Provinces");
                 });

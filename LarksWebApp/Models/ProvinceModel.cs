@@ -1,6 +1,6 @@
-﻿using LarksCoreApi.Model.BaseModels;
+﻿using LarksWebApp.Model.BaseModels;
 
-namespace LarksCoreApi.Models
+namespace LarksWebApp.Models
 {
     public class ProvinceModel :IdentityBaseEntity
     {

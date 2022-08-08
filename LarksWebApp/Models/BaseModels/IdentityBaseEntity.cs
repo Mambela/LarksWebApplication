@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LarksCoreApi.Model.BaseModels
+namespace LarksWebApp.Model.BaseModels
 {
     public class IdentityBaseEntity :TimeStampsEntity
     {

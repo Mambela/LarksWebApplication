@@ -1,4 +1,4 @@
-﻿namespace LarksCoreApi.Model.BaseModels
+﻿namespace LarksWebApp.Model.BaseModels
 {
     public class TimeStampsEntity
     {

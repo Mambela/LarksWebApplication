@@ -1,7 +1,7 @@
 ﻿
-using LarksCoreApi.Models.CoordinatesModel;
+using LarksWebApp.Models.CoordinatesModel;
 
-namespace LarksCoreApi.Models
+namespace LarksWebApp.Models
 {
     public class AddressModel : BaseCoordinates
     {

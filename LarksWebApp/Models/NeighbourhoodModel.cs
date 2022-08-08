@@ -1,7 +1,7 @@
-﻿using LarksCoreApi.Model.BaseModels;
-using LarksCoreApi.Models.CoordinatesModel;
+﻿using LarksWebApp.Model.BaseModels;
+using LarksWebApp.Models.CoordinatesModel;
 
-namespace LarksCoreApi.Models
+namespace LarksWebApp.Models
 {
     public class NeighbourhoodModel :IdentityBaseEntity
     {

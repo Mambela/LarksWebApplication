@@ -1,7 +1,7 @@
-﻿using LarksCoreApi.Model.BaseModels;
+﻿using LarksWebApp.Model.BaseModels;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LarksCoreApi.Models
+namespace LarksWebApp.Models
 {
     public class CityModel : IdentityBaseEntity
 
