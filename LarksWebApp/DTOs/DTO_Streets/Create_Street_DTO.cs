@@ -8,6 +8,6 @@
 
         public int NeighbourhoodID { get; set; }
 
-        public int StreetsID { get; set; }
+        
     }
 }

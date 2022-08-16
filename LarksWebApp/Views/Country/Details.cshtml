@@ -1,0 +1,49 @@
+﻿@model LarksWebApp.DTOs.CountryDTO
+@{
+        ViewData["Title"] = "Country details";
+}
+
+
+
+    <div class="text-start">
+            <h5 class="display-4">Details for  @Html.DisplayFor(modelItem =>Model.Designation) </h5>
+    </div>
+    <hr class="text-center col-md-10" />
+
+    <div class="row">
+         <div class="col-md-8">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Designation</th>
+                  <th scope="col">Details</th>
+              
+                </tr>
+              </thead>
+              <tbody>
+                  @foreach(var province in Model.ProvincesDTO){
+                    <tr>
+                  <th scope="row">1</th>
+                      <td>@Html.DisplayFor(modelItem => province.Designation )</td>
+                      <td>@Html.ActionLink("Details","Details",new{controller ="Province",id=province.Id})</td>
+                    </tr>
+                  }
+              </tbody>
+            </table>
+        
+        </div> 
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-xs-12 col-md-6 align-self-end">
+                    @Html.ActionLink("Create New Province","Create","Province")  
+                       
+                </div>
+                <div class="col-xs-12 col-md-6 align-self-end">
+                    @Html.ActionLink("Edit Country","Edit",new {id=Model.Id})
+                </div>
+            </div>
+        </div>
+    </div>
+
+

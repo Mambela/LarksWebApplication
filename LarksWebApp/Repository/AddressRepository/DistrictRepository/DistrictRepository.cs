@@ -34,6 +34,13 @@ namespace LarksWebApp.Repository.DistrictRepository
             return _dbContext.Districts.FirstOrDefault(d => d.Id == DistrictId);
         }
 
+        public List<DistrictModel> GetDistrictModels(int provinceId)
+        {
+
+            return _dbContext.Districts.Where(d => d.ProvinceId == provinceId).ToList();
+            
+        }
+
         public bool Save()
         {
             return _dbContext.SaveChanges() >= 0;

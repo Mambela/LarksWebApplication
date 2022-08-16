@@ -383,7 +383,7 @@ namespace LarksWebApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CityId")
+                    b.Property<int?>("CityId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
@@ -394,6 +394,9 @@ namespace LarksWebApp.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnOrder(1);
 
+                    b.Property<int?>("DistrictId")
+                        .HasColumnType("int");
+
                     b.Property<int>("MunicipalityId")
                         .HasColumnType("int");
 
@@ -403,6 +406,8 @@ namespace LarksWebApp.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
+
+                    b.HasIndex("DistrictId");
 
                     b.HasIndex("MunicipalityId");
 
@@ -557,7 +562,7 @@ namespace LarksWebApp.Migrations
             modelBuilder.Entity("LarksWebApp.Models.CityModel", b =>
                 {
                     b.HasOne("LarksWebApp.Models.ProvinceModel", "Province")
-                        .WithMany()
+                        .WithMany("Cities")
                         .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -623,7 +628,7 @@ namespace LarksWebApp.Migrations
             modelBuilder.Entity("LarksWebApp.Models.DistrictModel", b =>
                 {
                     b.HasOne("LarksWebApp.Models.ProvinceModel", "Province")
-                        .WithMany()
+                        .WithMany("Districts")
                         .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -634,7 +639,7 @@ namespace LarksWebApp.Migrations
             modelBuilder.Entity("LarksWebApp.Models.MunicipalityModel", b =>
                 {
                     b.HasOne("LarksWebApp.Models.ProvinceModel", "Province")
-                        .WithMany()
+                        .WithMany("Municipalities")
                         .HasForeignKey("ProvinceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -644,11 +649,13 @@ namespace LarksWebApp.Migrations
 
             modelBuilder.Entity("LarksWebApp.Models.NeighbourhoodModel", b =>
                 {
-                    b.HasOne("LarksWebApp.Models.CityModel", "CIty")
+                    b.HasOne("LarksWebApp.Models.CityModel", "City")
                         .WithMany("Neighbourhoods")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CityId");
+
+                    b.HasOne("LarksWebApp.Models.DistrictModel", "District")
+                        .WithMany()
+                        .HasForeignKey("DistrictId");
 
                     b.HasOne("LarksWebApp.Models.MunicipalityModel", "Municipality")
                         .WithMany("Neighbourhoods")
@@ -656,7 +663,9 @@ namespace LarksWebApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CIty");
+                    b.Navigation("City");
+
+                    b.Navigation("District");
 
                     b.Navigation("Municipality");
                 });
@@ -733,6 +742,15 @@ namespace LarksWebApp.Migrations
                     b.Navigation("NeighbourhoodCoordinates");
 
                     b.Navigation("NeighbourhoodStreets");
+                });
+
+            modelBuilder.Entity("LarksWebApp.Models.ProvinceModel", b =>
+                {
+                    b.Navigation("Cities");
+
+                    b.Navigation("Districts");
+
+                    b.Navigation("Municipalities");
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.StreetModel", b =>

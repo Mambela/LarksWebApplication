@@ -1,0 +1,32 @@
+﻿@using LarksWebApp.DTOs.DTO_Municipalities
+
+@model Create_Municipality_DTO
+
+@{
+       ViewData["Title"] = "Create City";
+}
+
+<h3>Create a new province</h3>
+
+
+<div class="col-md-8">
+@using(Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+       @Html.LabelFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
+       <div class="col-md-10">
+            @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
+       </div>
+    </div>
+
+    <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+    </div>
+        
+}
+
+
+</div>

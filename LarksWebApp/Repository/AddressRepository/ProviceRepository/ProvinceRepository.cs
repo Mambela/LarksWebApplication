@@ -1,5 +1,6 @@
 ﻿using LarksWebApp.DAL;
 using LarksWebApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LarksWebApp.Repository.ProviceRepository
 {
@@ -33,8 +34,10 @@ namespace LarksWebApp.Repository.ProviceRepository
 
         public ProvinceModel GetProvinceModel(int ProvinceId)
         {
-
-            return _dbContext.Provinces.FirstOrDefault(p => p.Id == ProvinceId);
+            return _dbContext.Provinces.Include(n => n.Cities)
+                .Include(d =>d.Districts)
+                .Include(m =>m.Municipalities)
+                .Where(p => p.Id == ProvinceId).FirstOrDefault(p => p.Id == ProvinceId);
         }
 
         public bool Save()

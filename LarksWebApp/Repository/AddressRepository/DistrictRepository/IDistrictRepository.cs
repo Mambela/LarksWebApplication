@@ -13,6 +13,8 @@ namespace LarksWebApp.Repository.DistrictRepository
 
         DistrictModel GetDistrictModel(int DistrictId);
 
+        List<DistrictModel> GetDistrictModels(int provinceId);
+
         public bool DeleteDistrict(DistrictModel District);
 
 

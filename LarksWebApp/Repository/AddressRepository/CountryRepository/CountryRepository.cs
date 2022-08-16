@@ -1,5 +1,6 @@
 ﻿using LarksWebApp.DAL;
 using LarksWebApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LarksWebApp.Repository.CountryRepository
 {
@@ -49,12 +50,23 @@ namespace LarksWebApp.Repository.CountryRepository
             return Save();
         }
 
+        public IList<CountryModel> GetAll()
+        {
+            return _dbContext.Countries.ToList();
+        }
+
+        public IList<CountryModel> GetCountries(int countryID)
+        {
+            return _dbContext.Countries.Include(p => p.Provinces).Where(c => c.Id == countryID).ToList();
+        }
+
         public CountryModel GetCountry(int countryId)
         {
+           return _dbContext.Countries.Include(p => p.Provinces).Where(c => c.Id == countryId).FirstOrDefault();
+          
+           }
 
-            return _dbContext.Countries.FirstOrDefault(c => c.Id == countryId);
-            
-        }
+
 
         public bool Save()
         {

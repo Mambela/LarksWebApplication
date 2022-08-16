@@ -12,6 +12,10 @@ namespace LarksWebApp.Repository.CountryRepository
 
         CountryModel GetCountry(int countryId);
 
+        IList<CountryModel> GetCountries(int countryID);
+
+        IList<CountryModel> GetAll();
+
         public bool DeleteCountry(CountryModel country);
 
 

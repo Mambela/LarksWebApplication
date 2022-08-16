@@ -1,5 +1,6 @@
 ﻿using LarksWebApp.DAL;
 using LarksWebApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LarksWebApp.Repository.CityRepository
 {
@@ -48,7 +49,7 @@ namespace LarksWebApp.Repository.CityRepository
 
         public CityModel GetCity(int id)
         {
-            return _dbContext.Cities.FirstOrDefault(c => c.Id == id);
+            return _dbContext.Cities.Include(c => c.Neighbourhoods.Where(n => n.Id == id)).FirstOrDefault();   
         }
 
         public bool Save()

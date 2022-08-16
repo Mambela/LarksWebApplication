@@ -1,0 +1,76 @@
+﻿@model LarksWebApp.DTOs.DTO_Provinces.ProvinceDTO
+@{
+     ViewData["Title"] = "Province details";
+}
+
+
+  <div class="text-start">
+            <h5 class="display-4">Details for  @Html.DisplayFor(ViewBag =>ViewBag.Designation) </h5>
+    </div>
+    <hr class="text-center col-md-10" />
+<div class="row">
+
+    <div class="col-xs-12 col-md-6 col-lg-4" >
+        <table class="table">
+              <thead>
+                <tr>
+                 @*new { cities  = "Cities", provinceId =ViewBag.id}*@
+                  <th scope="col">@Html.ActionLink("List of all Cities","Index","Cities",new{provinceId =Model.Id}) </th>
+                  <th scope="col">Details</th>
+              
+                </tr>
+              </thead>
+              <tbody>
+                  @foreach(var city in Model.Cities){
+                    <tr>
+                     
+                      <td>@Html.DisplayFor(modelItem => city.Designation )</td>
+                      <td>@Html.ActionLink("Details","Details",new{controller ="Cities",id=city.Id})</td>
+                    </tr>
+                  }
+              </tbody>
+            </table>
+    </div>
+    <div class="col-xs-12 col-md-6 col-lg-4" >
+        <table class="table">
+              <thead>
+                <tr>
+                 
+                   <th scope="col">@Html.ActionLink("List all Districts","Index","Districts",new { provinceId  = Model.Id}) </th>
+                  <th scope="col">Details</th>
+              
+                </tr>
+              </thead>
+              <tbody>
+                  @foreach(var district in Model.Districts){
+                    <tr>
+                    
+                      <td>@Html.DisplayFor(modelItem => district.Designation )</td>
+                      <td>@Html.ActionLink("Details","Details",new{controller ="District",id=district.Id})</td>
+                    </tr>
+                  }
+              </tbody>
+            </table>
+    </div>
+    <div class="col-xs-12 col-md-6 col-lg-4">
+        <table class="table">
+              <thead>
+                <tr>
+                
+                 <th scope="col">@Html.ActionLink("List all Municipalities","Index","Municipalities", new {provinceId = Model.Id}) </th>
+                  <th scope="col">Details</th>
+              
+                </tr>
+              </thead>
+              <tbody>
+                  @foreach(var municipality in Model.Municipalities){
+                    <tr>
+                     
+                      <td>@Html.DisplayFor(modelItem => municipality.Designation )</td>
+                      <td>@Html.ActionLink("Details","Details",new{controller ="Municipalities",id=municipality.Id})</td>
+                    </tr>
+                  }
+              </tbody>
+            </table>
+    </div>
+</div>

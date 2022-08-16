@@ -1,0 +1,35 @@
+﻿@model IList<LarksWebApp.DTOs.DTO_Districts.DistrictDTO>
+@{
+    ViewData["Title"] = "Disctricts Page";
+}
+
+<div class="text-center">
+    <h4 class="display-4">List of Cities</h4>
+</div>
+
+<div class="row">
+    <div class="col-xs-6 col-md-4 align-self-end">
+        @Html.ActionLink("Create New District","Create")
+    </div>
+</div>
+
+
+<div class="col-md-8">
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Name of City</th>
+          <th scope="col">View More</th>
+        </tr>
+      </thead>
+      <tbody>
+         @foreach(var city in Model){
+            <tr>
+              <td>@Html.DisplayFor(modelItem => city.Designation)</td>
+              <td>@Html.ActionLink("Details","Details",new {id=city.Id})</td>
+            </tr>
+        }         
+      </tbody>
+    </table>
+</div>

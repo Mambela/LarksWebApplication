@@ -9,9 +9,11 @@ namespace LarksWebApp.Repository.MunicipalityRepository
 
         bool VerifyMunicipalityExist(int Id);
 
-        Task<MunicipalityModel> CreateProvinceModel(MunicipalityModel municipality);
+        Task<MunicipalityModel> CreateMunicipalityModel(MunicipalityModel municipality);
 
-        MunicipalityModel GetMuncipality(int ProvinceId);
+        MunicipalityModel GetMuncipality(int MunicipalityId);
+
+        IList<MunicipalityModel> GetMunicipalityModels(int ProvinceId);
 
         public bool DeleteMunicipality(MunicipalityModel municipality);
 

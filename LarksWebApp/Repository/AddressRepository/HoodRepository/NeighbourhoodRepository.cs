@@ -1,5 +1,6 @@
 ﻿using LarksWebApp.DAL;
 using LarksWebApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LarksWebApp.Repository.HoodRepository
 {
@@ -33,7 +34,13 @@ namespace LarksWebApp.Repository.HoodRepository
 
         public NeighbourhoodModel GetNeighbourhood(int neighbourhoodId)
         {
-            return _dbContext.Neighbourhoods.FirstOrDefault(n => n.Id == neighbourhoodId);
+            return _dbContext.Neighbourhoods.Include(s =>s.NeighbourhoodStreets)
+                .ThenInclude(s =>s.Streets).Where(n =>n.Id == neighbourhoodId).FirstOrDefault();
+        }
+
+        public IList<NeighbourhoodModel> GetNeighbourhoodModels(int provinceId)
+        {
+            return _dbContext.Neighbourhoods.Where(p =>p.Equals(provinceId)).ToList();
         }
 
         public bool Save()

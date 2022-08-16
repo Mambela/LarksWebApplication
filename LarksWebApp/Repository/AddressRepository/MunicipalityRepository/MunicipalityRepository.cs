@@ -11,7 +11,7 @@ namespace LarksWebApp.Repository.MunicipalityRepository
         {
             _dbContext = dbContext;
         }
-        public async Task<MunicipalityModel> CreateProvinceModel(MunicipalityModel municipality)
+        public async Task<MunicipalityModel> CreateMunicipalityModel(MunicipalityModel municipality)
         {
             await _dbContext.Municipalities.AddAsync(municipality);
 
@@ -34,6 +34,11 @@ namespace LarksWebApp.Repository.MunicipalityRepository
         {
 
             return _dbContext.Municipalities.FirstOrDefault(m => m.Id == MunicipalityId);
+        }
+
+        public IList<MunicipalityModel> GetMunicipalityModels(int ProvinceId)
+        {
+            return _dbContext.Municipalities.Where(p => p.ProvinceId == ProvinceId).ToList();
         }
 
         public bool Save()

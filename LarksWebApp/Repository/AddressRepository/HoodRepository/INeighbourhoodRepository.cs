@@ -12,6 +12,8 @@ namespace LarksWebApp.Repository.HoodRepository
 
         NeighbourhoodModel GetNeighbourhood(int neighbourhoodId);
 
+        IList<NeighbourhoodModel> GetNeighbourhoodModels(int provinceId);
+
         public bool DeleteNeighbourhood(NeighbourhoodModel neighbourhood);
 
 
