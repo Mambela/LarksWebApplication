@@ -30,7 +30,13 @@ namespace LarksWebApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CountryID")
+                    b.Property<string>("AdditionalInfo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("BuildingTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CountryID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
@@ -45,12 +51,16 @@ namespace LarksWebApp.Migrations
                     b.Property<int>("ProvinceID")
                         .HasColumnType("int");
 
+                    b.Property<string>("Reference")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("StreetID")
                         .HasColumnType("int");
 
-                    b.Property<string>("UnitReference")
+                    b.Property<string>("StreetNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -63,6 +73,8 @@ namespace LarksWebApp.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BuildingTypeId");
+
                     b.HasIndex("CountryID");
 
                     b.HasIndex("MunicipalityID");
@@ -73,7 +85,28 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("StreetID");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
+                });
+
+            modelBuilder.Entity("LarksWebApp.Models.BuildingTypeModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Designation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Lang")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BuildingType", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.CategoryModel", b =>
@@ -100,7 +133,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.CityModel", b =>
@@ -131,7 +164,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("ProvinceId");
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.CoordinatesModel.CityCoordinates", b =>
@@ -162,7 +195,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("CityID");
 
-                    b.ToTable("CitiesCoordinates");
+                    b.ToTable("CitiesCoordinates", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.CoordinatesModel.MunicipalityCoordinates", b =>
@@ -193,7 +226,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("MunicipalityID");
 
-                    b.ToTable("MunicipalityCoordinates");
+                    b.ToTable("MunicipalityCoordinates", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.CoordinatesModel.NeighbourhoodCoordinates", b =>
@@ -224,7 +257,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("NeighbourhoodID");
 
-                    b.ToTable("NeighbourhoodCoordinates");
+                    b.ToTable("NeighbourhoodCoordinates", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.CoordinatesModel.ProvinceCoordinates", b =>
@@ -255,7 +288,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("ProvinceId");
 
-                    b.ToTable("ProvinceCoordinates");
+                    b.ToTable("ProvinceCoordinates", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.CoordinatesModel.StreetCoordinates", b =>
@@ -286,7 +319,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("StreetId");
 
-                    b.ToTable("StreetCoordinates");
+                    b.ToTable("StreetCoordinates", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.CountryModel", b =>
@@ -311,7 +344,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.DistrictModel", b =>
@@ -341,7 +374,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("ProvinceId");
 
-                    b.ToTable("Districts");
+                    b.ToTable("Districts", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.MunicipalityModel", b =>
@@ -371,7 +404,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("ProvinceId");
 
-                    b.ToTable("Municipalities");
+                    b.ToTable("Municipalities", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.NeighbourhoodModel", b =>
@@ -411,7 +444,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("MunicipalityId");
 
-                    b.ToTable("Neighbourhoods");
+                    b.ToTable("Neighbourhoods", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.NeighbourhoodStreets", b =>
@@ -426,7 +459,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("NeighbourhoodID");
 
-                    b.ToTable("NeighbourhoodStreets");
+                    b.ToTable("NeighbourhoodStreets", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.ProvinceModel", b =>
@@ -456,7 +489,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Provinces");
+                    b.ToTable("Provinces", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.StreetModel", b =>
@@ -481,7 +514,7 @@ namespace LarksWebApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Streets");
+                    b.ToTable("Streets", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.SubcategoryModel", b =>
@@ -513,16 +546,20 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Subcategories");
+                    b.ToTable("Subcategories", (string)null);
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.AddressModel", b =>
                 {
-                    b.HasOne("LarksWebApp.Models.CountryModel", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryID")
+                    b.HasOne("LarksWebApp.Models.BuildingTypeModel", "BuildingType")
+                        .WithMany("AddressModels")
+                        .HasForeignKey("BuildingTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("LarksWebApp.Models.CountryModel", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryID");
 
                     b.HasOne("LarksWebApp.Models.MunicipalityModel", "Municipality")
                         .WithMany("Addresses")
@@ -547,6 +584,8 @@ namespace LarksWebApp.Migrations
                         .HasForeignKey("StreetID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("BuildingType");
 
                     b.Navigation("Country");
 
@@ -709,6 +748,11 @@ namespace LarksWebApp.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("LarksWebApp.Models.BuildingTypeModel", b =>
+                {
+                    b.Navigation("AddressModels");
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.CategoryModel", b =>

@@ -8,6 +8,7 @@ namespace LarksWebApp.Models
         public string Designation { get; set; }
         public IList<SubcategoryModel> Subcategories { get; set; }
 
+        //Language related
         public string Lng { get; set; }
     }
 }

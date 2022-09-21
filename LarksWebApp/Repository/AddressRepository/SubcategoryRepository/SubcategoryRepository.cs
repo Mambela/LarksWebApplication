@@ -72,5 +72,10 @@ namespace LarksWebApp.Repository.SubcategoryRepository
 
             return subcategories;
         }
+
+        public IList<SubcategoryModel> GetSubcategoriesInCategory(int categoryId)
+        {
+            return _dbContext.Subcategories.Where(l => l.CategoryId == categoryId).ToList();
+        }
     }
 }

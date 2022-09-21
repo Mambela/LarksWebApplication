@@ -103,6 +103,36 @@ namespace LarksWebApp.Controllers.API
         }
 
 
+        [HttpGet("StreetsInNeighbourhood")]
+        public IActionResult GetstreetsInNeighbourhood(int neighbourhoodId) 
+        {
+            try
+            {
+                var neighBourhoodstreetObjList = _streetRepository.GetStreetInNeighBourhood(neighbourhoodId);
+
+                var streetListDTO = new List<View_Street_DTO>();
+
+                foreach (var StreetObj in neighBourhoodstreetObjList)
+                {
+                    var street = new View_Street_DTO {
+                        Id = StreetObj.Streets.Id,
+                        Designation = StreetObj.Streets.Designation
+                    };
+
+                    streetListDTO.Add(street);
+                   
+                }
+
+                return Ok(streetListDTO);
+
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Retrieving streets in a Neighbourhood " + ex.Message);
+                return BadRequest();
+            }        
+        }
+            
         [HttpGet("Streets")]
         public IActionResult Getstreet(int id)
         {

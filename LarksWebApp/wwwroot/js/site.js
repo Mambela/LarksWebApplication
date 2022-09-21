@@ -4,3 +4,4 @@
 // Write your JavaScript code.
 
 
+const BASEURL = "https://localhost:44339/";

@@ -11,6 +11,8 @@ namespace LarksWebApp.Repository.StreetRepository
 
         Task<StreetModel> CreateStreetModel(StreetModel Street);
 
+        IList<NeighbourhoodStreets> GetStreetInNeighBourhood(int neighbourhoodId);
+
         StreetModel GetStreetModel(int StreetId);
 
         public bool DeleteStreet(StreetModel street);

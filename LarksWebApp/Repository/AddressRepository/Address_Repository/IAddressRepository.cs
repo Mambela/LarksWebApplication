@@ -1,7 +1,7 @@
 ﻿using LarksWebApp.Models;
 
 
-namespace LarksWebApp.Repository.AddressRepository
+namespace LarksWebApp.Repository.AddressRepository.Address_Repository
 {
     public interface IAddressRepository
     {
@@ -10,7 +10,7 @@ namespace LarksWebApp.Repository.AddressRepository
 
         Task<AddressModel> CreateAddress(AddressModel Address);
 
-        AddressModel GetAddress(int AddressId);
+        AddressModel GetAddressInStreet(int AddressId);
 
         List<AddressModel> GetAddressesInStreets(int streetsId);
 

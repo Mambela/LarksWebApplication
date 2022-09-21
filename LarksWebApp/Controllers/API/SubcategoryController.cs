@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LarksWebApp.DTOs.DTO_Category;
 using LarksWebApp.DTOs.DTO_Subcategory;
 using LarksWebApp.Models;
 using LarksWebApp.Repository.SubcategoryRepository;
@@ -75,11 +76,26 @@ namespace LarksWebApp.Controllers.API
 
         }
 
-        [HttpGet(Name ="getAllsubcategories")]
+        [HttpGet("Allsubcategories")]
         public IActionResult GetSubcategories()
         {
 
-            return Ok();
+            var listofSubcategoriesObj = _subcategoryRepository.GetAllSubCategories();
+
+            var listOfSubcategoriesDTO = _mapper.Map<List<SubCategoryDTO>>(listofSubcategoriesObj);
+
+            return Ok(listOfSubcategoriesDTO);
+        }
+        
+        [HttpGet("SubcategoriesInCategory")]
+        public IActionResult GetSubcategoriesInCategory(int categoryId)
+        {
+
+            var listofSubcategoriesObj = _subcategoryRepository.GetSubcategoriesInCategory(categoryId);
+
+            var listOfSubcategoriesDTO = _mapper.Map<List<SubCategoryDTO>>(listofSubcategoriesObj);
+
+            return Ok(listOfSubcategoriesDTO);
         }
 
 

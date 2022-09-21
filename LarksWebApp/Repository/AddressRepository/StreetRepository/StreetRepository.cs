@@ -32,6 +32,11 @@ namespace LarksWebApp.Repository.StreetRepository
             return Save();
         }
 
+        public IList<NeighbourhoodStreets> GetStreetInNeighBourhood(int neighbourhoodId)
+        {
+            return _dbContext.NeighbourhoodStreets.Where(n => n.NeighbourhoodID == neighbourhoodId).Include(s => s.Streets).ToList();
+        }
+
         public StreetModel GetStreetModel(int StreetId)
         {
 

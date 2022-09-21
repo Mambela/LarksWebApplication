@@ -29,12 +29,14 @@ namespace LarksWebApp.Data
             CreateMap<CategoryModel, CreateCategoryDTO>().ReverseMap();
             CreateMap<CategoryModel, CategoryDTO>().ReverseMap();
             CreateMap<SubcategoryModel, Create_subcategoryDTO>().ReverseMap();
+            CreateMap<SubCategoryDTO, SubcategoryModel>().ReverseMap();
             CreateMap<CityModel, CitiesDTO>().ReverseMap();
             CreateMap<DistrictModel, DistrictDTO>().ReverseMap();
             CreateMap<MunicipalityModel, MunicipalityDTO>().ReverseMap();
             CreateMap<ProvinceModel, ProvinceDTO>().ReverseMap();
             CreateMap<NeighbourhoodModel, NeighbourhoodDTO>().ReverseMap();
             CreateMap<StreetModel, View_Street_DTO>().ReverseMap();
+            CreateMap<BuildingTypeModel, Create_BuildingType_DTO>().ReverseMap();
 
         }
 

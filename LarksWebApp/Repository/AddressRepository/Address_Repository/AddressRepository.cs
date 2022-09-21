@@ -1,20 +1,21 @@
 ﻿using LarksWebApp.Models;
 using LarksWebApp.DAL;
+using Microsoft.EntityFrameworkCore;
 
-namespace LarksWebApp.Repository.AddressRepository
+namespace LarksWebApp.Repository.AddressRepository.Address_Repository
 {
     public class AddressRepository : IAddressRepository
     {
         private readonly LarksContext _dbContext;
 
-        
+
         public AddressRepository(LarksContext dbContext)
         {
             _dbContext = dbContext;
         }
         public bool AddressExists(string designation)
         {
-           return  _dbContext.Addresses.Any(n => n.UnitReference.Trim() == designation.Trim());
+            return _dbContext.Addresses.Any(n => n.StreetNumber.Trim() == designation.Trim());
         }
 
         public bool AddressExists(int AddressID)
@@ -30,7 +31,8 @@ namespace LarksWebApp.Repository.AddressRepository
 
             var result = Save();
 
-            if (result){
+            if (result)
+            {
 
                 return Address;
             }
@@ -43,19 +45,26 @@ namespace LarksWebApp.Repository.AddressRepository
 
             _dbContext.Addresses.Remove(Address);
 
-                return Save();
+            return Save();
         }
 
-        public AddressModel GetAddress(int AddressId)
+        public AddressModel GetAddressInStreet(int AddressId)
         {
             return _dbContext.Addresses.FirstOrDefault(a => a.Id == AddressId);
-            
+
         }
 
         public List<AddressModel> GetAddressesInStreets(int streetsId)
         {
-            return _dbContext.Addresses.Where(a => a.StreetID == streetsId).ToList();
+            return _dbContext.Addresses.Where(a => a.StreetID == streetsId)
+                .Include(n =>n.Neighbourhood)
+                .Include(m => m.Municipality)
+                .Include(s => s.Street)
+                .Include(p =>p.Province)
+                .ToList();
         }
+
+
 
         public List<AddressModel> GetAddressesNearLocation(double latitude, double longitude)
         {

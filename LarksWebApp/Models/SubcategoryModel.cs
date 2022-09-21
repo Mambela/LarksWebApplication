@@ -9,6 +9,7 @@ namespace LarksWebApp.Models
         public CategoryModel Category { get; set; }
         public int CategoryId { get; set; }
 
+        //Language related
         public string Lng { get; set; }
     }
 }

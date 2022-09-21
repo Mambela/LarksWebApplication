@@ -15,6 +15,8 @@ namespace LarksWebApp.Repository.SubcategoryRepository
 
         public IList<SubcategoryModel> GetSubcategories(List<int> listCategoryIds);
 
+        public IList<SubcategoryModel> GetSubcategoriesInCategory(int categoryId);
+
         public SubcategoryModel GetCategoryById(int id);
 
         public IList<SubcategoryModel> GetAllSubCategories();

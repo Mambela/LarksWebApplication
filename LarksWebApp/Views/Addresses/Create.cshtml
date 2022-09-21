@@ -1,5 +1,181 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using LarksWebApp.DTOs.DTO_Addresses
+
+@model Create_Addresses_DTO
+
 @{
+    ViewData["Title"] = "Create Address";
 }
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <h3>Create new address </h3>
+        <div class="col-md-9">
+            <div class="row">
+
+
+                <div class="col-md-4">
+                    <div class="col-md-10">
+                        @*ViewBag.CityList is holding all the cities values*@
+                        @Html.Label("List of countries","List of Countries ", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.DropDownListFor(m => m.CountryId,new SelectList(Model.ListofCountryDTO,"Id","Designation"),"Select Country",new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="col-md-10">
+                        @*ViewBag.CityList is holding all the cities values*@
+                        @Html.Label("listofProvinces","List of Provinces ", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.DropDownList("street_ProvinceId",Enumerable.Empty<SelectListItem>(),"Select Province",new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="col-md-10">
+                        @*ViewBag.CityList is holding all the cities values*@
+                        @Html.Label("listofcities","List of Cities ", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.DropDownList("street_cityId",Enumerable.Empty<SelectListItem>(),"Select City",new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="col-md-10">
+                        @*ViewBag.CityList is holding all the cities values*@
+                        @Html.Label("listOfDistricts","List of Districts ", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.DropDownList("street_districtId",Enumerable.Empty<SelectListItem>(),"Select District",new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="col-md-10">
+                        @*ViewBag.CityList is holding all the cities values*@
+                        @Html.Label("listOfMunicipalities","List of Municipalities ", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.DropDownList("street_MunicipalityId",Enumerable.Empty<SelectListItem>(),"Select Municipality",new { @class = "form-control" })
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="col-md-10">
+                        @*ViewBag.CityList is holding all the cities values*@
+                        @Html.Label("listOfMunicipalities","List of Neighbourhood ", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.DropDownList("street_hoodId",Enumerable.Empty<SelectListItem>(),"Select Municipality",new { @class = "form-control" })
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="col-md-10">
+                        @*ViewBag.CityList is holding all the cities values*@
+                        @Html.Label("listOfStreets","List of Streets ", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.DropDownList("streetId",Enumerable.Empty<SelectListItem>(),"Select Street",new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="col-md-10">
+                        @*ViewBag.CityList is holding all the cities values*@
+                        @Html.Label("listOfNeighbourhood","List of Neighbourhoods ", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.DropDownListFor(m => m.BuildingTypeId,new SelectList(Model.ListOfBuildingType_DTO,"Id","Designation"),"Select Building Type",new { @class = "form-control" })
+
+                    </div>
+                </div>
+                 <div class="col-md-4 col-xs-12">
+                        <div class="col-md-6">
+                              @Html.Label("addressUnit","Address Unit ", new { htmlAttributes = new { @class = "form-control" } })
+                              @Html.EditorFor(m=>m.StreetNumber,"Unit",new { htmlAttributes = new { @class = "form-control" } })
+                         </div>
+                 </div>
+
+                <div class="row">               
+                    <div class="col-md-8">
+                         <div class="col-md-8">
+                            @Html.Label("AdditionalInfo","Additional Info",new { htmlAttributes = new { @class = "form-control" } })
+                         </div>
+
+                          @Html.TextAreaFor(m=>m.AdditionalInfo,3,55,new {htmlAttributes= new {@class="form-control"}})
+                    </div>
+                    <div class="col-md-4">
+                     <div class="row">
+                        <div class="col-md-5">
+                             <div class="form-group">
+                            @Html.Label("lat","Latitude")
+                            @Html.Editor("latitude","latitude",new { htmlAttributes = new { @class = "form-control", @Value = "0.0"} })
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                             <div class="form-group">
+                            @Html.Label("lng","Longitude")
+                            @Html.Editor("longitude","longitude",new { htmlAttributes = new { @class = "form-control",@Value = "0.0"} })
+                            </div>
+                        </div>
+                       
+                    </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="col-md-3">
+
+            <h4>Current built Address</h4>
+
+            <div class="col-md-12 callout-info">                
+                 <table>
+                    <tbody class="callout-info">
+                        <tr class="callout-info" >
+                            <td>
+                                <span class="col" id="streetNumbCurrentAddre"></span>
+                                <span class="col" id="streetNameCurrentAddre"></span>
+                            </td>
+                        
+                        </tr>
+                          <tr>
+                            <td id="neighbourhoodCurrentAddre"></td>
+                        </tr>
+                          <tr>
+                            <td id="additionInfoCurrentAddre"></td>
+                        </tr>
+                          <tr>
+                            <td id="municipalityCurrentAddre"></td>
+                        </tr>
+
+                        <tr>
+                            <td id="districtCurrentAddre"></td>
+                        </tr>
+                          <tr>
+                            <td id="cityCurrentAddre"></td>
+                        </tr>
+                          <tr>
+                            <td id="provinceCurrentAddre"></td>
+                        </tr>
+                          <tr>
+                            <td id="countryCurrentAddre"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span id="coordinateLatCurrentAddress"></span>
+                                <span id="coordinateLngCurrentAddress"></span>
+                            </td>
+                        </tr> 
+                        <tr>
+                            <td id="AdditionalInfo"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-offset-2 col-md-12">
+                <hr />
+               
+                <input type="button" value="Create Address" class="btn btn-primary" id="createAddress"/>            
+            </div
+
+        </div>
+    </div>
+}
+
+@section Scripts
+    {
+     
+    <script src="~/js/Multi-Functions.js" asp-append-version="true"></script>
+    
+    }

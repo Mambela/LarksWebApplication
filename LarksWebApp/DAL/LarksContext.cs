@@ -27,13 +27,7 @@ namespace LarksWebApp.DAL
         public DbSet<StreetModel> Streets { get; set; }
         public DbSet<NeighbourhoodStreets> NeighbourhoodStreets { get; set; }
         public DbSet<CityModel> Cities { get; set; }
-
-
-
         public DbSet<AddressModel> Addresses { get; set; }
-
-
-
         public DbSet<ProvinceCoordinates> ProvinceCoordinates { get; set; }
         public DbSet<MunicipalityCoordinates> MunicipalityCoordinates { get; set; }
         public DbSet<NeighbourhoodCoordinates> NeighbourhoodCoordinates { get; set; }
@@ -45,8 +39,7 @@ namespace LarksWebApp.DAL
 
         public DbSet<SubcategoryModel> Subcategories { get; set; }
 
-
-
+        public DbSet<BuildingTypeModel> BuildingType { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -1,0 +1,162 @@
+﻿@using LarksWebApp.DTOs.DTO_Location
+
+@model Create_Location_DTO
+
+@{
+    ViewData["Title"] = "Create Location";
+}
+
+
+<div class="row">
+    <h3>Create new Location </h3>
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-md-3">
+                <label for="searchCountryId" class="form-label">Country List</label>
+                <input class="form-control" list="dataListOfCountry" id="searchCountryId" placeholder="Type to search Country...">
+                <datalist id="dataListOfCountry">
+                    @foreach (var country in Model.ListofCountryDTO)
+                    {
+                        <option data-value="@country.Id"> @country.Designation</option>
+                    }
+                </datalist>
+                @*<input type="hidden" name="countryAnswer" id="searchCountryId_hidden">*@
+            </div>
+            <div class="col-md-3">
+                <label for="searchProvince" class="form-label"> Province </label>
+                <input class="form-control" list="dataListOfProvince" id="searchProvince" placeholder="Type to search Provinces...">
+                <datalist id="dataListOfProvince">
+                </datalist>
+                @*<input type="hidden" name="ProvinceAnswer" id="searchProvince_hidden">*@
+            </div>
+            <div class="col-md-3">
+                <label for="searchMunicipality" class="form-label">Municipality</label>
+                <input class="form-control" list="dataListOfMunicipality" id="searchMunicipality" placeholder="Type to search Provinces...">
+                <datalist id="dataListOfMunicipality">
+                </datalist>
+                @* <input type="hidden" name="MuniciaplitySubmitted" id="searchMunicipality_hidden">*@
+            </div>
+            <div class="col-md-3">
+                <label for="searchDistrict" class="form-label">Districts</label>
+                <input class="form-control" list="dataListDistrict" id="searchDistrict" placeholder="Type to search Provinces...">
+                <datalist id="dataListDistrict">
+                </datalist>
+                @*<input type="hidden" name="MuniciaplitySubmitted" id="searchDistrict_hidden">*@
+
+            </div>
+            <div class="col-md-3">
+                <label for="searchNeighbourhood" class="form-label">Neighbourhood</label>
+                <input class="form-control" list="dataListNeighbourhood" id="searchNeighbourhood" placeholder="Type to search Neighbourhood...">
+                <datalist id="dataListNeighbourhood">
+                </datalist>
+                @*<input type="hidden" name="MuniciaplitySubmitted" id="searchNeighbourhood_hidden">*@
+
+            </div>
+
+            <div class="col-md-3">
+                <label for="exampleDataList" class="form-label">Street</label>
+                <input class="form-control" list="dataListStreet" id="searchStreet" placeholder="Type to search Streets...">
+                <datalist id="dataListStreet">
+                </datalist>
+                @*<input type="hidden" name="MuniciaplitySubmitted" id="searchStreet_hidden">*@
+
+            </div>
+            <div class="col-md-6">
+                <label for="exampleDataList" class="form-label">Address</label>
+
+                <input class="form-control" list="dataListAddress" id="searchAddress" placeholder="Type to search Address...">
+                <datalist id="dataListAddress">
+                </datalist>
+                @*<input type="hidden" name="submittedAddress" id="searchAddress_hidden">*@
+
+            </div>
+
+            <div class="col-md-6">
+                <label for="exampleDataList" class="form-label">Category</label>
+                <input class="form-control" list="dataListOfCategory" id="searchCategoryId" placeholder="Type to search Category...">
+                <datalist id="dataListOfCategory">
+                    @foreach (var category in Model.ListOfCategories)
+                    {
+                        <option id="@category.Lng" data-value="@category.Id"> @category.Designation</option>
+                    }
+                </datalist>
+
+            </div>
+            <div class="col-md-6">
+                <label for="dataListOfSubcategory" class="form-label">Subcategory</label>
+                <input class="form-control" list="dataListOfSubcategory" id="searchSubcategoryId" placeholder="Type to search Subcatery...">
+                <datalist id="dataListOfSubcategory">
+                </datalist>
+
+            </div>
+
+            <div class="col-md-12">
+                @using (Html.BeginForm(new { enctype = "multipart/form-data" }))
+                {
+                    <div class="row bg-info">
+
+                        <div class="col-md-4">
+                            <label for="exampleDataList" class="form-label">Designation </label>
+                            <input class="form-control" name="designation">
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="AdditionalInfo" class="form-label">Additional Information</label>
+                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="exampleDataList" class="form-label">Location Images </label>
+                            <input id="Files" asp-for="Files" name="Files" type="file" multiple="multiple" accept="image/jpeg, image/png, image/jpg">                            
+                         
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <div class="row">
+                                <output id="result">
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            @Html.Hidden("searchCountryId_hidden")
+                            @Html.Hidden("searchProvince_hidden")
+                            @Html.Hidden("searchMunicipality_hidden")
+                            @Html.Hidden("searchDistrict_hidden")
+                            @Html.Hidden("searchNeighbourhood_hidden")
+                            @Html.Hidden("searchStreet_hidden")
+                            @Html.Hidden("searchAddress_hidden")
+                            @Html.Hidden("searchCategoryId_hidden")
+                            @Html.Hidden("searchSubcategoryId_hidden")
+                           
+                        </div>
+                        @*
+                    Hidden items required to send values to the database.
+                    *@
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+    </div>
+    <div class="col-md-3">
+    </div>
+</div>
+
+
+
+
+
+@section Scripts
+    {
+    <script src="~/js/LocationManagement.js" asp-append-version="true"></script>
+    <script src="~/js/Multi-Functions.js" asp-append-version="true"></script>
+
+    }

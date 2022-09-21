@@ -1,6 +1,7 @@
 using LarksWebApp.DAL;
 using LarksWebApp.Data;
-using LarksWebApp.Repository.AddressRepository;
+using LarksWebApp.Repository.AddressRepository.Address_Repository;
+using LarksWebApp.Repository.AddressRepository.BuildingTypeRepository;
 using LarksWebApp.Repository.AddressRepository.StreetRepository;
 using LarksWebApp.Repository.AssoHoodStreetRepository;
 using LarksWebApp.Repository.CategoryRepository;
@@ -19,7 +20,7 @@ using LarksWebApp.Repository.StreetRepository;
 using LarksWebApp.Repository.SubcategoryRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.EntityFrameworkCore;
- 
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -90,9 +91,9 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IStreetCoordinatesRepository, StreetCoordinatesRepository>();
     services.AddScoped<ICategoryRepository, CategoryRepository>();
     services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
-    services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
     services.AddScoped<ILoggerTrace,ServiceLogger>();
     services.AddScoped<INeighbourhoodStreet, NeighbourhoodStreeetRepository>();
     services.AddScoped<IStreetCoordinateRepository, StreetCoordinateRepository>();
-
+    services.AddScoped<IAddressRepository, AddressRepository>();
+    services.AddScoped<IBuildingTypeRepository, BuildingTypeRepository>();
 }

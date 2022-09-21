@@ -1,5 +1,6 @@
 ﻿
 using LarksWebApp.Models.CoordinatesModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace LarksWebApp.Models
 {
@@ -7,14 +8,13 @@ namespace LarksWebApp.Models
     {
 
         public CountryModel Country { get; set; }
-        public int CountryID { get; set; }
+        public int? CountryID { get; set; }
 
         public ProvinceModel Province { get; set; }
         public int ProvinceID { get; set; }
 
         public MunicipalityModel Municipality { get; set; }
         public int MunicipalityID { get; set; }
-
 
         public NeighbourhoodModel Neighbourhood { get; set; }
         public int NeighbourhoodId { get; set; }
@@ -23,7 +23,16 @@ namespace LarksWebApp.Models
         public StreetModel Street { get; set; }
         public int StreetID { get; set; }
 
-        public string UnitReference { get; set; }
+        [StringLength(10, MinimumLength = 1)]
+        public string StreetNumber { get; set; }
+
+        public string? Reference { get; set; }
+
+        public string? AdditionalInfo { get; set; }
+
+        public int BuildingTypeId { get; set; }
+
+        public BuildingTypeModel BuildingType { get; set; }
 
     }
 }
