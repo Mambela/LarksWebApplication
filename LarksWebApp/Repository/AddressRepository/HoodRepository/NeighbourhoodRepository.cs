@@ -38,9 +38,46 @@ namespace LarksWebApp.Repository.HoodRepository
                 .ThenInclude(s =>s.Streets).Where(n =>n.Id == neighbourhoodId).FirstOrDefault();
         }
 
-        public IList<NeighbourhoodModel> GetNeighbourhoodModels(int provinceId)
+        public IList<NeighbourhoodModel> GetNeighbourhoodInCities(int cityId)
         {
-            return _dbContext.Neighbourhoods.Where(p =>p.Equals(provinceId)).ToList();
+            return _dbContext.Neighbourhoods.Where(c => c.CityId == cityId).ToList();
+        }
+
+        public IList<NeighbourhoodModel> GetNeighbourhoodInDistricts(int districtiD)
+        {
+            return _dbContext.Neighbourhoods.Where(c => c.DistrictId == districtiD).ToList();
+        }
+ 
+
+        public IList<NeighbourhoodModel> GetNeighbourhoodInMunicipality(int municipalityId)
+        {
+            return _dbContext.Neighbourhoods.Where(p =>p.MunicipalityId == municipalityId).ToList();
+        }
+
+        public IList<NeighbourhoodModel> GetNeighbourhoodModels()
+        {
+            return _dbContext.Neighbourhoods.ToList();
+
+        }
+
+        public IList<NeighbourhoodModel> GetNeighbourhoodModels(string sector, int id)
+        {
+
+
+            if (sector == "districts")
+            {
+                return _dbContext.Neighbourhoods.Where(c => c.DistrictId == id).ToList();
+            }
+            else if (sector == "municipality")
+            {
+                return _dbContext.Neighbourhoods.Where(p => p.MunicipalityId == id).ToList();
+            }
+            else if (sector == "city")
+            {
+                return _dbContext.Neighbourhoods.Where(p => p.CityId == id).ToList();
+            }
+
+            return null;
         }
 
         public bool Save()

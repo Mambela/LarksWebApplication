@@ -1,6 +1,11 @@
 ﻿using AutoMapper;
+using LarksWebApp.DTOs;
+using LarksWebApp.DTOs.DTO_Neighbourhoods;
 using LarksWebApp.DTOs.DTO_Streets;
 using LarksWebApp.Models;
+using LarksWebApp.Models.CoordinatesModel;
+using LarksWebApp.Repository.AddressRepository.StreetRepository;
+using LarksWebApp.Repository.AssoHoodStreetRepository;
 using LarksWebApp.Repository.StreetRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 //using Serilog;
 
-namespace LarksWebApp.Controllers
+namespace LarksWebApp.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -16,14 +21,18 @@ namespace LarksWebApp.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IStreetRepository _streetRepository;
+        private readonly INeighbourhoodStreet _neighbourhoodStreet;
+        private readonly IStreetCoordinateRepository _streetCoordinateRepo;
 
         private readonly ServiceLogger serviceLogger;
 
-        public StreetsController(IMapper mapper, IStreetRepository streetRepository)
+        public StreetsController(IMapper mapper, IStreetRepository streetRepository, INeighbourhoodStreet neighbourhoodStreet , IStreetCoordinateRepository streetCoordinateRepository)
         {
+            _streetCoordinateRepo = streetCoordinateRepository;
             _mapper = mapper;
             _streetRepository = streetRepository;
             serviceLogger = new ServiceLogger();
+            _neighbourhoodStreet = neighbourhoodStreet;
         }
 
 
@@ -94,20 +103,53 @@ namespace LarksWebApp.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("Streets")]
         public IActionResult Getstreet(int id)
         {
             try
             {
                 var streetObj = _streetRepository.GetStreetModel(id);
 
-                if (streetObj == null)
+                var streetDTO =new View_Street_DTO();
+
+                var neighbourhoods = new List<NeighbourhoodDTO>();
+
+                var streetCoordinatesList = new List<BaseCoordinatesDTO>();
+
+                
+
+                foreach (var neighbourhoodStreet in streetObj.NeighbourhoodStreets)
                 {
-                    return StatusCode(StatusCodes.Status404NotFound);
+
+                    var neighbourhood = new NeighbourhoodDTO
+                    {
+                        Id = neighbourhoodStreet.Neighbourhood.Id,
+                        MunicipalityId = neighbourhoodStreet.Neighbourhood.MunicipalityId,
+                        Designation = neighbourhoodStreet.Neighbourhood.Designation
+                    };
+
+                    neighbourhoods.Add(neighbourhood);
                 }
 
-                var streetDTO = _mapper.Map<Create_Street_DTO>(streetObj);
 
+                foreach (var coordinateObj in streetObj.StreetCoordinates)
+                {
+
+                    var coordinate = new BaseCoordinatesDTO
+                    {
+                        lat = coordinateObj.lat,
+                        lng = coordinateObj.lng
+                    };
+
+                    streetCoordinatesList.Add(coordinate);
+                }
+
+
+                streetDTO.Id = streetObj.Id;
+                streetDTO.Neighbourhoods = neighbourhoods;
+                streetDTO.Designation = streetObj.Designation;
+                streetDTO.Coordinates = streetCoordinatesList;
+   
 
                 return Ok(streetDTO);
             }
@@ -115,7 +157,6 @@ namespace LarksWebApp.Controllers
             {
                 serviceLogger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-
             }
 
         }
@@ -126,28 +167,82 @@ namespace LarksWebApp.Controllers
 
             try
             {
-                    if (streetDTO == null)
+                if (streetDTO == null)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var streetObj = _mapper.Map<StreetModel>(streetDTO);
+
+
+                if (await _streetRepository.CreateStreetModel(streetObj) == null)
+                {
+                    ModelState.AddModelError("", $"Something went wrong while creating the record {streetObj.Designation}");
+
+                    return StatusCode(500, ModelState);
+                }
+
+                /*
+                 * Associate street to the Neighbourhoods
+                 * **/
+
+                var neighbourhoodList = new List<NeighbourhoodStreets>();
+
+                for (int i = 0; i < streetDTO.NeighbourhoodID.Count; i++)
+                {
+
+                    var neighbourhooObj = new NeighbourhoodStreets
                     {
-                        return BadRequest(ModelState);
-                    }
+                        NeighbourhoodID = streetDTO.NeighbourhoodID[i],
+                        StreetsID = streetObj.Id
+                    };
 
-                    if (!ModelState.IsValid)
+                    neighbourhoodList.Add(neighbourhooObj);
+                }
+
+                if (!await _neighbourhoodStreet.AssociateStreetToNeighBourhoods(neighbourhoodList))
+                {
+                    ModelState.AddModelError("", $"Something went wrong while associating the street {streetObj.Designation} to neighbourhoods");
+
+                    return StatusCode(201, ModelState);
+                }
+
+
+                var streetCoordinatesList = new List<StreetCoordinates>();
+
+
+
+                for (int i = 0; i < streetDTO.Coordinates.Count; i++)
+                {
+                    var streetCoordinatesObj = new StreetCoordinates
                     {
-                        return BadRequest(ModelState);
-                    }
+                        StreetId = streetObj.Id,
+                        lat = streetDTO.Coordinates[i].lat,
+                        lng = streetDTO.Coordinates[i].lng,
+                    };
+
+                    streetCoordinatesList.Add(streetCoordinatesObj);
+                }
 
 
-                    var streetObj = _mapper.Map<StreetModel>(streetDTO);
+                if (!await _streetCoordinateRepo.StoreStreetCoordinates(streetCoordinatesList))
+                {
+                    ModelState.AddModelError("", $"Something went wrong while storing the coordinates for the street {streetObj.Designation} ");
 
-                    if (await _streetRepository.CreateStreetModel(streetObj) == null)
-                    {
-                        ModelState.AddModelError("", $"Something went wrong while creating the record {streetObj.Designation}");
+                    return StatusCode(201, ModelState);
+                }
 
-                        return StatusCode(500, ModelState);
-                    }
+                /*
+                 * 
+                 * **/
 
 
-                    return StatusCode(StatusCodes.Status201Created, streetDTO);
+                return StatusCode(StatusCodes.Status201Created, streetDTO);
 
             }
             catch (Exception ex)

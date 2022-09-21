@@ -1,6 +1,8 @@
 using LarksWebApp.DAL;
 using LarksWebApp.Data;
 using LarksWebApp.Repository.AddressRepository;
+using LarksWebApp.Repository.AddressRepository.StreetRepository;
+using LarksWebApp.Repository.AssoHoodStreetRepository;
 using LarksWebApp.Repository.CategoryRepository;
 using LarksWebApp.Repository.CityRepository;
 using LarksWebApp.Repository.Coordinates.CityCoordinateRepository;
@@ -17,6 +19,7 @@ using LarksWebApp.Repository.StreetRepository;
 using LarksWebApp.Repository.SubcategoryRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.EntityFrameworkCore;
+ 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +51,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -66,6 +71,8 @@ app.Run();
 
 void ConfigureServices(IServiceCollection services)
 {
+
+
     //throw new NotImplementedException();
     services.AddScoped<ICountryRepository, CountryRepository>();
     services.AddScoped<IProvinceRepository, ProvinceRepository>();
@@ -83,6 +90,9 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IStreetCoordinatesRepository, StreetCoordinatesRepository>();
     services.AddScoped<ICategoryRepository, CategoryRepository>();
     services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
-
+    services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
     services.AddScoped<ILoggerTrace,ServiceLogger>();
+    services.AddScoped<INeighbourhoodStreet, NeighbourhoodStreeetRepository>();
+    services.AddScoped<IStreetCoordinateRepository, StreetCoordinateRepository>();
+
 }

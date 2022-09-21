@@ -12,7 +12,18 @@ namespace LarksWebApp.Repository.HoodRepository
 
         NeighbourhoodModel GetNeighbourhood(int neighbourhoodId);
 
-        IList<NeighbourhoodModel> GetNeighbourhoodModels(int provinceId);
+        IList<NeighbourhoodModel> GetNeighbourhoodInMunicipality(int provinceId);
+        
+        
+        IList<NeighbourhoodModel> GetNeighbourhoodModels();
+
+        IList<NeighbourhoodModel> GetNeighbourhoodModels(string sector, int id);
+
+
+        IList<NeighbourhoodModel> GetNeighbourhoodInDistricts(int districtiD);
+     
+        IList<NeighbourhoodModel> GetNeighbourhoodInCities(int cityID);
+
 
         public bool DeleteNeighbourhood(NeighbourhoodModel neighbourhood);
 

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LarksWebApp.Repository.ProviceRepository
 {
+
     public class ProvinceRepository : IProvinceRepository
     {
         private readonly LarksContext _dbContext;
@@ -38,6 +39,15 @@ namespace LarksWebApp.Repository.ProviceRepository
                 .Include(d =>d.Districts)
                 .Include(m =>m.Municipalities)
                 .Where(p => p.Id == ProvinceId).FirstOrDefault(p => p.Id == ProvinceId);
+        }
+
+        public List<ProvinceModel> GetProvincesInCountry(int countryId)
+        {
+            return _dbContext.Provinces.Where(p => p.CountryId == countryId)
+                .Include(m =>m.Municipalities)
+                .Include(d =>d.Districts)
+                .Include(c =>c.Cities)
+                .ToList();
         }
 
         public bool Save()

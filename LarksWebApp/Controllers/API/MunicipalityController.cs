@@ -8,7 +8,7 @@ using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LarksWebApp.Controllers
+namespace LarksWebApp.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]

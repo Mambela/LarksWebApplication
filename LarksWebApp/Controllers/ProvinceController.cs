@@ -100,7 +100,7 @@ namespace LarksWebApp.Controllers
             catch(Exception ex)
             {
 
-                serviceLogger.LogError(ex.Message);
+                serviceLogger.LogError("Create a province " + ex.Message);
                 return View();
             }
         }

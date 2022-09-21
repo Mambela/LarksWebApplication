@@ -6,6 +6,8 @@ namespace LarksWebApp.Repository.AssoHoodStreetRepository
     {
         Task<NeighbourhoodStreets> AssociateStreetToNeighbourhood(NeighbourhoodStreets neighbourhoodStreets);
 
+        Task<bool> AssociateStreetToNeighBourhoods(IList<NeighbourhoodStreets> neighbourhoodStreets);
+
 
         NeighbourhoodStreets GetNeighbourhoodStreet(int hoodId, int StreetId);
 

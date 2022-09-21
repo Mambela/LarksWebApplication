@@ -1,5 +1,6 @@
 ﻿using LarksWebApp.DAL;
 using LarksWebApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LarksWebApp.Repository.StreetRepository
 {
@@ -33,13 +34,16 @@ namespace LarksWebApp.Repository.StreetRepository
 
         public StreetModel GetStreetModel(int StreetId)
         {
-            return _dbContext.Streets.FirstOrDefault(s => s.Id == StreetId);
+
+            return _dbContext.Streets.Include(m => m.StreetCoordinates)
+                .Include(s => s.NeighbourhoodStreets).ThenInclude(n => n.Neighbourhood)
+                .FirstOrDefault(s => s.Id == StreetId);
 
         }
 
         public bool Save()
         {
-         return _dbContext.SaveChanges() >= 0;
+            return _dbContext.SaveChanges() >= 0;
         }
 
         public bool UpdateStreet(StreetModel street)

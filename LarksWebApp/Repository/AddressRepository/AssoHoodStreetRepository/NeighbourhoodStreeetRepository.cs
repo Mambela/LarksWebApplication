@@ -24,6 +24,15 @@ namespace LarksWebApp.Repository.AssoHoodStreetRepository
             return null;
         }
 
+        public async Task<bool> AssociateStreetToNeighBourhoods(IList<NeighbourhoodStreets> neighbourhoodStreets)
+        {
+
+            await _dbContext.NeighbourhoodStreets.AddRangeAsync(neighbourhoodStreets);
+
+            return Save();
+            
+        }
+
         public NeighbourhoodStreets GetNeighbourhoodStreet(int hoodId, int StreetId)
         {
             return _dbContext.NeighbourhoodStreets.Where(h => h.NeighbourhoodID == hoodId && h.StreetsID == StreetId)

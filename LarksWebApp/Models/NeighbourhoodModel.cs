@@ -20,9 +20,7 @@ namespace LarksWebApp.Models
 
         public IList<NeighbourhoodStreets> NeighbourhoodStreets { get; set; }
 
-
         public IList<NeighbourhoodCoordinates> NeighbourhoodCoordinates { get; set; }
-
 
         public IList<AddressModel> Addresses { get; set; }
     }

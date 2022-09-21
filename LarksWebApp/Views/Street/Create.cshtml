@@ -1,5 +1,140 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using LarksWebApp.DTOs.DTO_Streets
+
+@model Create_Street_DTO
+
 @{
+    ViewData["Title"] = "Create Streets";
 }
+
+<h3>Create a new Streets</h3>
+
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="col-md-10">
+            @*ViewBag.CityList is holding all the cities values*@
+            @Html.LabelFor(model => model.Designation,"List of Countries ", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.DropDownListFor(m => m.CountryId,new SelectList(Model.ListofCountryDTO,"Id","Designation"),"Select Country",new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="col-md-10">
+            @*ViewBag.CityList is holding all the cities values*@
+            @Html.LabelFor(model => model.Designation,"List of Provinces ", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.DropDownList("street_ProvinceId",Enumerable.Empty<SelectListItem>(),"Select Province",new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="col-md-10">
+            @*ViewBag.CityList is holding all the cities values*@
+            @Html.LabelFor(model => model.Designation,"List of Cities ", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.DropDownList("street_cityId",Enumerable.Empty<SelectListItem>(),"Select City",new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="col-md-10">
+            @*ViewBag.CityList is holding all the cities values*@
+            @Html.LabelFor(model => model.Designation,"List of Districts ", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.DropDownList("street_districtId",Enumerable.Empty<SelectListItem>(),"Select District",new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="col-md-10">
+            @*ViewBag.CityList is holding all the cities values*@
+            @Html.LabelFor(model => model.Designation,"List of Municipalities ", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.DropDownList("street_MunicipalityId",Enumerable.Empty<SelectListItem>(),"Select Municipality",new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="col-md-10">
+            @*ViewBag.CityList is holding all the cities values*@
+            @Html.LabelFor(model => model.Designation,"List of Neighbourhoods ", new { htmlAttributes = new { @class = "form-control" } })
+            @Html.DropDownList("street_hoodId",Enumerable.Empty<SelectListItem>(),"Select Neighbourhood",new { @class = "form-control" })
+
+            @*<div class="col-md-offset-2 col-md-10 mt-3">
+                <input type="button" value="Associate neighbourhood" id="addNeighbourhood" class="btn btn-sm btn-success" />
+            </div>*@
+
+        </div>
+        <div class="col-md-10" id="listOfNeighbourhoods">
+
+        </div>
+    </div>
+ </div>
+
+
+<div class="col-md-8">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Designation,"Street Name", new { htmlAttributes = new { @class = "form-control" } })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+
+
+                @* <div class="form-group">
+            <div class="col-md-offset-2 col-md-10 mx-2">
+            <input type="button" id="saveNeighbourhood" value="Create" class="btn btn-primary" />
+            </div>
+            </div>*@
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+                <div class="form-group">
+                    <h6>Street Coordinates</h6>
+                    <div class="row">
+                        <div class="col-md-5">
+                            @Html.Label("lat","Latitude")
+                            @Html.Editor("latitude","latitude",new { htmlAttributes = new { @class = "form-control" } })
+
+                        </div>
+                        <div class="col-md-5">
+                            @Html.Label("lng","Longitude")
+                            @Html.Editor("longitude","longitude",new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                        <div class="col-md-offset-2 col-md-10 mt-3">
+                            <input type="button" value="Add Coordinates" id="addCoordinates" class="btn btn-sm btn-success" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    <h5>Current Coordinates</h5>
+                    <hr></hr>
+                    <table id="coordinatesTable">
+                        <thead>
+                            <tr>
+                                <th scope="col-md-3">Latitude   </th>
+                                <th scope="col-md-3">Longitude  </th>
+                                <th scope="col"> </th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyCoordinates">
+                        </tbody>
+                    </table>
+                </div>
+             
+            </div>
+        </div>
+
+        <div class="form-group mt-4">
+            <div class="col-md-offset-2 col-md-10 mx-2">
+                <input type="button" id="saveNeighbourhood" value="Save Street" class="btn btn-primary" />
+            </div>
+        </div>
+
+    }
+</div>

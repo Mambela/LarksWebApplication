@@ -4,6 +4,7 @@ using LarksWebApp.Models;
 using LarksWebApp.Models.CoordinatesModel;
 using LarksWebApp.Repository.Coordinates.ProviceCoordinateRepository;
 using LarksWebApp.Repository.ProviceRepository;
+using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,15 +17,40 @@ namespace LarksWebApp.Controllers.API
         private readonly IProvinceRepository _provinceRepository;
         private readonly IMapper _mapper;
         private readonly IProvinceCoordinatesRepository _coordinatesRepository;
+        private readonly ILoggerTrace serviceLogger;
 
-        public ProvinceController(IProvinceRepository provinceRepository, IMapper mapper, IProvinceCoordinatesRepository coordinatesRepository)
+        public ProvinceController(IProvinceRepository provinceRepository, IMapper mapper, IProvinceCoordinatesRepository coordinatesRepository,ILoggerTrace ServiceLogger)
         {
             _provinceRepository = provinceRepository;
             _mapper = mapper;
             _coordinatesRepository = coordinatesRepository;
+            serviceLogger = ServiceLogger;
         }
 
-        [HttpGet]
+        [HttpGet("CountryProvinces")]
+
+        public IActionResult GetCountryProvince(int CountryId)
+        {
+            try
+            {
+                var provincesObj = _provinceRepository.GetProvincesInCountry(CountryId);
+
+                var proviceDTOList = new List<ProvinceDTO>();
+
+                proviceDTOList = _mapper.Map<List<ProvinceDTO>>(provincesObj);
+
+                return Ok(proviceDTOList);
+
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Get Provinces in Country " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+          
+        }
+
+        [HttpGet("Province")]
         public IActionResult GetProvince(int provinceID)
         {
             var provinceObj = _provinceRepository.GetProvinceModel(provinceID);

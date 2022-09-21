@@ -1,5 +1,20 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using LarksWebApp.DTOs.DTO_City
+
+@model Create_City_DTO
+
 @{
+       ViewData["Title"] = " Streets";
 }
+
+<h3>Create a new Street</h3>
+
+<div class="col-md-8">
+
+    <div class="col-xs-12 col-md-6 align-self-end">
+                    @Html.ActionLink("Create New Street","Create","Street")                     
+    </div>
+
+
+</div>
+
+

@@ -33,6 +33,8 @@ namespace LarksWebApp.Data
             CreateMap<DistrictModel, DistrictDTO>().ReverseMap();
             CreateMap<MunicipalityModel, MunicipalityDTO>().ReverseMap();
             CreateMap<ProvinceModel, ProvinceDTO>().ReverseMap();
+            CreateMap<NeighbourhoodModel, NeighbourhoodDTO>().ReverseMap();
+            CreateMap<StreetModel, View_Street_DTO>().ReverseMap();
 
         }
 
