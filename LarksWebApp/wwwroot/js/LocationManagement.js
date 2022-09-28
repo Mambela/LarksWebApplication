@@ -149,6 +149,64 @@ $(document).ready(function () {
         }
     });
 
+
+    $('#searchAddress').on('input', function (e) {
+        //we are searching the streets under Neighbourhood.
+
+        var $input = $(e.target);
+        $options = $('#' + $input.attr('list') + ' option'),
+            $hiddenInput = $('#' + $input.attr('id') + '_hidden'),
+            label = $input.val();
+
+
+        console.log(label); 
+
+        $hiddenInput.val(label);
+
+        for (var i = 0; i < $options.length; i++) {
+            var $option = $options.eq(i);
+
+            let optionName = $option.text().trim();
+            let labelName = label.trim();
+
+            optionName = optionName.replaceAll(" ", "");
+            labelName = labelName.replaceAll(" ","");
+
+            if (optionName.trim() === labelName.trim()) {
+                var selectedAddressId = $option.attr('data-value')
+                $hiddenInput.val(selectedAddressId);
+
+
+                break;
+            }
+        }
+    });
+
+
+    $('#searchSubcategoryId').on('input', function (e) {
+
+
+        var $input = $(e.target);
+        $options = $('#' + $input.attr('list') + ' option'),
+            $hiddenInput = $('#' + $input.attr('id') + '_hidden'),
+            label = $input.val();
+
+
+        $hiddenInput.val(label);
+
+        for (var i = 0; i < $options.length; i++) {
+            var $option = $options.eq(i);
+
+
+            if ($option.text().trim() === label.trim()) {
+                var subCategoryId = $option.attr('data-value')
+                $hiddenInput.val(subCategoryId);                                   
+                
+                break;
+            }
+        }
+    });
+    
     $('#searchCategoryId').on('input', function (e) {
 
 
@@ -209,6 +267,8 @@ $(document).ready(function () {
             }
         }
     });
+
+ 
 
 
     function FetchProvinces(countryId) {
@@ -342,6 +402,8 @@ $(document).ready(function () {
             const files = e.target.files; //FILE LIST OBJECT CONTAINING UPLOADED FILES
             const output = document.querySelector("#result");
             output.innerHTML = "";
+
+
             for (let i = 0; i < files.length; i++) { // LOOP THROUGH THE FILE LIST OBJECT
                 if (!files[i].type.match("image")) continue; // ONLY PHOTOS (SKIP CURRENT ITERATION IF NOT A PHOTO)
                 const picReader = new FileReader(); // RETRIEVE DATA URI 

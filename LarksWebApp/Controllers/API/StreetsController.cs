@@ -114,10 +114,16 @@ namespace LarksWebApp.Controllers.API
 
                 foreach (var StreetObj in neighBourhoodstreetObjList)
                 {
+
+                    var streetCoordinates = _mapper.Map<IList<BaseCoordinatesDTO>>(StreetObj.Streets.StreetCoordinates);
+
                     var street = new View_Street_DTO {
                         Id = StreetObj.Streets.Id,
-                        Designation = StreetObj.Streets.Designation
+                        Designation = StreetObj.Streets.Designation,
+                        Coordinates = streetCoordinates
                     };
+
+
 
                     streetListDTO.Add(street);
                    

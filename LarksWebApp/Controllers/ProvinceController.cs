@@ -91,7 +91,13 @@ namespace LarksWebApp.Controllers
 
                 if (_provinceRepository.CreateProvinceModel(provinceModel) != null)
                 {
-                    return RedirectToAction(nameof(Index), new { msg = $"Province {provinceModel.Designation} saved successfully! " });
+
+                    var provinceObj = _provinceRepository.GetProvinceModel(Convert.ToInt32(TempData["countryID"].ToString()));
+                    var provinceDTO = _mapper.Map<ProvinceDTO>(provinceObj);
+
+                    //return RedirectToAction(nameof(Index), new { msg = $"Province {provinceModel.Designation} saved successfully! " });
+
+                    return RedirectToAction("Index", "Country","Province saved successfully");
                 }
 
 

@@ -127,7 +127,7 @@ namespace LarksWebApp.Controllers
                 var countryId = TempData["countryID"].ToString();
 
 
-                return RedirectToAction(nameof(Index), new { msg = $"Error while saving municipality {neighbourhoodObj.Designation} " });
+                return RedirectToAction(nameof(Index), new { msg = $"Neighbourhood  {neighbourhoodObj.Designation} saved successfully" });
  
             }
             catch(Exception ex)

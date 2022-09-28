@@ -4,12 +4,14 @@ using LarksWebApp.DTOs.DTO_Addresses;
 using LarksWebApp.DTOs.DTO_Category;
 using LarksWebApp.DTOs.DTO_City;
 using LarksWebApp.DTOs.DTO_Districts;
+using LarksWebApp.DTOs.DTO_Location;
 using LarksWebApp.DTOs.DTO_Municipalities;
 using LarksWebApp.DTOs.DTO_Neighbourhoods;
 using LarksWebApp.DTOs.DTO_Provinces;
 using LarksWebApp.DTOs.DTO_Streets;
 using LarksWebApp.DTOs.DTO_Subcategory;
 using LarksWebApp.Models;
+using LarksWebApp.Models.CoordinatesModel;
 
 namespace LarksWebApp.Data
 {
@@ -37,6 +39,8 @@ namespace LarksWebApp.Data
             CreateMap<NeighbourhoodModel, NeighbourhoodDTO>().ReverseMap();
             CreateMap<StreetModel, View_Street_DTO>().ReverseMap();
             CreateMap<BuildingTypeModel, Create_BuildingType_DTO>().ReverseMap();
+            CreateMap<StreetCoordinates, BaseCoordinatesDTO>().ReverseMap();
+            CreateMap<LocationModel, LocationDTO>().ReverseMap();
 
         }
 

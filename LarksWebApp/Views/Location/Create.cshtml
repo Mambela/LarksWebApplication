@@ -64,7 +64,8 @@
             <div class="col-md-6">
                 <label for="exampleDataList" class="form-label">Address</label>
 
-                <input class="form-control" list="dataListAddress" id="searchAddress" placeholder="Type to search Address...">
+                <input class="form-control" list="dataListAddress" id="searchAddress" placeholder="Type to search Address..." required>
+                @Html.ValidationMessageFor(m=> m.searchAddress_hidden)
                 <datalist id="dataListAddress">
                 </datalist>
                 @*<input type="hidden" name="submittedAddress" id="searchAddress_hidden">*@
@@ -91,24 +92,27 @@
             </div>
 
             <div class="col-md-12">
-                @using (Html.BeginForm(new { enctype = "multipart/form-data" }))
-                {
-                    <div class="row bg-info">
+                @using (Html.BeginForm("Create","Location",FormMethod.Post,new { enctype = "multipart/form-data" }))
+                { 
+                    @Html.AntiForgeryToken()
+                    <div class="row">
 
                         <div class="col-md-4">
                             <label for="exampleDataList" class="form-label">Designation </label>
-                            <input class="form-control" name="designation">
+                            <input class="form-control" name="designation" required>
+                            @Html.ValidationMessageFor(m=>m.Designation)
                         </div>
 
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="AdditionalInfo" class="form-label">Additional Information</label>
-                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                <textarea class="form-control" name="AdditionalInfo" id="AdditionalInfo" rows="3" required></textarea>
+                                @Html.ValidationMessageFor(m=>m.AdditionalInfo)
                             </div>
                         </div>
                         <div class="col-md-4">
                             <label for="exampleDataList" class="form-label">Location Images </label>
-                            <input id="Files" asp-for="Files" name="Files" type="file" multiple="multiple" accept="image/jpeg, image/png, image/jpg">                            
+                            <input  asp-for="Files" type="file" multiple accept="image/jpeg, image/png, image/jpg">                            
                          
                         </div>
                         <div class="col-md-12 mt-3">
@@ -123,8 +127,9 @@
                             @Html.Hidden("searchMunicipality_hidden")
                             @Html.Hidden("searchDistrict_hidden")
                             @Html.Hidden("searchNeighbourhood_hidden")
-                            @Html.Hidden("searchStreet_hidden")
-                            @Html.Hidden("searchAddress_hidden")
+                            @Html.Hidden("searchStreet_hidden")                            
+                            @Html.HiddenFor(m=>m.searchAddress_hidden, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(m=>m.searchAddress_hidden)
                             @Html.Hidden("searchCategoryId_hidden")
                             @Html.Hidden("searchSubcategoryId_hidden")
                            
@@ -135,7 +140,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <div class="col-md-offset-2 col-md-10">
-                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                    <button type="submit" class="btn btn-primary">Create</button>
                                 </div>
                             </div>
                         </div>
@@ -155,8 +160,8 @@
 
 
 @section Scripts
-    {
-    <script src="~/js/LocationManagement.js" asp-append-version="true"></script>
-    <script src="~/js/Multi-Functions.js" asp-append-version="true"></script>
+{
+        <script src="~/js/LocationManagement.js" asp-append-version="true"></script>
+        <script src="~/js/Multi-Functions.js" asp-append-version="true"></script>
 
-    }
+}

@@ -14,10 +14,12 @@ using LarksWebApp.Repository.Coordinates.StreetCoordinateRepository;
 using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Repository.DistrictRepository;
 using LarksWebApp.Repository.HoodRepository;
+using LarksWebApp.Repository.LocationRepository;
 using LarksWebApp.Repository.MunicipalityRepository;
 using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Repository.StreetRepository;
 using LarksWebApp.Repository.SubcategoryRepository;
+using LarksWebApp.Services.FileManagement;
 using LarksWebApp.Services.Loggers;
 using Microsoft.EntityFrameworkCore;
 
@@ -96,4 +98,12 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IStreetCoordinateRepository, StreetCoordinateRepository>();
     services.AddScoped<IAddressRepository, AddressRepository>();
     services.AddScoped<IBuildingTypeRepository, BuildingTypeRepository>();
+    services.AddScoped<IFileManagement,FileManagement> ();
+    services.AddScoped<ILocationRepository, LocationRepository> ();
+
+
+    services.AddMvcCore().ConfigureViews(options =>
+    {
+        options.HtmlHelperOptions.ClientValidationEnabled = true;
+    });
 }

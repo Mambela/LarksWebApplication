@@ -33,13 +33,13 @@ namespace LarksWebApp.DAL
         public DbSet<NeighbourhoodCoordinates> NeighbourhoodCoordinates { get; set; }
         public DbSet<StreetCoordinates> StreetCoordinates { get; set; }
         public DbSet<CityCoordinates> CitiesCoordinates { get; set; }
-
-
         public DbSet<CategoryModel> Categories { get; set; }
-
         public DbSet<SubcategoryModel> Subcategories { get; set; }
-
         public DbSet<BuildingTypeModel> BuildingType { get; set; }
+
+        public DbSet<LocationModel> Location { get; set; }
+
+        public DbSet<LocationImageModel> LocationImage { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
