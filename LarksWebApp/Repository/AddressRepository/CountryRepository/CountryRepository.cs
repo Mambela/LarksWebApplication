@@ -52,7 +52,7 @@ namespace LarksWebApp.Repository.CountryRepository
 
         public IList<CountryModel> GetAll()
         {
-            return _dbContext.Countries.ToList();
+            return _dbContext.Countries.OrderBy(c =>c.Designation).ToList();
         }
 
         public IList<CountryModel> GetCountries(int countryID)

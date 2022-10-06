@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using LarksWebApp.DTOs;
+using LarksWebApp.DTOs.DTO_City;
 using LarksWebApp.DTOs.DTO_Streets;
 using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Repository.StreetRepository;
@@ -27,7 +28,33 @@ namespace LarksWebApp.Controllers
         public ActionResult Index()
         {
 
-            return View();
+            try
+            {
+
+                var countryList = _countryRepo.GetAll();
+
+                var countryListDTO = new List<CountryDTO>();
+
+                foreach (var country in countryList)
+                {
+                    countryListDTO.Add(_mapper.Map<CountryDTO>(country));
+
+                }
+
+                var viewCountryListDTO = new Create_City_DTO();
+
+                viewCountryListDTO.ListofCountryDTO = countryListDTO;
+
+                return View(viewCountryListDTO);
+
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Error while attempting to fetch countries for address" + ex.Message);
+
+
+                return BadRequest();
+            }
         }
 
         // GET: StreetController/Details/5

@@ -98,13 +98,16 @@
                         <div class="col-md-5">
                              <div class="form-group">
                             @Html.Label("lat","Latitude")
-                            @Html.Editor("latitude","latitude",new { htmlAttributes = new { @class = "form-control", @Value = "0.0"} })
+                            @Html.EditorFor(m=>m.lat,"lat",new { htmlAttributes = new { @class = "form-control"} })
+                            @*<input type="number" value="0.0" id="latitude" name="latitude" class="btn btn-light" />*@
                             </div>
                         </div>
                         <div class="col-md-5">
                              <div class="form-group">
                             @Html.Label("lng","Longitude")
-                            @Html.Editor("longitude","longitude",new { htmlAttributes = new { @class = "form-control",@Value = "0.0"} })
+                            @Html.EditorFor(m=>m.lng,"lng",new { htmlAttributes = new { @class = "form-control"} })
+                            @*<input type="number" value="0.0" id="longitude" name="lng" class="btn btn-light" />*@
+
                             </div>
                         </div>
                        

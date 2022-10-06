@@ -40,7 +40,29 @@ namespace LarksWebApp.Controllers
         // GET: LocationController
         public ActionResult Index()
         {
-            return View();
+            try
+            {
+
+                var listofCountry = _countryRepo.GetAll();
+
+                var listofCountryDTO = new List<CountryDTO>();
+
+                var listOfLocationsCategory = _mapper.Map<List<CategoryDTO>>(_categoryRepo.GetAllCategories());
+
+                listofCountryDTO = _mapper.Map<List<CountryDTO>>(listofCountry);
+
+                var createAdressDTO = new Create_Location_DTO();
+
+                createAdressDTO.ListofCountryDTO = listofCountryDTO;
+
+                return View(createAdressDTO);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Address controller getting the countries " + ex.Message);
+
+                return BadRequest();
+            }
         }
 
         // GET: LocationController/Details/5

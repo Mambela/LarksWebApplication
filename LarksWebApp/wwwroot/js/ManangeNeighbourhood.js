@@ -125,8 +125,9 @@ $(document).ready(function () {
             RetrieveProvinceChildren('api/province/CountryProvinces?CountryId=' + countryId, provinceDropDownList);
             addressCountryid = countryId;
                        
-
-            previewCountry.innerText = $("#CountryId option:selected").text();
+            if (previewCountry) {
+                previewCountry.innerText = $("#CountryId option:selected").text();
+            }
 
         });
     }
@@ -144,7 +145,9 @@ $(document).ready(function () {
             UpdateProvinceChildren(singleProvince);
             addressProvinceid = provinceId;
 
-            previewProvince.innerText = $("#street_ProvinceId  option:selected").text();
+            if(previewProvince) {
+             previewProvince.innerText = $("#street_ProvinceId  option:selected").text();
+            }
 
         });
 
@@ -159,7 +162,9 @@ $(document).ready(function () {
             RetrieveElementChildren('api/Hood/sectorNeighbourhood?sector=municipality&id=' + municipalityId, hoodDropDownList)
             addressMunicipalityid = municipalityId;
 
+            if (previewMunicipality) {
             previewMunicipality.innerText = $("#street_MunicipalityId  option:selected").text();
+            }
 
         });
 
@@ -173,8 +178,10 @@ $(document).ready(function () {
             RetrieveElementChildren('api/Hood/sectorNeighbourhood?sector=districts&id=' + districtId, hoodDropDownList)
             addressDistrictid = districtId;
 
+            if (previewDistrict) {
 
             previewDistrict.innerText = $("#street_districtId  option:selected").text();
+            }
 
         });
     }
@@ -187,8 +194,10 @@ $(document).ready(function () {
             RetrieveElementChildren('api/Hood/sectorNeighbourhood?sector=city&id=' + cityId, hoodDropDownList)
             addressCityid = cityId;
 
+            if (previewCity) {
 
             previewCity.innerText = $("#street_cityId  option:selected").text();
+            }
 
         });
     }
@@ -201,7 +210,10 @@ $(document).ready(function () {
             RetrieveElementChildren('api/Streets/StreetsInNeighbourhood?neighbourhoodId=' + hoodId, streetDropDownList)
             addressNeighbourhoodid = hoodId;
 
-            previewNeibourhood.innerText = $("#street_hoodId  option:selected").text();
+
+            if (previewNeibourhood) {
+                previewNeibourhood.innerText = $("#street_hoodId  option:selected").text();
+            }
 
         });
     }
@@ -285,7 +297,10 @@ $(document).ready(function () {
 
             }
 
+        if (destinationControl) {
+
         destinationControl.innerHTML = optionList;
+        }
 
          
       
@@ -523,19 +538,19 @@ $(document).ready(function () {
 
 
 
-        _lat = $("#latitude").val();
-        _lng = $("#longitude").val();
+        _lat = $("#lat").val();
+        _lng = $("#lng").val();
        
 
         var addressDTO = new Object();
 
         if (verifyAddress()) {
 
-            if (!$("#latitude").val())
+            if (!$("#lat").val())
             {
                 _lat = 0.0;
             }
-            if (!$("#longitude").val())
+            if (!$("#lng").val())
             {
                 _lng = 0.0;
             }
@@ -562,12 +577,6 @@ $(document).ready(function () {
 
             PostRequest(addressDTO,BASEURL+"api/Address");
         }
-
-
-        console.log(addressDTO);
-        
-
-
     
     });
 

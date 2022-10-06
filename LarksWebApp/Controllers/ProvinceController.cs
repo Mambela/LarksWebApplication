@@ -4,6 +4,7 @@ using LarksWebApp.DTOs.DTO_Districts;
 using LarksWebApp.DTOs.DTO_Municipalities;
 using LarksWebApp.DTOs.DTO_Provinces;
 using LarksWebApp.Models;
+using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Http;
@@ -14,12 +15,14 @@ namespace LarksWebApp.Controllers
     public class ProvinceController : Controller
     {
         private readonly IProvinceRepository _provinceRepository;
+        private readonly ICountryRepository countryRepository;
         private readonly IMapper _mapper;
         private readonly ILoggerTrace serviceLogger;
 
         // GET: ProvinceController
-        public ProvinceController(IProvinceRepository provinceRepository, IMapper mapper, ILoggerTrace logger)
+        public ProvinceController(IProvinceRepository provinceRepository, IMapper mapper, ILoggerTrace logger,ICountryRepository _countryRepo)
         {
+            countryRepository = _countryRepo;
             _provinceRepository = provinceRepository;
             _mapper = mapper;
             serviceLogger = logger;

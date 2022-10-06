@@ -53,7 +53,7 @@ namespace LarksWebApp.Controllers
                 
             }
 
-            return View();
+           
         }
 
         // GET: NeighbourhoodController/Details/5
@@ -68,7 +68,14 @@ namespace LarksWebApp.Controllers
 
             try
             {
-                int provinceId = Convert.ToInt32(TempData["provinceID"].ToString());
+                int provinceId = 0;
+                if (TempData["provinceID"] == null)
+                {
+                    throw new Exception("There is a provice missing to query this neighbourhood");
+                }
+                else {
+                    provinceId = Convert.ToInt32(TempData["provinceID"].ToString());
+                }
 
                 var provinceObj = _provinceRepository.GetProvinceModel(provinceId);
 

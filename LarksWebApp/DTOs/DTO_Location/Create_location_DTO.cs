@@ -10,7 +10,7 @@ namespace LarksWebApp.DTOs.DTO_Location
         [Required(ErrorMessage = "Please enter a designation for this location")]
         public string Designation { get; set; }
 
-        public  List<CountryDTO> Country { get; set; }
+        public  List<CountryDTO>? Country { get; set; }
         public int CountryId { get; set; }
 
         public IList<CountryDTO>? ListofCountryDTO { get; set; }
@@ -37,7 +37,7 @@ namespace LarksWebApp.DTOs.DTO_Location
 
         public int CategoryId { get; set; }
 
-        public IList<CategoryDTO> ListOfCategories { get; set; }
+        public IList<CategoryDTO>? ListOfCategories { get; set; }
 
         public int searchCountryId_hidden { get; set; }
         public int searchProvince_hidden { get; set; }

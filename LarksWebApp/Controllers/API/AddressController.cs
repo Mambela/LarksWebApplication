@@ -34,25 +34,20 @@ namespace LarksWebApp.Controllers.API
             {
                 var addressObjList = _addressRepository.GetAddressesInStreets(streetId);
 
-                var viewAddressDTOList = new List<ViewAddressDTO>();
+                var viewAddressDTOList = new List<ViewAddressDataTableDTO>();
 
 
 
                 foreach (var addressObj in addressObjList)
                 {
-    
-                    var addressDTO = new ViewAddressDTO
+
+                    var addressDTO = new ViewAddressDataTableDTO
                     {
                         Id = addressObj.Id,
                         Municipality = addressObj.Municipality.Designation,
-                        MunicipalityID = addressObj.MunicipalityID,
                         Neighbourhood = addressObj.Neighbourhood.Designation,
-                        NeighbourhoodId = addressObj.NeighbourhoodId,
                         StreetName = addressObj.Street.Designation,
-                        StreetID = addressObj.StreetID,
-                        StreetNumber = addressObj.StreetNumber,
                         Province = addressObj.Province.Designation,
-                        ProvinceID = addressObj.ProvinceID,
                         FullAddress = addressObj.StreetNumber + ", " + addressObj.Street.Designation + ", " + addressObj.Neighbourhood.Designation + ", " + addressObj.Province.Designation
                     };
 
@@ -65,11 +60,11 @@ namespace LarksWebApp.Controllers.API
             }
             catch (Exception ex)
             {
-                    serviceLogger.LogError("Error while retrieving address " + ex.Message);
+                serviceLogger.LogError("Error while retrieving address " + ex.Message);
                 return BadRequest();
             }
 
-            
+
         }
 
 
@@ -121,7 +116,7 @@ namespace LarksWebApp.Controllers.API
 
             try
             {
-                var addressObjList = _addressRepository.GetAddressesNearLocation(latitude,longitude);
+                var addressObjList = _addressRepository.GetAddressesNearLocation(latitude, longitude);
 
                 var viewAddressDTOList = new List<ViewAddressDTO>();
 
@@ -173,6 +168,8 @@ namespace LarksWebApp.Controllers.API
 
 
                 var addressObj = _mapper.Map<AddressModel>(addressDTO);
+                addressObj.lat = addressDTO.Coordinates.lat;
+                addressObj.lng = addressDTO.Coordinates.lng;
 
                 if (await _addressRepository.CreateAddress(addressObj) == null)
                 {

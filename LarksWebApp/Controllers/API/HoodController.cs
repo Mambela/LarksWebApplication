@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using LarksWebApp.DTOs.DTO_Addresses;
 using LarksWebApp.DTOs.DTO_Neighbourhoods;
 using LarksWebApp.Models;
+using LarksWebApp.Repository.AddressRepository.Address_Repository;
 using LarksWebApp.Repository.HoodRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Http;
@@ -17,14 +19,16 @@ namespace LarksWebApp.Controllers.API
     {
         private readonly IMapper _mapper;
         private readonly INeighbourhoodRepository _hoodRepository;
+        private readonly IAddressRepository _addressRepository;
         private readonly ServiceLogger serviceLogger;
 
 
-        public HoodController(IMapper mapper, INeighbourhoodRepository hoodRepository)
+        public HoodController(IMapper mapper, INeighbourhoodRepository hoodRepository,IAddressRepository addressRepository)
         {
             _mapper = mapper;
             _hoodRepository = hoodRepository;
             serviceLogger = new ServiceLogger();
+            _addressRepository = addressRepository;
         }
 
         /**
@@ -130,6 +134,76 @@ namespace LarksWebApp.Controllers.API
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        public IActionResult AddressesInNeighbourhood(int neighbourhoodId)
+        {
+            try
+            {
+                //fetching data 
+                var addressObjList = _addressRepository.GetAddressesInNeighbourhood(neighbourhoodId);
+
+                var viewAddressDTOList = new List<ViewAddressDataTableDTO>();
+
+
+
+                foreach (var addressObj in addressObjList)
+                {
+
+                    var addressDTO = new ViewAddressDataTableDTO
+                    {
+                        Id = addressObj.Id,
+                        Municipality = addressObj.Municipality.Designation,
+                        Neighbourhood = addressObj.Neighbourhood.Designation,
+                        StreetName = addressObj.Street.Designation,                        
+                        Province = addressObj.Province.Designation,
+                        FullAddress = addressObj.StreetNumber + ", " + addressObj.Street.Designation + ", " + addressObj.Neighbourhood.Designation + ", " + addressObj.Province.Designation
+
+                    };
+
+                    viewAddressDTOList.Add(addressDTO);
+                }
+
+
+                    //Declarations for the table 
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][Address]"].FirstOrDefault() + "][Address]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 10;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int recordsTotal = 0;
+
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    viewAddressDTOList = (List<ViewAddressDataTableDTO>)viewAddressDTOList.OrderBy(c => c.FullAddress);
+                }
+
+
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    viewAddressDTOList = (List<ViewAddressDataTableDTO>)viewAddressDTOList.Where(m => m.FullAddress.Contains(searchValue)
+                                                || m.StreetName.Contains(searchValue));
+
+                }
+
+                recordsTotal = viewAddressDTOList.Count();
+                var data = viewAddressDTOList.Skip(skip).Take(pageSize).ToList();
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data };
+
+                return Ok(jsonData);
+
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Fetch Address in Neighbourhood " + ex.Message);
+
+                return BadRequest(ex.Message);
+            }
         }
 
 

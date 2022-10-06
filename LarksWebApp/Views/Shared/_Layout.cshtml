@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LarksWebApp.styles.css" asp-append-version="true" />
+    <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -65,8 +66,8 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @*@await RenderSectionAsync("Resources", required: false)*@
     <script src="~/js/Multi-Functions.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/ManangeNeighbourhood.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </body>
 </html>

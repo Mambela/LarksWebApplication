@@ -16,6 +16,8 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
 
         List<AddressModel> GetAddressesNearLocation(double latitude, double longitude);
 
+        List<AddressModel> GetAddressesInNeighbourhood(int neighbourhoodId);
+
         public bool DeleteAddress(AddressModel Address);
 
 

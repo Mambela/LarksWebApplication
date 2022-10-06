@@ -8,6 +8,10 @@
 
         public string Designation { get; set; }
 
+        public int CountryId { get; set; }
+
+        public IList<CountryDTO>? ListofCountryDTO { get; set; }
+
 
         public IList<BaseCoordinatesDTO> Points { get; set; }
         public Boolean IsUpdateCoordinates { get; set; }

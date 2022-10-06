@@ -27,7 +27,7 @@ namespace LarksWebApp.Repository.LocationRepository
         public IList<LocationModel> GetCategoryLocations(int CategoryId)
         {
             return _dbContext.Location.Where(s => s.CategoryId == CategoryId)
-                .Include(s => s.Category)
+                .Include(s => s.Category).OrderBy(s=>s.Designation)
                 .ToList();
         }
 
@@ -44,10 +44,10 @@ namespace LarksWebApp.Repository.LocationRepository
                         .Include(s=>s.Subcategory)
                         .Include(l =>l.Images)
                         //.Include(a =>a.Address).ThenInclude(m=>m.Municipality)
-                        //.Include(a =>a.Address).ThenInclude(m=>m.Street)
+                        .Include(a =>a.Address).ThenInclude(m=>m.Street)
                         //.Include(a =>a.Address).ThenInclude(m=>m.Neighbourhood)
                         //.Include(a =>a.Address).ThenInclude(m=>m.Province)
-                        .Where(n => n.Address.NeighbourhoodId == neighbourhoodId)
+                        .Where(n => n.Address.NeighbourhoodId == neighbourhoodId) 
                         .ToList();
         }
 

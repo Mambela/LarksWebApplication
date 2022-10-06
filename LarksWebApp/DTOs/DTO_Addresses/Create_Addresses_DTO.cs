@@ -18,6 +18,11 @@
         public string? AdditionalInfo { get; set; }
 
         public BaseCoordinatesDTO Coordinates { get; set; }
+
+        public double lat { get; set; }
+
+        public double lng { get; set; }
+
         public IList<CountryDTO>? ListofCountryDTO { get; set; }
 
         public int BuildingTypeId { get; set; }

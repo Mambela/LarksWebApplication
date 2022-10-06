@@ -234,7 +234,42 @@ $(document).ready(function () {
         }
     });
 
+    //Referecing a location
+    $('#searchStreet').on('input', function (e) {
+        //we are searching the addresas under Streets.
 
+        var $input = $(e.target);
+        $options = $('#' + $input.attr('list') + ' option'),
+            $hiddenInput = $('#' + $input.attr('id') + '_hidden'),
+            label = $input.val();
+
+        console.log(label);
+
+        $hiddenInput.val(label);
+
+        for (var i = 0; i < $options.length; i++) {
+            var $option = $options.eq(i);
+
+
+            if ($option.text().trim() === label.trim()) {
+                var selectedAddressId = $option.attr('data-value')
+                $hiddenInput.val(selectedAddressId);
+
+
+                console.log(selectedAddressId); 
+                var endPoint = "api/Address/StreetAddress?streetId=" + selectedAddressId;
+
+                console.log('Address Id', selectedAddressId);
+                FetchChildNodes(endPoint, '#dataListAddress', "fulladdress");
+
+
+                break;
+            }
+        }
+    });
+
+
+    //Referecing a Index of a Address
     $('#searchStreet').on('input', function (e) {
         //we are searching the addresas under Streets.
 

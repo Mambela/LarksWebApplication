@@ -23,8 +23,7 @@ namespace LarksWebApp.Controllers.API
             this.serviceLogger = serviceLogger;
         }
 
-        [HttpGet]
-        
+        [HttpGet]       
         public IActionResult GetCountry(int id)
         {
 

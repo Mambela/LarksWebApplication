@@ -5,10 +5,8 @@ namespace LarksWebApp.Models
 {
     public class LocationModel : IdentityBaseEntity
     {
-
-
-
-
+        
+        
         [StringLength(260)]
         public string AdditionalInformation { get; set; }
         /*

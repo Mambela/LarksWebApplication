@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LarksWebApp.DTOs;
 using LarksWebApp.DTOs.DTO_Addresses;
+using LarksWebApp.DTOs.DTO_Country;
 using LarksWebApp.DTOs.DTO_Streets;
 using LarksWebApp.Repository.AddressRepository.BuildingTypeRepository;
 using LarksWebApp.Repository.CountryRepository;
@@ -26,6 +27,34 @@ namespace LarksWebApp.Controllers
         // GET: AddressesController
         public ActionResult Index()
         {
+
+            try
+            {
+
+                var countryList = _countryRepo.GetAll();
+
+                var countryListDTO = new List<CountryDTO>();
+
+                foreach (var country in countryList)
+                {
+                    countryListDTO.Add(_mapper.Map<CountryDTO>(country));
+
+                }
+
+                var viewCountryListDTO = new ViewListCountryDTO();
+
+                viewCountryListDTO.ListofCountryDTO = countryListDTO;
+
+                return View(viewCountryListDTO);
+
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Error while attempting to fetch countries for address" + ex.Message);
+
+
+                return BadRequest();
+            }
             return View();
         }
 

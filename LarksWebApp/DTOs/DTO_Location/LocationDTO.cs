@@ -4,7 +4,9 @@ namespace LarksWebApp.DTOs.DTO_Location
 {
     public class LocationDTO
     {
+        public int Id { get; set; }
 
+        public string Designation { get; set; }
         public string AdditionalInformation { get; set; }
         /*
          * Locations may have multiple categories
@@ -16,6 +18,8 @@ namespace LarksWebApp.DTOs.DTO_Location
 
         public int SubcategoryId { get; set; }
         public string Subcategory { get; set; }
+
+        public string StreetName { get; set; }
 
 
         public ViewAddressDTO  Address { get; set; }

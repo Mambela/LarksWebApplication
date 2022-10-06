@@ -123,8 +123,6 @@ namespace LarksWebApp.Controllers.API
                         Coordinates = streetCoordinates
                     };
 
-
-
                     streetListDTO.Add(street);
                    
                 }
@@ -287,6 +285,76 @@ namespace LarksWebApp.Controllers.API
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+        
+        
+        
+        // end point for DataTable API
+        [Route("[action]")]
+        [HttpPost]
+        public IActionResult StreetsInNeighbourhood(int neighbourhoodId)
+        {
+            try
+            {
+                ///Consider running paginations in the Entity Framework
 
+                var neighBourhoodstreetObjList = _streetRepository.GetStreetInNeighBourhood(neighbourhoodId);
+
+                var streetListDTO = new List<View_Street_DTO>();
+
+                foreach (var StreetObj in neighBourhoodstreetObjList)
+                {
+
+                    var streetCoordinates = _mapper.Map<IList<BaseCoordinatesDTO>>(StreetObj.Streets.StreetCoordinates);
+
+                    var street = new View_Street_DTO
+                    {
+                        Id = StreetObj.Streets.Id,
+                        Designation = StreetObj.Streets.Designation,
+                        Coordinates = streetCoordinates
+                    };
+
+                    streetListDTO.Add(street);
+
+                }
+
+
+                //Declarations for the table 
+                var draw = Request.Form["draw"].FirstOrDefault();
+                var start = Request.Form["start"].FirstOrDefault();
+                var length = Request.Form["length"].FirstOrDefault();
+                var sortColumn = Request.Form["columns[" + Request.Form["order[0][Address]"].FirstOrDefault() + "][Address]"].FirstOrDefault();
+                var sortColumnDirection = Request.Form["order[0][dir]"].FirstOrDefault();
+                var searchValue = Request.Form["search[value]"].FirstOrDefault();
+                int pageSize = length != null ? Convert.ToInt32(length) : 10;
+                int skip = start != null ? Convert.ToInt32(start) : 0;
+                int recordsTotal = 0;
+
+
+                if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
+                {
+                    streetListDTO = (List<View_Street_DTO>)streetListDTO.OrderBy(c => c.Designation);
+                }
+
+
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    streetListDTO = (List<View_Street_DTO>)streetListDTO.Where(m => m.Designation.Contains(searchValue));
+
+                }
+
+                recordsTotal = streetListDTO.Count();
+                var data = streetListDTO.Skip(skip).Take(pageSize).ToList();
+                var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data };
+
+                return Ok(jsonData);
+
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Datatable attempting to retrieve data " + ex.Message);
+
+                return BadRequest();
+            }
+        }
     }
 }
