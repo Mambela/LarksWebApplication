@@ -1,5 +1,4 @@
 using LarksWebApp.DAL;
-using LarksWebApp.Data;
 using LarksWebApp.Repository.AddressRepository.Address_Repository;
 using LarksWebApp.Repository.AddressRepository.BuildingTypeRepository;
 using LarksWebApp.Repository.AddressRepository.StreetRepository;
@@ -22,27 +21,96 @@ using LarksWebApp.Repository.SubcategoryRepository;
 using LarksWebApp.Services.FileManagement;
 using LarksWebApp.Services.Loggers;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using LarksWebApp.Models.Users;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
- 
+builder.Services.AddAutoMapper(typeof(EntityMapping));
+
 
 
 ConfigureServices(builder.Services);
 ConfigurationManager Configuration = builder.Configuration;
 
 
-builder.Services.AddAutoMapper(typeof(EntityMapping));
+
+
 
 //Prepare the Connection String
 var connectionString = builder.Configuration.GetConnectionString("SIT_ENV");
 
-builder.Services.AddDbContext<LarksContext>(options => {
+builder.Services.AddDbContext<LarksContext>(options =>
+{
     options.UseSqlServer(connectionString);
 });
+
+//builder.Services.AddDefaultIdentity<ApplicationIdentity>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<LarksContext>();
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<LarksContext>()
+    .AddDefaultUI()
+    .AddDefaultTokenProviders();
+
+//JWT CONFIGURATION
+//var JwtIssuer = builder.Configuration["Jwt:Issuer"];
+//var JwtAudience = builder.Configuration["Jwt:Audience"];
+//var JwtKey = builder.Configuration["Jwt:Key"];
+
+
+
+builder.Services.AddAuthentication(options =>
+{
+
+    options.DefaultScheme = "JWT_OR_IDENTITY";
+    options.DefaultChallengeScheme = "JWT_OR_IDENTITY";
+    //options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(o =>
+{
+
+    o.TokenValidationParameters = new TokenValidationParameters
+    {
+
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = false,
+        ValidateIssuerSigningKey = true
+    };
+})
+.AddPolicyScheme("JWT_OR_IDENTITY", "JWT_OR_IDENTITY", options => {
+    options.ForwardDefaultSelector = context =>
+    {
+        string authorization = context.Request.Headers[HeaderNames.Authorization];
+        if (!string.IsNullOrEmpty(authorization) && authorization.StartsWith("Bearer "))
+            return JwtBearerDefaults.AuthenticationScheme;
+
+        return IdentityConstants.ApplicationScheme;
+    };
+
+});
+
+//Authentication Configuration for Cookie Auth 
+ 
+
+//builder.Services.AddAuthorization(o => o.DefaultPolicy = multiSchemePolicy) ;
+builder.Services.AddAuthorization();
+
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -55,17 +123,30 @@ if (!app.Environment.IsDevelopment())
 }
 
 
+ConfigureRolesServices(builder.Services);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
+
+
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+      name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+    endpoints.MapRazorPages();
+});
 
 app.MapControllers();
 app.Run();
@@ -93,17 +174,47 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IStreetCoordinatesRepository, StreetCoordinatesRepository>();
     services.AddScoped<ICategoryRepository, CategoryRepository>();
     services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
-    services.AddScoped<ILoggerTrace,ServiceLogger>();
+    services.AddScoped<ILoggerTrace, ServiceLogger>();
     services.AddScoped<INeighbourhoodStreet, NeighbourhoodStreeetRepository>();
     services.AddScoped<IStreetCoordinateRepository, StreetCoordinateRepository>();
     services.AddScoped<IAddressRepository, AddressRepository>();
     services.AddScoped<IBuildingTypeRepository, BuildingTypeRepository>();
-    services.AddScoped<IFileManagement,FileManagement> ();
-    services.AddScoped<ILocationRepository, LocationRepository> ();
+    services.AddScoped<IFileManagement, FileManagement>();
+    services.AddScoped<ILocationRepository, LocationRepository>();
 
 
     services.AddMvcCore().ConfigureViews(options =>
     {
         options.HtmlHelperOptions.ClientValidationEnabled = true;
     });
+}
+
+
+async void ConfigureRolesServices(IServiceCollection services)
+{
+
+    
+    using (var scope = app.Services.CreateScope()) 
+    {
+        var _services = scope.ServiceProvider;
+
+        var logger = new ServiceLogger();
+        try
+        {
+            var context = _services.GetRequiredService<LarksContext>();
+            var userManager = _services.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = _services.GetRequiredService<RoleManager<IdentityRole>>();
+
+            await ContextSeed.SeedRolesAsync(userManager, roleManager);
+            await ContextSeed.SeedSuperAdminAsync(userManager, roleManager);
+
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("An error occurred seeding the DB " + ex.Message);
+        }
+
+
+    }
+
 }

@@ -1,5 +1,5 @@
-﻿using LarksWebApp.Models;
-using LarksWebApp.DAL;
+﻿using LarksWebApp.DAL;
+using LarksWebApp.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LarksWebApp.Repository.AddressRepository.Address_Repository

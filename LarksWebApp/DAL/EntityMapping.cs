@@ -13,21 +13,21 @@ using LarksWebApp.DTOs.DTO_Subcategory;
 using LarksWebApp.Models;
 using LarksWebApp.Models.CoordinatesModel;
 
-namespace LarksWebApp.Data
+namespace LarksWebApp.DAL
 {
-    public class EntityMapping:Profile
+    public class EntityMapping : Profile
     {
 
         public EntityMapping()
         {
-            CreateMap<CountryModel,CountryDTO>().ReverseMap();
-            CreateMap<ProvinceModel,Create_Province_DTO>().ReverseMap();
-            CreateMap<MunicipalityModel,Create_Municipality_DTO>().ReverseMap();
-            CreateMap<DistrictModel,Create_Districts_DTO>().ReverseMap();
-            CreateMap<NeighbourhoodModel,Create_neighbourhood_DTO>().ReverseMap();
-            CreateMap<StreetModel,Create_Street_DTO>().ReverseMap();
-            CreateMap<AddressModel,Create_Addresses_DTO>().ReverseMap();
-            CreateMap<CityModel,Create_City_DTO>().ReverseMap();
+            CreateMap<CountryModel, CountryDTO>().ReverseMap();
+            CreateMap<ProvinceModel, Create_Province_DTO>().ReverseMap();
+            CreateMap<MunicipalityModel, Create_Municipality_DTO>().ReverseMap();
+            CreateMap<DistrictModel, Create_Districts_DTO>().ReverseMap();
+            CreateMap<NeighbourhoodModel, Create_neighbourhood_DTO>().ReverseMap();
+            CreateMap<StreetModel, Create_Street_DTO>().ReverseMap();
+            CreateMap<AddressModel, Create_Addresses_DTO>().ReverseMap();
+            CreateMap<CityModel, Create_City_DTO>().ReverseMap();
             CreateMap<CategoryModel, CreateCategoryDTO>().ReverseMap();
             CreateMap<CategoryModel, CategoryDTO>().ReverseMap();
             CreateMap<SubcategoryModel, Create_subcategoryDTO>().ReverseMap();

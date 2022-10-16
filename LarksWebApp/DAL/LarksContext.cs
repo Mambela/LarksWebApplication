@@ -1,18 +1,20 @@
-﻿
-using LarksWebApp.Model.BaseModels;
+﻿using LarksWebApp.Model.BaseModels;
 using LarksWebApp.Models;
 using LarksWebApp.Models.CoordinatesModel;
+using LarksWebApp.Models.Users;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace LarksWebApp.DAL
 {
-    public class LarksContext : DbContext
+    public class LarksContext : IdentityDbContext<ApplicationUser>
     {
-    
+
         public LarksContext(DbContextOptions<LarksContext> options) : base(options)
         {
-
         }
+
         public DbSet<CountryModel> Countries { get; set; }
 
         public DbSet<ProvinceModel> Provinces { get; set; }
@@ -55,7 +57,38 @@ namespace LarksWebApp.DAL
 
             modelBuilder.Entity<NeighbourhoodStreets>().HasKey(n => new { n.StreetsID, n.NeighbourhoodID });
 
-             base.OnModelCreating(modelBuilder);
+
+            //modelBuilder.HasDefaultSchema("LARKS_UAT");
+            //modelBuilder.Entity<IdentityUser>(entity =>
+            //{
+            //    entity.ToTable(name: "Users");
+            //});
+            //modelBuilder.Entity<IdentityRole>(entity =>
+            //{
+            //    entity.ToTable(name: "Role");
+            //});
+            //modelBuilder.Entity<IdentityUserRole<string>>(entity =>
+            //{
+            //    entity.ToTable("UserRoles");
+            //});
+            //modelBuilder.Entity<IdentityUserClaim<string>>(entity =>
+            //{
+            //    entity.ToTable("UserClaims");
+            //});
+            //modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
+            //{
+            //    entity.ToTable("UserLogins");
+            //});
+            //modelBuilder.Entity<IdentityRoleClaim<string>>(entity =>
+            //{
+            //    entity.ToTable("RoleClaims");
+            //});
+            //modelBuilder.Entity<IdentityUserToken<string>>(entity =>
+            //{
+            //    entity.ToTable("UserTokens");
+            //});
+
+            base.OnModelCreating(modelBuilder);
         }
 
         #region Additional Database Mods
@@ -107,17 +140,17 @@ namespace LarksWebApp.DAL
         }
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
 
             onBeforeSaving();
-            return (await base.SaveChangesAsync(acceptAllChangesOnSuccess,
-                 cancellationToken));
+            return await base.SaveChangesAsync(acceptAllChangesOnSuccess,
+                 cancellationToken);
         }
 
         #endregion
 
-        
+
 
     }
 }
