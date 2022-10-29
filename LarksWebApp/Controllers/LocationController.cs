@@ -8,11 +8,13 @@ using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Repository.LocationRepository;
 using LarksWebApp.Services.FileManagement;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarksWebApp.Controllers
 {
+    [Authorize]
     public class LocationController : Controller
     {
         private readonly ICountryRepository _countryRepo;

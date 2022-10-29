@@ -3,11 +3,14 @@ using LarksWebApp.DTOs.DTO_City;
 using LarksWebApp.Models;
 using LarksWebApp.Repository.CityRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+ 
 
 namespace LarksWebApp.Controllers
 {
+    [Authorize]
     public class CitiesController : Controller
     {
         private readonly ICityRepository _citytRepository;

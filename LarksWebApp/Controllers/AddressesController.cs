@@ -6,11 +6,13 @@ using LarksWebApp.DTOs.DTO_Streets;
 using LarksWebApp.Repository.AddressRepository.BuildingTypeRepository;
 using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarksWebApp.Controllers
 {
+    [Authorize]
     public class AddressesController : Controller
     {
         private readonly ICountryRepository _countryRepo;

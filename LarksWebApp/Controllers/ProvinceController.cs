@@ -7,11 +7,13 @@ using LarksWebApp.Models;
 using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarksWebApp.Controllers
 {
+    [Authorize]
     public class ProvinceController : Controller
     {
         private readonly IProvinceRepository _provinceRepository;
@@ -65,6 +67,30 @@ namespace LarksWebApp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+
+
+        public ActionResult CountryProvinces(int CountryId)
+        {
+            try
+            {
+                var provincesObj = _provinceRepository.GetProvincesInCountry(CountryId);
+
+                var proviceDTOList = new List<ProvinceDTO>();
+
+                proviceDTOList = _mapper.Map<List<ProvinceDTO>>(provincesObj);
+
+                return Ok(proviceDTOList);
+
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Get Provinces in Country " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+        }
+
 
         // GET: ProvinceController/Create
         public ActionResult Create()

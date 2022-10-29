@@ -5,11 +5,14 @@ using LarksWebApp.DTOs.DTO_Provinces;
 using LarksWebApp.Models;
 using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarksWebApp.Controllers
 {
+
+    [Authorize]
     public class CountryController : Controller
     {
         private readonly ICountryRepository _countryRepository;
@@ -75,11 +78,16 @@ namespace LarksWebApp.Controllers
             
         }
 
+
+
+
         // GET: CountryController/Create
         public ActionResult Create()
         {
             return View();
         }
+
+
 
         // POST: CountryController/Create
         [HttpPost]

@@ -5,11 +5,14 @@ using LarksWebApp.Models.CoordinatesModel;
 using LarksWebApp.Repository.Coordinates.MunicipalityCoordinateRepository;
 using LarksWebApp.Repository.MunicipalityRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarksWebApp.Controllers.API
 {
+
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MunicipalityController : ControllerBase

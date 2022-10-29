@@ -6,6 +6,7 @@ using LarksWebApp.Models;
 using LarksWebApp.Repository.HoodRepository;
 using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,6 +14,7 @@ using System.Dynamic;
 
 namespace LarksWebApp.Controllers
 {
+    [Authorize]
     public class NeighbourhoodController : Controller
     {
         private readonly INeighbourhoodRepository _hoodRepository;
@@ -149,6 +151,33 @@ namespace LarksWebApp.Controllers
         public ActionResult Edit(int id)
         {
             return View();
+        }
+
+        public ActionResult sectorNeighbourhood(string sector, int id)
+        {
+
+            try
+            {
+                var hoodObjList = _hoodRepository.GetNeighbourhoodModels(sector, id);
+
+                var hoodDTOList = new List<NeighbourhoodDTO>();
+
+                foreach (var hood in hoodObjList)
+                {
+                    hoodDTOList.Add(_mapper.Map<NeighbourhoodDTO>(hood));
+                }
+
+
+                return Ok(hoodDTOList);
+
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Neighbourhood Sector " + ex.Message);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while trying to retrieve neighbourhood ");
+            }
+
         }
 
 

@@ -4,11 +4,14 @@ using LarksWebApp.Models;
 using LarksWebApp.Repository.CityRepository;
 using LarksWebApp.Repository.MunicipalityRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LarksWebApp.Controllers
 {
+
+    [Authorize]
     public class MunicipalitiesController : Controller
     {
         private readonly IMunicipalityRepository _municipalityRepo;
