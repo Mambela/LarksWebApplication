@@ -12,6 +12,8 @@ using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using LarksWebApp.Models.Users;
+using LarksWebApp.Services.Loggers;
+using LarksWebApp.Services.Mailer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -31,13 +33,15 @@ namespace LarksWebApp.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        public readonly ILoggerTrace _serviceLogger;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ILoggerTrace serviceLogger)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -139,14 +143,15 @@ namespace LarksWebApp.Areas.Identity.Pages.Account
 
                 string username = address.User;
 
-                var user = new ApplicationUser { 
+                var user = new ApplicationUser
+                {
                     UserName = username,
                     Email = Input.Email,
                     FirstName = Input.FirstName,
                     LastName = Input.LastName
                 };
 
-                
+
 
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -169,18 +174,35 @@ namespace LarksWebApp.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    EmailHelper emailHelper = new EmailHelper();
+
+                    bool emailResponse = emailHelper.SendEmailMailTrapAsync(Input.Email, callbackUrl);
+
+                    if (emailResponse)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        return RedirectToAction("Index");
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        _logger.LogWarning($"Email service not working. confirmation Email to {Input.Email} not sent");
                     }
+
+
+                    #region  OLD Identity Code
+                    //if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    //{
+                    // //   return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+
+                    //}
+                    //else
+                    //{
+                    //    //await _signInManager.SignInAsync(user, isPersistent: false);
+                    //    //return LocalRedirect(returnUrl);
+                    //}
+                    #endregion
                 }
                 foreach (var error in result.Errors)
                 {

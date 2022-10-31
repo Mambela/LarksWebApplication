@@ -52,4 +52,6 @@
     <None Include="Areas\Identity\Pages\Account\Manage\ManageToken.cshtml" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1development_1json__JsonSchema="https://carafe.fm/schema/draft-02/bundle.schema.json" /></VisualStudio></ProjectExtensions>
+
 </Project>

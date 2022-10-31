@@ -44,12 +44,12 @@ builder.Services.AddAutoMapper(typeof(EntityMapping));
 ConfigureServices(builder.Services);
 ConfigurationManager Configuration = builder.Configuration;
 
-
-
+//trying to setup email 
+ 
 
 
 //Prepare the Connection String
-var connectionString = builder.Configuration.GetConnectionString("SIT_ENV");
+var connectionString = builder.Configuration.GetConnectionString("DEV_ENV");
 
 builder.Services.AddDbContext<LarksContext>(options =>
 {
