@@ -68,8 +68,5 @@ $(document).ready(function () {
 
 
 
-
-    function DeleteCustomer(id) {
-
-    }
+ 
 });

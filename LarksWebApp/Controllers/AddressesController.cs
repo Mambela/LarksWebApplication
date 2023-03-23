@@ -79,7 +79,7 @@ namespace LarksWebApp.Controllers
 
                 var createAdressDTO = new Create_Addresses_DTO();
 
-                var buldingTypeDTOList = _mapper.Map<IList<Create_BuildingType_DTO>>(_buildingType.GetAll("en"));
+                var buldingTypeDTOList = _mapper.Map<IList<Create_BuildingType_DTO>>(_buildingType.GetAll("fr"));
 
 
                 createAdressDTO.ListofCountryDTO = listofCountryDTO;

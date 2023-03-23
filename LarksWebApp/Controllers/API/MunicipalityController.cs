@@ -11,8 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LarksWebApp.Controllers.API
 {
-
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MunicipalityController : ControllerBase
@@ -51,6 +50,30 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
+        [HttpGet("MunicipalitiesInProvince")]
+        public IActionResult GetProvinceMunicipalities(int provinceId)
+        {
+            try
+            {
+                var municipalityObjList =  _municipalityRepository.GetMunicipalityModels(provinceId);
+
+                if (municipalityObjList == null) return NotFound();
+
+                var municipalityDTOList  = _mapper.Map<IList<Create_Municipality_DTO>>(municipalityObjList);
+
+                return Ok(municipalityDTOList);
+            }
+            catch (Exception ex)
+            {
+
+                serviceLogger.LogError(ex.Message);
+
+                ModelState.AddModelError("error", "failed to retrieve municipalities");
+
+                return BadRequest(ModelState);
+            }
+
+        }
 
         [HttpPost]
 

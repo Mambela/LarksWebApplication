@@ -37,6 +37,14 @@ namespace LarksWebApp.Repository.StreetRepository
             return _dbContext.NeighbourhoodStreets.Where(n => n.NeighbourhoodID == neighbourhoodId).Include(s => s.Streets).ThenInclude(s =>s.StreetCoordinates).ToList();
         }
 
+        public List<NeighbourhoodStreets> GetStreetInNeighBourhoodByValue(int neighbourhoodId, string hood)
+        {
+            
+            return _dbContext.NeighbourhoodStreets.Where(n => n.Streets.Designation.Contains(hood) && n.NeighbourhoodID == neighbourhoodId)
+                .Include(s => s.Streets).ThenInclude(s => s.StreetCoordinates).ToList();
+            throw new NotImplementedException();
+        }
+
         public StreetModel GetStreetModel(int StreetId)
         {
 

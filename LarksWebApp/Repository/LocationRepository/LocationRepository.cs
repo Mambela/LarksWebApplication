@@ -43,10 +43,10 @@ namespace LarksWebApp.Repository.LocationRepository
                         .Include(c =>c.Category)
                         .Include(s=>s.Subcategory)
                         .Include(l =>l.Images)
-                        //.Include(a =>a.Address).ThenInclude(m=>m.Municipality)
+                        .Include(a =>a.Address).ThenInclude(m=>m.Municipality)
                         .Include(a =>a.Address).ThenInclude(m=>m.Street)
-                        //.Include(a =>a.Address).ThenInclude(m=>m.Neighbourhood)
-                        //.Include(a =>a.Address).ThenInclude(m=>m.Province)
+                        .Include(a =>a.Address).ThenInclude(m=>m.Neighbourhood)
+                        .Include(a =>a.Address).ThenInclude(m=>m.Province)
                         .Where(n => n.Address.NeighbourhoodId == neighbourhoodId) 
                         .ToList();
         }
@@ -85,5 +85,23 @@ namespace LarksWebApp.Repository.LocationRepository
         {
             return _dbContext.SaveChanges() >= 0;
         }
+
+        public IList<LocationModel> GetStreetLocations(int StreetId)
+        {
+            return _dbContext.Location
+                       .Include(n => n.Address).ThenInclude(n => n.Neighbourhood)
+                       .Include(c => c.Category)
+                       .Include(s => s.Subcategory)
+                       .Include(l => l.Images)
+                       .Include(a => a.Address).ThenInclude(m => m.Municipality)
+                       .Include(a => a.Address).ThenInclude(m => m.Street)
+                       .Include(a => a.Address).ThenInclude(m => m.Province)
+                       .Include(a => a.Address).ThenInclude(m => m.Neighbourhood)
+                       
+                       .Where(n => n.Address.StreetID == StreetId)
+                       .ToList();
+        }
+
+        
     }
 }

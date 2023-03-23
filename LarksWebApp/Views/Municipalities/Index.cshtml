@@ -1,19 +1,27 @@
-﻿@model List<LarksWebApp.DTOs.DTO_Municipalities.MunicipalityDTO>
+﻿@model LarksWebApp.DTOs.DTO_Municipalities.ViewMunicipalityCreateDTO
 @{
     ViewData["Title"] = "Municipality Page";
+
 }
 
 <div class="text-center">
+    
     <h4 class="display-4">List of Municipalities</h4>
+    
 </div>
 
 <div class="row">
     <div class="col-xs-6 col-md-4 align-self-end">
-        @Html.ActionLink("Create New Municipality","Create")
+       
+        @Html.ActionLink("Create New Municipality","Create",new{provinceId = Model.ProviceId})
+        @Html.Hidden("searchCountryId_hidden")
+        @Html.HiddenFor(model => model.ProviceId,
+        new { id= "natureOfVisitField", Value = @Model.ProviceId})
     </div>
       <div class="col-xs-6 col-md-4 align-self-end">
         @Html.ActionLink("Create New Neighbourhood","Create","Neighbourhood")
     </div>
+    
 </div>
 
 
@@ -27,10 +35,11 @@
         </tr>
       </thead>
       <tbody>
-         @foreach(var city in Model){
+         @foreach(var city in Model.MunicipalityDTO){
             <tr>
               <td>@Html.DisplayFor(modelItem => city.Designation)</td>
               <td>@Html.ActionLink("Details","Details",new {id=city.Id})</td>
+
             </tr>
         }         
       </tbody>

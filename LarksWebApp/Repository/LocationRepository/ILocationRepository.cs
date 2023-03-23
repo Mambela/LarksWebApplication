@@ -14,6 +14,7 @@ namespace LarksWebApp.Repository.LocationRepository
         IList<LocationModel> GetSubcategoryLocations(int SubcategoryId);
 
         IList<LocationModel> GetNeighbourhoodLocations(int LocationId);
+        IList<LocationModel> GetStreetLocations(int Street);
 
         Task<IList<LocationImageModel>> CreateLocationImage(IList<LocationImageModel> imageListLocation);
 

@@ -10,13 +10,15 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
 
         Task<AddressModel> CreateAddress(AddressModel Address);
 
-        AddressModel GetAddressInStreet(int AddressId);
+        AddressModel GetAddress(int AddressId);
 
         List<AddressModel> GetAddressesInStreets(int streetsId);
 
         List<AddressModel> GetAddressesNearLocation(double latitude, double longitude);
 
         List<AddressModel> GetAddressesInNeighbourhood(int neighbourhoodId);
+
+        
 
         public bool DeleteAddress(AddressModel Address);
 

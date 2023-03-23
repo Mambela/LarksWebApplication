@@ -16,7 +16,8 @@ $(document).ready(function () {
             "serverside": true,
             "filter": true,
             "ajax": {
-                "url": BASEURL + "api/Hood/AddressesInNeighbourhood?neighbourhoodId=" + hoodId,
+                "url": 
+ + "api/Hood/AddressesInNeighbourhood?neighbourhoodId=" + hoodId,
                 "type": "POST",
                 "headers": {
                     "Content-Type": "application/x-www-form-urlencoded"

@@ -166,8 +166,13 @@ namespace LarksWebApp.Areas.Identity.Pages.Account
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     await _userManager.AddToRoleAsync(user, Enums.Roles.Basic.ToString());
+
+                    //Generate Token Code.
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,

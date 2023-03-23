@@ -1,4 +1,6 @@
-﻿namespace LarksWebApp.DTOs.DTO_Addresses
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace LarksWebApp.DTOs.DTO_Addresses
 {
     public class ViewAddressDTO
     {
@@ -21,5 +23,7 @@
 
         public string StreetNumber { get; set; }
         public string FullAddress { get; set; }
+
+        public BaseCoordinatesDTO Coordinates { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace LarksWebApp.Controllers.API
             this.serviceLogger = serviceLogger;
         }
 
-        [HttpGet]       
+        [HttpGet]
         public IActionResult GetCountry(int id)
         {
 
@@ -55,6 +55,25 @@ namespace LarksWebApp.Controllers.API
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
+        }
+
+
+        [HttpGet("allcountries")]
+        public IActionResult GetCountries()
+        {
+            try
+            {
+                var countryOBjList = _countryRepository.GetAll();
+
+                var countryOBJList = _mapper.Map<List<CountryDTO>>(countryOBjList);    
+
+                return Ok(countryOBJList);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
            
 

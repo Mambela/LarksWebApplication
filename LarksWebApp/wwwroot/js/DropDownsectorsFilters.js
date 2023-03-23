@@ -29,6 +29,7 @@ $(document).ready(function () {
     if (countryDropDown) {
 
         countryDropDown.addEventListener('change', function handleChange(event) {
+           
             ResetDropdowns();
             var countryId = event.target.value;
             RetrieveProvinceChildren('api/province/CountryProvinces?CountryId=' + countryId, provinceDropDownList);

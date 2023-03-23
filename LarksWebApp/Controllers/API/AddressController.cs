@@ -25,6 +25,38 @@ namespace LarksWebApp.Controllers.API
             this.serviceLogger = serviceLogger;
         }
 
+        [HttpGet("GetAddress")]
+        public IActionResult GetAddress(int addressId)
+        {
+            try
+            { 
+
+                var addressObj = _addressRepository.GetAddress(addressId);
+                if (addressObj == null)
+                {
+                    return NotFound();
+                }
+
+                var addressDTO = new ViewAddressDataTableDTO
+                {
+                    Id = addressObj.Id,
+                    Municipality = addressObj.Municipality.Designation,
+                    Neighbourhood = addressObj.Neighbourhood.Designation,
+                    StreetName = addressObj.Street.Designation,
+                    Province = addressObj.Province.Designation,
+                    FullAddress = addressObj.StreetNumber + " " + addressObj.Street.Designation + ", " + addressObj.Neighbourhood.Designation + ", " + addressObj.Province.Designation
+                };
+
+                return Ok(addressDTO);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Error while retrieving address " + ex.Message);
+                ModelState.AddModelError("error", "failed to retrieve address");
+                return BadRequest(ModelState);
+            }
+        }
+
 
         [HttpGet("StreetAddress")]
         public IActionResult GetStreetAddress(int streetId)
@@ -48,7 +80,7 @@ namespace LarksWebApp.Controllers.API
                         Neighbourhood = addressObj.Neighbourhood.Designation,
                         StreetName = addressObj.Street.Designation,
                         Province = addressObj.Province.Designation,
-                        FullAddress = addressObj.StreetNumber + ", " + addressObj.Street.Designation + ", " + addressObj.Neighbourhood.Designation + ", " + addressObj.Province.Designation
+                        FullAddress = addressObj.StreetNumber + " " + addressObj.Street.Designation + ", " + addressObj.Neighbourhood.Designation + ", " + addressObj.Province.Designation
                     };
 
                     viewAddressDTOList.Add(addressDTO);
@@ -74,7 +106,7 @@ namespace LarksWebApp.Controllers.API
 
             try
             {
-                var addressObjList = _addressRepository.GetAddressesInStreets(neighbourhoodId);
+                var addressObjList = _addressRepository.GetAddressesInNeighbourhood(neighbourhoodId);
 
                 var viewAddressDTOList = new List<ViewAddressDTO>();
 

@@ -248,7 +248,7 @@ $(document).ready(function () {
             {
                 type: 'GET',
                 dataType: 'JSON',
-                url: endpoint,
+                url: BASEURL+endpoint,
                 success:
                     function (response) {
 
@@ -426,8 +426,8 @@ $(document).ready(function () {
 
         if (streetDTO != null) {
 
-            //var endPoint = BASEURL + "api/Streets";
-            var endPoint = "Street";
+            var endPoint = BASEURL + "api/Streets";
+            //var endPoint = "Street";
 
 
 
@@ -455,8 +455,8 @@ $(document).ready(function () {
 
     $('#addCoordinates').click(function () {
 
-        var latitude = $('#latitude').val();
-        var longitude = $('#longitude').val();
+        var latitude =parseFloat($('#latitude').val());
+        var longitude =parseFloat($('#longitude').val());
 
         var point = { lat: latitude, lng: longitude };
 

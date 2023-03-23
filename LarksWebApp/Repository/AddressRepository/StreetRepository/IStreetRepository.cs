@@ -13,6 +13,8 @@ namespace LarksWebApp.Repository.StreetRepository
 
         List<NeighbourhoodStreets> GetStreetInNeighBourhood(int neighbourhoodId);
 
+        List<NeighbourhoodStreets> GetStreetInNeighBourhoodByValue(int neighbourhoodId,string hood);
+
         StreetModel GetStreetModel(int StreetId);
 
         public bool DeleteStreet(StreetModel street);

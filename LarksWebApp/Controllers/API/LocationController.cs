@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LarksWebApp.DTOs.DTO_Addresses;
 using LarksWebApp.DTOs.DTO_Location;
+using LarksWebApp.Models;
 using LarksWebApp.Repository.LocationRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Http;
@@ -25,6 +26,7 @@ namespace LarksWebApp.Controllers.API
             _mapper = mapper;
         }
 
+        ///Locations By Neighbourhood 
         [HttpGet("NeighbourhoodLocations")]
         public IActionResult GetNeighBourhoodLocations(int NeighbourhoodId) {
 
@@ -46,17 +48,34 @@ namespace LarksWebApp.Controllers.API
                         images.Add(image.ImagePath);
 
 
-                    var locationObj = new LocationDTO {
-                        Id =location.Id,
+                    var addressDTO = new ViewAddressDTO
+                    {
+                        Id = location.Address.Id,
+                        Municipality = location.Address.Municipality.Designation,
+                        Neighbourhood = location.Address.Neighbourhood.Designation,
+                        StreetName = location.Address.Street.Designation,
+                        Province = location.Address.Province.Designation,
+                        Coordinates = new DTOs.BaseCoordinatesDTO 
+                        {
+                            lat = location.Address.lat,
+                            lng = location.Address.lng, 
+                        },
+                        FullAddress = location.Address.StreetNumber + " " + location.Address.Street.Designation + ", " + location.Address.Neighbourhood.Designation + ", " + location.Address.Province.Designation
+                    };
+
+                    var locationObj = new LocationDTO
+                    {
+                        Id = location.Id,
                         Designation = location.Designation,
                         AdditionalInformation = location.AdditionalInformation,
                         AddressId = location.AddressId,
+                        Address = addressDTO,
                         CategoryId = location.CategoryId,
                         StreetName = location.Address.Street.Designation,
                         Category = location.Category.Designation,
                         SubcategoryId = location.SubcategoryId,
                         Subcategory = location.Subcategory.Designation,
-                        Images= images
+                        Images = images
                     };
 
 
@@ -77,8 +96,76 @@ namespace LarksWebApp.Controllers.API
         }
 
 
+        [HttpGet("StreetLocations")]
+        public IActionResult GetLocationsInStreet(int StreetId)
+        {
+            try
+            {
+                var streetLocationList = locationRepo.GetStreetLocations(StreetId);
 
-        ///Locations By Neighbourhood 
+
+                var neighbourhoodLocationListDTO = new List<LocationDTO>();
+
+
+                foreach (var location in streetLocationList)
+                {
+                    var images = new List<string>();
+
+
+                    foreach (var image in location.Images)
+                        images.Add(image.ImagePath);
+
+
+
+                    
+                    var addressDTO = new ViewAddressDTO
+                    {
+                        Id = location.Address.Id,
+                        ProvinceID = location.Address.ProvinceID,
+                        MunicipalityID = location.Address.MunicipalityID,
+                        NeighbourhoodId = location.Address.NeighbourhoodId,
+                        Municipality = location.Address.Municipality.Designation,
+                        Neighbourhood = location.Address.Neighbourhood.Designation,
+                        StreetName = location.Address.Street.Designation,
+                        StreetID = location.Address.StreetID,
+                        StreetNumber = location.Address.StreetNumber,
+                        Province = location.Address.Province.Designation,
+                        Coordinates = new DTOs.BaseCoordinatesDTO
+                        {
+                            lat = location.Address.lat,
+                            lng = location.Address.lng,
+                        },
+                        FullAddress = location.Address.StreetNumber + ", " + location.Address.Street.Designation + ", " + location.Address.Neighbourhood.Designation + ", " + location.Address.Province.Designation
+                    };
+
+                    var locationObj = new LocationDTO
+                    {
+                        Id = location.Id,
+                        Designation = location.Designation,
+                        AdditionalInformation = location.AdditionalInformation,
+                        AddressId = location.AddressId,
+                        Address = addressDTO ,
+                        CategoryId = location.CategoryId,
+                        StreetName = location.Address.Street.Designation,
+                        Category = location.Category.Designation,
+                        SubcategoryId = location.SubcategoryId,
+                        Subcategory = location.Subcategory.Designation,
+                        Images = images
+                    };
+
+
+                    neighbourhoodLocationListDTO.Add(locationObj);
+                }
+
+
+                return Ok(neighbourhoodLocationListDTO);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
 
 
         ///Location by Category 

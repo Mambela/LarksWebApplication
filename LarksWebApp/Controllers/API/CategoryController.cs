@@ -10,6 +10,10 @@ namespace LarksWebApp.Controllers.API
 {
     [Route("api/[controller]")]
     [ApiController]
+    /*
+     * Category means the category of the location if its a Residents, Shopping or Commercial. 
+     * 
+     * **/
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryRepository _categoryRepository;

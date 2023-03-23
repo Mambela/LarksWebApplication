@@ -13,6 +13,11 @@ namespace LarksWebApp.Controllers.API
     public class BuildingTypeController : ControllerBase
     {
 
+        /*
+         * Building type referes to the Type of Building if its a Building House, 
+         * 
+         * ***/
+
         private readonly IBuildingTypeRepository buildingTypeRepository;
         private readonly IMapper _mapper;
         private readonly ILoggerTrace serviceLogger;

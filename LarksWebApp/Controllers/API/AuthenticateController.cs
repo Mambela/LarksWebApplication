@@ -26,7 +26,7 @@ namespace LarksWebApp.Controllers.API
             _roleManager = roleManager;
             _userManager = userManager;
             _serviceLogger = serviceLogger;
-            _configuration = configuration;
+            
         }
 
 

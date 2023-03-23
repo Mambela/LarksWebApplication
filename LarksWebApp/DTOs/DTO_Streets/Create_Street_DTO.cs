@@ -14,7 +14,7 @@ namespace LarksWebApp.DTOs.DTO_Streets
 
         public IList<int> NeighbourhoodID { get; set; }
 
-        public int CountryId { get; set; }
+        public int ? CountryId  { get; set; }
 
         public IList<CountryDTO> ? ListofCountryDTO { get; set; }
         public IList<ProvinceDTO> ? ListofProvinceDTO { get; set; }
@@ -24,7 +24,7 @@ namespace LarksWebApp.DTOs.DTO_Streets
         public IList<DistrictDTO> ? ListofDistrictDTO { get; set; }
         public IList<MunicipalityDTO> ? ListofMunicipalityDTO { get; set; }
         public IList<NeighbourhoodDTO> ? ListofNeighbourhoodDTO { get; set; }
-        public IList<BaseCoordinatesDTO>  Coordinates{ get; set; }
+        public IList<BaseCoordinatesDTO> ? Coordinates{ get; set; }
 
 
 

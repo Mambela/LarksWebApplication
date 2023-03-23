@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿ using AutoMapper;
 using LarksWebApp.DTOs.DTO_Municipalities;
 using LarksWebApp.Models;
 using LarksWebApp.Repository.CityRepository;
@@ -41,9 +41,15 @@ namespace LarksWebApp.Controllers
                     municipalityListDTO.Add(_mapper.Map<MunicipalityDTO>(municitypalitiesListObj[i]));
                 }
 
+                var municipalityObj = new ViewMunicipalityCreateDTO();
+                
+                municipalityObj.ProviceId = provinceId;
+                municipalityObj.MunicipalityDTO = municipalityListDTO;
+
+
                 TempData["provinceID"] = provinceId;
 
-                return View(municipalityListDTO);
+                return View(municipalityObj);
             }
 
             catch (Exception ex)
@@ -58,12 +64,19 @@ namespace LarksWebApp.Controllers
         // GET: MunicipalitiesController/Details/5
         public ActionResult Details(int id)
         {
+
+            
+
             return View();
         }
 
         // GET: MunicipalitiesController/Create
-        public ActionResult Create()
+        public ActionResult Create(int provinceId)
         {
+            //Try Retrieving the Province ID FROM HERE. 
+
+            ViewData["provinceId"] = provinceId;
+
             return View();
         }
 
@@ -80,15 +93,20 @@ namespace LarksWebApp.Controllers
                     throw new Exception("Invalid Model State");
                 }
 
+
+               
+
                 var municipality = new MunicipalityModel()
                 {
-                    ProvinceId = Convert.ToInt32(TempData["provinceID"].ToString()),
+                    ProvinceId = int.Parse(collection["provinceId"]),
                     Designation = collection["Designation"]
                 };
 
                 if (_municipalityRepo.CreateMunicipalityModel(municipality) != null)
                 {
-                    return RedirectToAction(nameof(Index), new { msg = $"Municipality {municipality.Designation} saved successfully! " });
+
+                    return RedirectToAction(nameof(Index), "Municipalities", new {provinceId= int.Parse(collection["provinceId"])});
+                    //return RedirectToRoute("Municipalities?provinceId=" + int.Parse(collection["provinceId"]));
                 }
 
 

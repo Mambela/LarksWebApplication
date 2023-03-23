@@ -1,12 +1,13 @@
-﻿@using LarksWebApp.DTOs.DTO_Municipalities
+﻿ @using LarksWebApp.DTOs.DTO_Municipalities
 
 @model Create_Municipality_DTO
 
 @{
-       ViewData["Title"] = "Create City";
+    ViewData["Title"] = "Create City";
+    var provinceId = ViewData["provinceId"];
 }
 
-<h3>Create a new province</h3>
+<h3>Create a new municipality</h3>
 
 
 <div class="col-md-8">
@@ -14,9 +15,11 @@
 {
     @Html.AntiForgeryToken()
     <div class="form-group">
+             
        @Html.LabelFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
        <div class="col-md-10">
             @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.Hidden("provinceId",new { id= "provinceId", Value = provinceId})
        </div>
     </div>
 

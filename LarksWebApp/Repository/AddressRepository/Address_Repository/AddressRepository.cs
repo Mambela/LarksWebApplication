@@ -48,9 +48,14 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
             return Save();
         }
 
-        public AddressModel GetAddressInStreet(int AddressId)
+        public AddressModel GetAddress(int AddressId)
         {
-            return _dbContext.Addresses.FirstOrDefault(a => a.Id == AddressId);
+            return _dbContext.Addresses
+                .Include(n => n.Neighbourhood)
+                .Include(m => m.Municipality)
+                .Include(s => s.Street)
+                .Include(p => p.Province)
+                .FirstOrDefault(a => a.Id == AddressId);
 
         }
 

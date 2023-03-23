@@ -9,6 +9,7 @@ namespace LarksWebApp.Repository.AddressRepository.StreetRepository
         IList<StreetCoordinates> GetStreetCoordinates(int streetId);
 
 
+
         bool DeleteStreetCoordinates(StreetCoordinates streetObj);
 
         bool Save();
