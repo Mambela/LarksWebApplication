@@ -1,0 +1,64 @@
+﻿@model IList<LarksWebApp.DTOs.DTO_Addresses.HooksDTO>
+
+
+ 
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "List of Webhooks";
+}
+
+<h2>List of web hooks </h2>
+
+<div class="row">
+    <div class="col-xs-6 col-md-4 align-self-end">
+        @Html.ActionLink("Register New WebHook","Create")
+    </div>
+</div>
+
+
+<div class="col-md-9">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th cope="col">Designation</th>
+                <th cope="col">Owner</th>
+                <th cope="col">End Point</th>
+                <th cope="col">Method</th>
+                <th cope="col">Details</th>
+                <th>Active Hook</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var hook in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(item =>hook.Designation)</td>
+                    <td>@Html.DisplayFor(item =>hook.Owner)</td>
+                    <td>@Html.DisplayFor(item =>hook.EndPoint)</td>
+                    <td>@Html.DisplayFor(item =>hook.Method)</td>
+                    <td>@Html.ActionLink("Details","Details",new {hook.Id})</td>
+                    <td>
+                        @if (hook.IsActive)
+                        {
+                            <p> Active</p>
+                        }
+                        else
+                        {
+                            <p> Not Active</p>
+                        }
+
+                    </td>
+                    @*<td>@Html.DisplayFor(item =>hook.IsActive ?"Active":"Not Active")</td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+
+@*@using(Html.BeginForm())
+{
+    
+}*@
+</div>

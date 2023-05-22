@@ -14,6 +14,11 @@ namespace LarksWebApp.Repository.CountryRepository
             _dbContext = dbContext;
         }
 
+        public CountryModel CountryExistis(string designation)
+        {
+            return _dbContext.Countries.Include(p => p.Provinces).Where(c => c.Designation.ToLower() == designation.ToLower()).FirstOrDefault();
+        }
+
         public bool CountryExists(string designation)
         {
 

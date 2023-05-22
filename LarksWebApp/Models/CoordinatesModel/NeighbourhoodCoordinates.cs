@@ -2,11 +2,11 @@
 
 namespace LarksWebApp.Models.CoordinatesModel
 {
-    public class NeighbourhoodCoordinates : BaseCoordinates
+    public class SuburbCoordinates : BaseCoordinates
     {
         [Column(Order=1)]
-        public int NeighbourhoodID { get; set; }
-        public NeighbourhoodModel Neighbourhood { get; set; }
+        public int SuburbID { get; set; }
+        public SuburbModel Suburb { get; set; }
 
     }
 }

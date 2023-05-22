@@ -4,17 +4,17 @@ namespace LarksWebApp.Repository.AssoHoodStreetRepository
 {
     public interface INeighbourhoodStreet
     {
-        Task<NeighbourhoodStreets> AssociateStreetToNeighbourhood(NeighbourhoodStreets neighbourhoodStreets);
+        Task<SuburbStreets> AssociateStreetToNeighbourhood(SuburbStreets neighbourhoodStreets);
 
-        Task<bool> AssociateStreetToNeighBourhoods(IList<NeighbourhoodStreets> neighbourhoodStreets);
-
-
-        NeighbourhoodStreets GetNeighbourhoodStreet(int hoodId, int StreetId);
+        Task<bool> AssociateStreetToNeighBourhoods(IList<SuburbStreets> neighbourhoodStreets);
 
 
-        IList<NeighbourhoodStreets> GetStreetsInNeighbourhood(int hoodId);
+        SuburbStreets GetNeighbourhoodStreet(int hoodId, int StreetId);
 
-        bool RemoveNeighbourHoodStreetsAssociation(NeighbourhoodStreets neighbourhood);
+
+        IList<SuburbStreets> GetStreetsInNeighbourhood(int hoodId);
+
+        bool RemoveNeighbourHoodStreetsAssociation(SuburbStreets neighbourhood);
 
 
         bool Save();

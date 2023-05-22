@@ -12,17 +12,17 @@ namespace LarksWebApp.Repository.Coordinates.HoodCoordinateRepository
             _dbContext = dbContext;
         }
 
-        public async Task<bool> CreateNeighbourhoodCoordinates(IList<NeighbourhoodCoordinates> listStreetCoordinates)
+        public async Task<bool> CreateNeighbourhoodCoordinates(IList<SuburbCoordinates> listStreetCoordinates)
         {
 
-            await _dbContext.NeighbourhoodCoordinates.AddRangeAsync(listStreetCoordinates);
+            await _dbContext.SuburbCoordinates.AddRangeAsync(listStreetCoordinates);
 
             return Save();
         }
 
-        public IList<NeighbourhoodCoordinates> GetNeighbourhoodCoordinates(int neighbourhoodCoordinatestreetId)
+        public IList<SuburbCoordinates> GetNeighbourhoodCoordinates(int neighbourhoodCoordinatestreetId)
         {
-           return _dbContext.NeighbourhoodCoordinates.Where(n => n.NeighbourhoodID == neighbourhoodCoordinatestreetId).ToList();    
+           return _dbContext.SuburbCoordinates.Where(n => n.SuburbID == neighbourhoodCoordinatestreetId).ToList();    
         }
 
         public bool Save()
@@ -30,9 +30,9 @@ namespace LarksWebApp.Repository.Coordinates.HoodCoordinateRepository
             return _dbContext.SaveChanges() >= 0;
         }
 
-        public bool UpdateCoordiantes(NeighbourhoodCoordinates neighbourhood)
+        public bool UpdateCoordiantes(SuburbCoordinates neighbourhood)
         {
-            _dbContext.NeighbourhoodCoordinates.Update(neighbourhood);
+            _dbContext.SuburbCoordinates.Update(neighbourhood);
 
 
             return Save();

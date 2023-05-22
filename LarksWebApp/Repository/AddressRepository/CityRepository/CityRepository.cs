@@ -12,9 +12,9 @@ namespace LarksWebApp.Repository.CityRepository
             _dbContext = dbContext;
         }
 
-        public bool CityExists(int ProvinceId, string designation)
+        public CityModel CityExists(int ProvinceId, string designation)
         {
-            return _dbContext.Cities.Any(p => p.ProvinceId == ProvinceId && p.Designation.Trim().ToLower() == designation.Trim().ToLower()); 
+            return _dbContext.Cities.FirstOrDefault(p => p.ProvinceId == ProvinceId && p.Designation.Trim().ToLower() == designation.Trim().ToLower()); 
         }
 
         public bool CityExists(int cityId)

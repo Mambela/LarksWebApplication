@@ -4,7 +4,8 @@ namespace LarksWebApp.Repository.ProviceRepository
 {
     public interface IProvinceRepository
     {
-        bool VerifyProvinceExist(string designation,int countryID);
+        
+        ProvinceModel VerifyProvinceExist(string designation,int countryID);
 
         bool VerifyProvinceExist(int Id);
 

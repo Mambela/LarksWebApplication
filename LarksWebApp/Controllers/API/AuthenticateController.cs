@@ -26,6 +26,7 @@ namespace LarksWebApp.Controllers.API
             _roleManager = roleManager;
             _userManager = userManager;
             _serviceLogger = serviceLogger;
+            _configuration = configuration;
             
         }
 
@@ -55,7 +56,7 @@ namespace LarksWebApp.Controllers.API
                         authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                     }
 
-                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
 
 
                     var token = new JwtSecurityToken(

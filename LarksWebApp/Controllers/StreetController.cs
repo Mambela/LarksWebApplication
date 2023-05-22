@@ -192,14 +192,14 @@ namespace LarksWebApp.Controllers
                  * Associate street to the Neighbourhoods
                  * **/
 
-                var neighbourhoodList = new List<NeighbourhoodStreets>();
+                var neighbourhoodList = new List<SuburbStreets>();
 
                 for (int i = 0; i < streetDTO.NeighbourhoodID.Count; i++)
                 {
 
-                    var neighbourhooObj = new NeighbourhoodStreets
+                    var neighbourhooObj = new SuburbStreets
                     {
-                        NeighbourhoodID = streetDTO.NeighbourhoodID[i],
+                        SuburbId = streetDTO.NeighbourhoodID[i],
                         StreetsID = streetObj.Id
                     };
 

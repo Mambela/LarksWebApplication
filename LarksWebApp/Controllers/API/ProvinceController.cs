@@ -78,7 +78,7 @@ namespace LarksWebApp.Controllers.API
                     return BadRequest();
                 }
 
-                if (_provinceRepository.VerifyProvinceExist(provinceDTO.Designation, provinceDTO.CountryId))
+                if (_provinceRepository.VerifyProvinceExist(provinceDTO.Designation, provinceDTO.CountryId) !=null)
                 {
                     ModelState.AddModelError("", $"The record {provinceDTO.Designation} already exists as a country");
                 }

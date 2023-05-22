@@ -16,7 +16,7 @@ namespace LarksWebApp.Models
         public MunicipalityModel Municipality { get; set; }
         public int MunicipalityID { get; set; }
 
-        public NeighbourhoodModel Neighbourhood { get; set; }
+        public SuburbModel Neighbourhood { get; set; }
         public int NeighbourhoodId { get; set; }
 
 

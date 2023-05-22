@@ -32,15 +32,15 @@ namespace LarksWebApp.Repository.StreetRepository
             return Save();
         }
 
-        public List<NeighbourhoodStreets> GetStreetInNeighBourhood(int neighbourhoodId)
+        public List<SuburbStreets> GetStreetInNeighBourhood(int neighbourhoodId)
         {
-            return _dbContext.NeighbourhoodStreets.Where(n => n.NeighbourhoodID == neighbourhoodId).Include(s => s.Streets).ThenInclude(s =>s.StreetCoordinates).ToList();
+            return _dbContext.SuburbStreets.Where(n => n.SuburbId == neighbourhoodId).Include(s => s.Streets).ThenInclude(s =>s.StreetCoordinates).ToList();
         }
 
-        public List<NeighbourhoodStreets> GetStreetInNeighBourhoodByValue(int neighbourhoodId, string hood)
+        public List<SuburbStreets> GetStreetInNeighBourhoodByValue(int neighbourhoodId, string hood)
         {
             
-            return _dbContext.NeighbourhoodStreets.Where(n => n.Streets.Designation.Contains(hood) && n.NeighbourhoodID == neighbourhoodId)
+            return _dbContext.SuburbStreets.Where(n => n.Streets.Designation.Contains(hood) && n.SuburbId == neighbourhoodId)
                 .Include(s => s.Streets).ThenInclude(s => s.StreetCoordinates).ToList();
             throw new NotImplementedException();
         }

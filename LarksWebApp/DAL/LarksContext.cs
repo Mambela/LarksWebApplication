@@ -23,16 +23,16 @@ namespace LarksWebApp.DAL
 
         public DbSet<DistrictModel> Districts { get; set; }
 
-        public DbSet<NeighbourhoodModel> Neighbourhoods { get; set; }
+        public DbSet<SuburbModel> Suburb { get; set; }
 
 
         public DbSet<StreetModel> Streets { get; set; }
-        public DbSet<NeighbourhoodStreets> NeighbourhoodStreets { get; set; }
+        public DbSet<SuburbStreets> SuburbStreets { get; set; }
         public DbSet<CityModel> Cities { get; set; }
         public DbSet<AddressModel> Addresses { get; set; }
         public DbSet<ProvinceCoordinates> ProvinceCoordinates { get; set; }
         public DbSet<MunicipalityCoordinates> MunicipalityCoordinates { get; set; }
-        public DbSet<NeighbourhoodCoordinates> NeighbourhoodCoordinates { get; set; }
+        public DbSet<SuburbCoordinates> SuburbCoordinates { get; set; }
         public DbSet<StreetCoordinates> StreetCoordinates { get; set; }
         public DbSet<CityCoordinates> CitiesCoordinates { get; set; }
         public DbSet<CategoryModel> Categories { get; set; }
@@ -42,6 +42,8 @@ namespace LarksWebApp.DAL
         public DbSet<LocationModel> Location { get; set; }
 
         public DbSet<LocationImageModel> LocationImage { get; set; }
+
+        public DbSet<HooksModel> HooksModel { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -55,7 +57,7 @@ namespace LarksWebApp.DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<NeighbourhoodStreets>().HasKey(n => new { n.StreetsID, n.NeighbourhoodID });
+            modelBuilder.Entity<SuburbStreets>().HasKey(n => new { n.StreetsID, n.SuburbId });
 
 
             //modelBuilder.HasDefaultSchema("LARKS_UAT");

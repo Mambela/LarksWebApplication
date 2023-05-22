@@ -61,15 +61,16 @@ namespace LarksWebApp.Repository.ProviceRepository
             
             return Save();
         }
-
-        public bool VerifyProvinceExist(string designation, int countryID)
-        {
-            return _dbContext.Provinces.Any(p => p.Designation.ToLower().Trim() == designation.ToLower().Trim() && p.CountryId == countryID);
-        }
+ 
 
         public bool VerifyProvinceExist(int Id)
         {
             return _dbContext.Provinces.Any(p => p.Id == Id);
+        }
+
+        public ProvinceModel VerifyProvinceExist(string designation, int countryID)
+        {
+            return _dbContext.Provinces.FirstOrDefault(p => p.CountryId == countryID && p.Designation.ToLower().Trim() == designation.ToLower().Trim());
         }
     }
 }

@@ -11,9 +11,9 @@ namespace LarksWebApp.Repository.AssoHoodStreetRepository
         {
             _dbContext=dbContext;
         }
-        public async Task<NeighbourhoodStreets> AssociateStreetToNeighbourhood(NeighbourhoodStreets neighbourhood)
+        public async Task<SuburbStreets> AssociateStreetToNeighbourhood(SuburbStreets neighbourhood)
         {
-           await _dbContext.NeighbourhoodStreets.AddAsync(neighbourhood);
+           await _dbContext.SuburbStreets.AddAsync(neighbourhood);
 
 
             if (Save())
@@ -24,30 +24,30 @@ namespace LarksWebApp.Repository.AssoHoodStreetRepository
             return null;
         }
 
-        public async Task<bool> AssociateStreetToNeighBourhoods(IList<NeighbourhoodStreets> neighbourhoodStreets)
+        public async Task<bool> AssociateStreetToNeighBourhoods(IList<SuburbStreets> neighbourhoodStreets)
         {
 
-            await _dbContext.NeighbourhoodStreets.AddRangeAsync(neighbourhoodStreets);
+            await _dbContext.SuburbStreets.AddRangeAsync(neighbourhoodStreets);
 
             return Save();
             
         }
 
-        public NeighbourhoodStreets GetNeighbourhoodStreet(int hoodId, int StreetId)
+        public SuburbStreets GetNeighbourhoodStreet(int hoodId, int StreetId)
         {
-            return _dbContext.NeighbourhoodStreets.Where(h => h.NeighbourhoodID == hoodId && h.StreetsID == StreetId)
+            return _dbContext.SuburbStreets.Where(h => h.SuburbId == hoodId && h.StreetsID == StreetId)
                 .Include(n =>n.Neighbourhood)
                 .Include(s =>s.Streets).FirstOrDefault();
         }
 
-        public IList<NeighbourhoodStreets> GetStreetsInNeighbourhood(int hoodId)
+        public IList<SuburbStreets> GetStreetsInNeighbourhood(int hoodId)
         {
-            return _dbContext.NeighbourhoodStreets.Where(n => n.NeighbourhoodID == hoodId).Include(s => s.Streets).ToList();
+            return _dbContext.SuburbStreets.Where(n => n.SuburbId == hoodId).Include(s => s.Streets).ToList();
         }
 
-        public bool RemoveNeighbourHoodStreetsAssociation(NeighbourhoodStreets neighbourhood)
+        public bool RemoveNeighbourHoodStreetsAssociation(SuburbStreets neighbourhood)
         {
-            _dbContext.NeighbourhoodStreets.Remove(neighbourhood);
+            _dbContext.SuburbStreets.Remove(neighbourhood);
 
             return Save();
         }

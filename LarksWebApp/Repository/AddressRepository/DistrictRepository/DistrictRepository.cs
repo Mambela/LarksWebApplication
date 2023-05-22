@@ -53,9 +53,9 @@ namespace LarksWebApp.Repository.DistrictRepository
             return Save();
         }
 
-        public bool VerifyDistrictExist(string designation, int provinceID)
+        public DistrictModel VerifyDistrictExist(string designation, int provinceID)
         {
-            return _dbContext.Districts.Any(d => d.Designation.Trim().ToLower() == designation.Trim().ToLower() && d.ProvinceId == provinceID);
+            return _dbContext.Districts.FirstOrDefault(d => d.Designation.Trim().ToLower() == designation.Trim().ToLower() && d.ProvinceId == provinceID);
         }
 
         public bool VerifyDistrictExist(int Id)

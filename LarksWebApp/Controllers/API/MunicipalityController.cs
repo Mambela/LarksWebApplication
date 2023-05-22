@@ -84,7 +84,7 @@ namespace LarksWebApp.Controllers.API
         
                 if (municipalityDTO == null) return BadRequest();
 
-                if (_municipalityRepository.VerifyMunicipalityExist(municipalityDTO.Designation, municipalityDTO.ProvinceId))
+                if (_municipalityRepository.VerifyMunicipalityExist(municipalityDTO.Designation, municipalityDTO.ProvinceId) == null)
                 {
                     ModelState.AddModelError("", $"The record {municipalityDTO.Designation} already exists as a country");
 

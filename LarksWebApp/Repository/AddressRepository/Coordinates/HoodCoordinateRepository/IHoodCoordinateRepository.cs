@@ -5,11 +5,11 @@ namespace LarksWebApp.Repository.Coordinates.HoodCoordinateRepository
     public interface IHoodCoordinateRepository
     {
 
-        Task<bool> CreateNeighbourhoodCoordinates(IList<NeighbourhoodCoordinates> listStreetCoordinates);
+        Task<bool> CreateNeighbourhoodCoordinates(IList<SuburbCoordinates> listStreetCoordinates);
 
-        IList<NeighbourhoodCoordinates> GetNeighbourhoodCoordinates(int streetId);
+        IList<SuburbCoordinates> GetNeighbourhoodCoordinates(int streetId);
 
-        bool UpdateCoordiantes(NeighbourhoodCoordinates street);
+        bool UpdateCoordiantes(SuburbCoordinates street);
 
         bool Save();
     }

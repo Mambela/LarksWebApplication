@@ -70,7 +70,7 @@ namespace LarksWebApp.Controllers.API
                 }
 
 
-                if (_districtRepository.VerifyDistrictExist(createDistrictDTO.Designation, createDistrictDTO.ProvinceId))
+                if (_districtRepository.VerifyDistrictExist(createDistrictDTO.Designation, createDistrictDTO.ProvinceId) ==null)
                 {
                     ModelState.AddModelError("", $"The record {createDistrictDTO.Designation} already exists in this province");
 

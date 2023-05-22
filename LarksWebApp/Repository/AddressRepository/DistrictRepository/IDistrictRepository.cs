@@ -5,7 +5,7 @@ namespace LarksWebApp.Repository.DistrictRepository
     public interface IDistrictRepository
     {
 
-        bool VerifyDistrictExist(string designation, int countryID);
+        DistrictModel VerifyDistrictExist(string designation, int countryID);
 
         bool VerifyDistrictExist(int Id);
 

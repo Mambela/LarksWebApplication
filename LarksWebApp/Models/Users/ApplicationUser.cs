@@ -7,5 +7,7 @@ namespace LarksWebApp.Models.Users
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
+
+        public IList<HooksModel> Hooks {get; set; }
     }
 }

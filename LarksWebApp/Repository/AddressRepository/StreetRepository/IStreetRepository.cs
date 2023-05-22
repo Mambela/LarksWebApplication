@@ -11,9 +11,9 @@ namespace LarksWebApp.Repository.StreetRepository
 
         Task<StreetModel> CreateStreetModel(StreetModel Street);
 
-        List<NeighbourhoodStreets> GetStreetInNeighBourhood(int neighbourhoodId);
+        List<SuburbStreets> GetStreetInNeighBourhood(int neighbourhoodId);
 
-        List<NeighbourhoodStreets> GetStreetInNeighBourhoodByValue(int neighbourhoodId,string hood);
+        List<SuburbStreets> GetStreetInNeighBourhoodByValue(int neighbourhoodId,string hood);
 
         StreetModel GetStreetModel(int StreetId);
 

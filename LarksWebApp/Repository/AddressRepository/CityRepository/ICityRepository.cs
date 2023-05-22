@@ -13,7 +13,7 @@ namespace LarksWebApp.Repository.CityRepository
 
         IList<CityModel> GetAllCitiesInProvince(int provinceId);  
 
-        bool CityExists(int ProvinceId, string designation);
+        CityModel CityExists(int ProvinceId, string designation);
 
         bool CityExists(int cityId);
 

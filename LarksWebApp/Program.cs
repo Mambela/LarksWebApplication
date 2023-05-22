@@ -30,6 +30,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Net.Http.Headers;
+using LarksWebApp.Repository.AddressRepository.HooksRepository;
+using LarksWebApp.Services.WebHooks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,10 +52,15 @@ ConfigurationManager Configuration = builder.Configuration;
 
 //Prepare the Connection String
 var connectionString = builder.Configuration.GetConnectionString("DEV_ENV");
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 33));
+ 
 
 builder.Services.AddDbContext<LarksContext>(options =>
 {
-    options.UseSqlServer(connectionString);
+    //options.UseSqlServer(connectionString);
+    options.UseMySql(connectionString, serverVersion).LogTo(Console.WriteLine, LogLevel.Information)
+        .EnableSensitiveDataLogging()
+        .EnableDetailedErrors();
 });
 
 //builder.Services.AddDefaultIdentity<ApplicationIdentity>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -183,7 +190,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IProvinceRepository, ProvinceRepository>();
     services.AddScoped<IMunicipalityRepository, MunicipalityRepository>();
     services.AddScoped<IDistrictRepository, DistrictRepository>();
-    services.AddScoped<INeighbourhoodRepository, NeighbourhoodRepository>();
+    services.AddScoped<ISuburbRepository, SuburbRepository>();
     services.AddScoped<IStreetRepository, StreetRepository>();
     services.AddScoped<IAddressRepository, AddressRepository>();
     services.AddScoped<ICityRepository, CityRepository>();
@@ -202,6 +209,13 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IBuildingTypeRepository, BuildingTypeRepository>();
     services.AddScoped<IFileManagement, FileManagement>();
     services.AddScoped<ILocationRepository, LocationRepository>();
+    services.AddScoped<IHooksRepository,HooksRepository>();
+    services.AddScoped<IWebhookService, WebHookService>();
+
+
+    //var httpFactory = new IHttpClientFactory();
+
+    //configuration.Bind(nameof(HttpClientFactory), httpFactory);
 
 
     services.AddMvcCore().ConfigureViews(options =>

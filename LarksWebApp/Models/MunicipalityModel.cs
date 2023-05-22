@@ -10,7 +10,7 @@ namespace LarksWebApp.Models
 
         public int ProvinceId { get; set; }
 
-        public IList<NeighbourhoodModel> Neighbourhoods { get; set; }
+        public IList<SuburbModel> Neighbourhoods { get; set; }
 
         public IList<MunicipalityCoordinates> ListCoordinates { get; set; }
 
