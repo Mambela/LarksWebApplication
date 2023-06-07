@@ -23,7 +23,7 @@ namespace LarksWebApp.DTOs.DTO_Location
 
         public string StreetName { get; set; }
 
-
+        public decimal? Distance { get; set; }
         public ViewAddressDTO  Address { get; set; }
 
         public int AddressId { get; set; }

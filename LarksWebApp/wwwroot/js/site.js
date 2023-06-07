@@ -11,52 +11,7 @@ const BASEURL = "https://localhost:44339/";
 
 //GET Locations by Category
 
-var createAddressByDemographic = {
-    "osmtype": "way",
-    "osm_id": 60334883,
-    "lat": "-8.83794705",
-    "lon": "13.234773948986573",
-    "displayname": "Hotel Forum, Travessa Ho Chi Mimh, Martires de Kifangondo, Distrito Urbano da Maianga, Luanda, Município de Luanda, Luanda, Angola",
-    "address": {
-        "tourism": "Hotel Forum",
-        "road": "Travessa Ho Chi Mimh",
-        "suburb": "Martires de Kifangondo",
-        "city": "Luanda",
-        "county": "Município de Luanda",
-        "state": "Luanda",
-        "ISO31662lvl4": "AO-LUA",
-        "country": "Angola",
-        "countrycode": "ao"
-    }
-};
-
-document.getElementById("createAddressByDemographic").textContent = JSON.stringify(createAddressByDemographic,null,2)
-
-var updateCategory = {
-    "id": 1,
-    "designation": "Parks",
-    "lng": "en"
-};
-
-document.getElementById("updateCategory").textContent = JSON.stringify(updateCategory, null, 2);
-
-
-var getAllCategories = [
-    {
-        "id": 6,
-        "designation": "Mercado",
-        "lng": "pt"
-    },
-    {
-        "id": 9,
-        "designation": "Governo",
-        "lng": "pt"
-    }
-];
-
-document.getElementById("getAllCategories").textContent = JSON.stringify(getAllCategories, null, 2);
-
-var getlocationsByCategoryResponse = 
+var getlocationsByCategoryResponse =
     [
         {
             "id": 9,
@@ -164,7 +119,7 @@ var locationsByDistanceCategory = {
     "message": null
 };
 
-document.getElementById("locationsByDistanceCategory").textContent = JSON.stringify(getlocationsByCategoryResponse, null, 2);
+document.getElementById("locationsByDistanceCategory").textContent = JSON.stringify(locationsByDistanceCategory, null, 2);
 
 var locationsByDistance = {
     "pageNumber": 3,
@@ -242,7 +197,303 @@ var locationsByDistance = {
     "message": null
 };
 
-document.getElementById("locationsByDistance").textContent = JSON.stringify(getlocationsByCategoryResponse, null, 2);
+document.getElementById("locationsByDistance").textContent = JSON.stringify(locationsByDistance, null, 2);
+
+
+var locationsInCity = {
+    "pageNumber": 2,
+    "pageSize": 3,
+    "firstPage": "https://localhost:44339/api/location/locationsinmunicipality?municipalityId=1&pageNumber=1&pageSize=3",
+    "lastPage": "https://localhost:44339/api/location/locationsinmunicipality?municipalityId=1&pageNumber=2&pageSize=3",
+    "totalPages": 2,
+    "totalRecords": 6,
+    "nextPage": null,
+    "previousPage": "https://localhost:44339/api/location/locationsinmunicipality?municipalityId=1&pageNumber=1&pageSize=3",
+    "data": [
+        {
+            "id": 9,
+            "designation": "A corner in  Lever",
+            "additionalInformation": "A random place opposite Sandridge.",
+            "category": "Industry",
+            "categoryId": 2,
+            "municipality": "City of Johannesburg Metropolitan Municipality",
+            "suburb": "Carlswald",
+            "city": "Midrand",
+            "distance": 0,
+            "lat": -25.97628,
+            "lng": 28.119166,
+            "subcategories": [
+                {
+                    "id": 2,
+                    "designation": "Supermarket",
+                    "categoryId": 0,
+                    "lng": "en"
+                },
+                {
+                    "id": 3,
+                    "designation": "Assembleia",
+                    "categoryId": 0,
+                    "lng": "pt"
+                }
+            ],
+            "images": [
+                "7f663084-d289-4ae4-9778-1d4de5817a57.PNG"
+            ]
+        },
+        {
+            "id": 10,
+            "designation": "Mercedez Midrand",
+            "additionalInformation": "Mercedez benz main seller in Midrand. ",
+            "category": "Industry",
+            "categoryId": 2,
+            "municipality": "City of Johannesburg Metropolitan Municipality",
+            "suburb": "Carlswald",
+            "city": "Midrand",
+            "distance": 0,
+            "lat": -25.978129,
+            "lng": 28.118871,
+            "subcategories": [
+                {
+                    "id": 2,
+                    "designation": "Supermarket",
+                    "categoryId": 0,
+                    "lng": "en"
+                },
+                {
+                    "id": 3,
+                    "designation": "Assembleia",
+                    "categoryId": 0,
+                    "lng": "pt"
+                }
+            ],
+            "images": [
+                "05473a99-acc5-497e-ae70-615164690e12.jpg"
+            ]
+        },
+        {
+            "id": 11,
+            "designation": "Mercedez Midrand",
+            "additionalInformation": "Mercedez benz main seller in Midrand. ",
+            "category": "Business",
+            "categoryId": 1,
+            "municipality": "City of Johannesburg Metropolitan Municipality",
+            "suburb": "Carlswald",
+            "city": "Midrand",
+            "distance": 0,
+            "lat": -25.973972,
+            "lng": 28.117133,
+            "subcategories": [
+                {
+                    "id": 3,
+                    "designation": "Assembleia",
+                    "categoryId": 0,
+                    "lng": "pt"
+                },
+                {
+                    "id": 4,
+                    "designation": "Offices",
+                    "categoryId": 0,
+                    "lng": "en"
+                }
+            ],
+            "images": [
+                "20eefc2a-558b-4155-981a-531fb1c0d7c4.jpg"
+            ]
+        }
+    ],
+    "succeeded": true,
+    "errors": null,
+    "message": null
+};
+
+document.getElementById("locationsInCity").textContent = JSON.stringify(locationsInCity, null, 2);
+
+
+var locationmunicipality = {
+    "pageNumber": 1,
+    "pageSize": 4,
+    "firstPage": "https://localhost:44339/api/location/locationsincity?cityId=3&pageNumber=1&pageSize=4",
+    "lastPage": "https://localhost:44339/api/location/locationsincity?cityId=3&pageNumber=2&pageSize=4",
+    "totalPages": 2,
+    "totalRecords": 6,
+    "nextPage": "https://localhost:44339/api/location/locationsincity?cityId=3&pageNumber=2&pageSize=4",
+    "previousPage": null,
+    "data": [
+        {
+            "id": 3,
+            "designation": "Carlswald",
+            "additionalInformation": "Some place close to Sandridge in carlswald",
+            "category": "Industry",
+            "categoryId": 2,
+            "municipality": "City of Johannesburg Metropolitan Municipality",
+            "suburb": "Carlswald",
+            "city": "Midrand",
+            "distance": 0,
+            "lat": -25.978936,
+            "lng": 28.116227,
+            "subcategories": [
+                {
+                    "id": 2,
+                    "designation": "Supermarket",
+                    "categoryId": 0,
+                    "lng": "en"
+                },
+                {
+                    "id": 3,
+                    "designation": "Assembleia",
+                    "categoryId": 0,
+                    "lng": "pt"
+                }
+            ],
+            "images": [
+                "Speed test1.PNG"
+            ]
+        },
+        {
+            "id": 4,
+            "designation": "A fine Circle",
+            "additionalInformation": "Some place close to carlswald",
+            "category": "Industry",
+            "categoryId": 2,
+            "municipality": "City of Johannesburg Metropolitan Municipality",
+            "suburb": "Carlswald",
+            "city": "Midrand",
+            "distance": 0,
+            "lat": -25.978446,
+            "lng": 28.112637,
+            "subcategories": [
+                {
+                    "id": 2,
+                    "designation": "Supermarket",
+                    "categoryId": 0,
+                    "lng": "en"
+                },
+                {
+                    "id": 3,
+                    "designation": "Assembleia",
+                    "categoryId": 0,
+                    "lng": "pt"
+                }
+            ],
+            "images": [
+                "Speed test1.PNG"
+            ]
+        },
+        {
+            "id": 8,
+            "designation": "Midauto",
+            "additionalInformation": "A place where you can fix your car and at the same time get drinks with your friends. ",
+            "category": "Industry",
+            "categoryId": 2,
+            "municipality": "City of Johannesburg Metropolitan Municipality",
+            "suburb": "Carlswald",
+            "city": "Midrand",
+            "distance": 0,
+            "lat": -25.977531,
+            "lng": 28.115977,
+            "subcategories": [
+                {
+                    "id": 2,
+                    "designation": "Supermarket",
+                    "categoryId": 0,
+                    "lng": "en"
+                },
+                {
+                    "id": 3,
+                    "designation": "Assembleia",
+                    "categoryId": 0,
+                    "lng": "pt"
+                }
+            ],
+            "images": [
+                "957b8764-bc2e-4380-a9f5-d52bbeaadc15.PNG"
+            ]
+        },
+        {
+            "id": 9,
+            "designation": "A corner in  Lever",
+            "additionalInformation": "A random place opposite Sandridge.",
+            "category": "Industry",
+            "categoryId": 2,
+            "municipality": "City of Johannesburg Metropolitan Municipality",
+            "suburb": "Carlswald",
+            "city": "Midrand",
+            "distance": 0,
+            "lat": -25.97628,
+            "lng": 28.119166,
+            "subcategories": [
+                {
+                    "id": 2,
+                    "designation": "Supermarket",
+                    "categoryId": 0,
+                    "lng": "en"
+                },
+                {
+                    "id": 3,
+                    "designation": "Assembleia",
+                    "categoryId": 0,
+                    "lng": "pt"
+                }
+            ],
+            "images": [
+                "7f663084-d289-4ae4-9778-1d4de5817a57.PNG"
+            ]
+        }
+    ],
+    "succeeded": true,
+    "errors": null,
+    "message": null
+};
+
+document.getElementById("locationmunicipality").textContent = JSON.stringify(locationmunicipality, null, 2);
+
+
+var createAddressByDemographic = {
+    "osmtype": "way",
+    "osm_id": 60334883,
+    "lat": "-8.83794705",
+    "lon": "13.234773948986573",
+    "displayname": "Hotel Forum, Travessa Ho Chi Mimh, Martires de Kifangondo, Distrito Urbano da Maianga, Luanda, Município de Luanda, Luanda, Angola",
+    "address": {
+        "tourism": "Hotel Forum",
+        "road": "Travessa Ho Chi Mimh",
+        "suburb": "Martires de Kifangondo",
+        "city": "Luanda",
+        "county": "Município de Luanda",
+        "state": "Luanda",
+        "ISO31662lvl4": "AO-LUA",
+        "country": "Angola",
+        "countrycode": "ao"
+    }
+};
+
+document.getElementById("createAddressByDemographic").textContent = JSON.stringify(createAddressByDemographic,null,2)
+
+var updateCategory = {
+    "id": 1,
+    "designation": "Parks",
+    "lng": "en"
+};
+
+document.getElementById("updateCategory").textContent = JSON.stringify(updateCategory, null, 2);
+
+
+var getAllCategories = [
+    {
+        "id": 6,
+        "designation": "Mercado",
+        "lng": "pt"
+    },
+    {
+        "id": 9,
+        "designation": "Governo",
+        "lng": "pt"
+    }
+];
+
+document.getElementById("getAllCategories").textContent = JSON.stringify(getAllCategories, null, 2);
+
+
 
 
 var allcountries = [

@@ -29,19 +29,22 @@ namespace LarksWebApp.Repository.LocationRepository
             return null;
         }
 
-        public IList<LocationModel> GetCategoryLocations(int CategoryId)
+        public IList<LocationModel> GetCategoryLocations(int CategoryId, PaginationFilter filter)
         {
-            var locationObjectList =  _dbContext.Location.Where(s => s.CategoryId == CategoryId)
+
+            var sql = "SELECT * FROM (SELECT *, (((acos(sin(( 0 * pi() / 180)) * sin(( `Lat` * pi() / 180)) + cos(( 0 * pi() /180 )) * cos(( `Lat` * pi() / 180)) * cos((( 0 - `Lng`) * pi()/180))) ) * 180/pi()) * 60 * 1.1515 * 1.609344) as distance FROM `Location` ) Location WHERE distance >=0 ";
+
+
+
+            return _dbContext.Location.FromSqlRaw(sql)
+                .Where(s => s.CategoryId == CategoryId)
                 .Include(s => s.Category)
                 .Include(s => s.LocalSubcategories).ThenInclude(l =>l.Subcategories)
                 .Include(l =>l.Images)
                 .OrderBy(s=>s.Designation)
                 .ToList();
 
-            var categoryLocations = mapper.Map<IList<LocationModel>>(locationObjectList);
-
-
-            return categoryLocations;
+            
         }
 
         public LocationModel GetLocation(int LocationId)
@@ -49,7 +52,7 @@ namespace LarksWebApp.Repository.LocationRepository
             return _dbContext.Location.FirstOrDefault(c => c.Id == LocationId);
         }
 
-        public IList<LocationModel> GetSuburbLocations(int suburbId)
+        public IList<LocationModel> GetSuburbLocations(int suburbId, PaginationFilter filter)
         {
             return _dbContext.Location
                         .Include(c =>c.Category)
@@ -57,7 +60,9 @@ namespace LarksWebApp.Repository.LocationRepository
                         .Include(l =>l.Images)
                         .Include(a =>a.Municipality)
                         .Include(a =>a.Suburb)
-                        .Where(n => n.SuburbId == suburbId) 
+                        .Where(n => n.SuburbId == suburbId)
+                        .Skip((filter.PageNumber - 1) * filter.PageSize)
+                        .Take(filter.PageSize)
                         .ToList();
         }
 
@@ -187,6 +192,8 @@ namespace LarksWebApp.Repository.LocationRepository
 
         }
 
+        
+
         public IList<LocationModel> LocationCategoryByDistance(decimal lat, decimal lng, double distance, PaginationFilter pagination, int categoryId)
         {
             string sqlLocation = string.Format("SELECT * FROM (" +
@@ -212,6 +219,65 @@ namespace LarksWebApp.Repository.LocationRepository
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
                 .Take(pagination.PageSize)
                 .ToList();
+        }
+
+        public IList<LocationModel> GetLocationsInCity(int CityId, PaginationFilter filter)
+        {
+
+            //GetLocationsInCity
+
+            var sqlRaw = string.Format("SELECT * FROM (SELECT *, (((acos(sin(( 0 * pi() / 180)) * sin(( `Lat` * pi() / 180)) + cos(( 0 * pi() /180 )) * cos(( `Lat` * pi() / 180)) * cos((( 0 - `Lng`) * pi()/180))) ) * 180/pi()) * 60 * 1.1515 * 1.609344) as distance FROM `Location` ) Location WHERE distance >=0 ");
+
+            return _dbContext.Location.FromSqlRaw(sqlRaw)
+                      .Include(c => c.Category)
+                      .Include(l =>l.LocalSubcategories).ThenInclude(c => c.Subcategories)
+                      .Include(l => l.Images)
+                      .Include(a => a.Municipality)
+                      .Include(a => a.Suburb)
+                      .Include(c =>c.City)
+                      .Where(n => n.CityId == CityId)
+                      .Skip((filter.PageNumber - 1) * filter.PageSize)
+                      .Take(filter.PageSize)
+                      .ToList();
+        }
+
+        public IList<LocationModel> GetLocationsInMunicipality(int municipalityId, PaginationFilter filter)
+        {
+            var sqlRaw = string.Format("SELECT * FROM (SELECT *, (((acos(sin(( 0 * pi() / 180)) * sin(( `Lat` * pi() / 180)) + cos(( 0 * pi() /180 )) * cos(( `Lat` * pi() / 180)) * cos((( 0 - `Lng`) * pi()/180))) ) * 180/pi()) * 60 * 1.1515 * 1.609344) as distance FROM `Location` ) Location WHERE distance >=0 ");
+
+            return _dbContext.Location.FromSqlRaw(sqlRaw)
+                       .Include(c => c.Category)
+                       .Include(l =>l.LocalSubcategories).ThenInclude(c => c.Subcategories)
+                       .Include(l => l.Images)
+                       .Include(a => a.Municipality)
+                       .Include(a => a.Suburb)
+                       .Include(c => c.City)
+                       .Include(m =>m.Municipality)
+                       .Where(n => n.MunicipalityId == municipalityId)
+                       .Skip((filter.PageNumber - 1) * filter.PageSize)
+                       .Take(filter.PageSize)
+                       .ToList();
+        }
+
+        public int CountLocationByAttribute(string attribute, int attributeId)
+        {
+
+            var filter = new PaginationFilter();
+            switch (attribute.ToUpper().Trim())
+            {
+                case "CATEGORY":
+                    return _dbContext.Location.Where(l =>l.CategoryId == attributeId).Count();
+                case "SUBURB":
+                    return _dbContext.Location.Where(l => l.SuburbId== attributeId).Count();
+
+                case "CITY":
+                    return _dbContext.Location.Where(l => l.CityId == attributeId).Count();
+
+                case "MUNICIPALITY":
+                    return _dbContext.Location.Where(l => l.MunicipalityId == attributeId).Count();
+                default:
+                    return 0;
+            }
         }
     }
 }

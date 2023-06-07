@@ -15,6 +15,8 @@ using LarksWebApp.Services.PaginationService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Serilog;
 
 namespace LarksWebApp.Controllers.API
 {
@@ -53,8 +55,8 @@ namespace LarksWebApp.Controllers.API
 
             try
             {
-
-                var neighbourhoodLocationList = locationRepo.GetSuburbLocations(suburbId);
+                var filter = new PaginationFilter();
+                var neighbourhoodLocationList = locationRepo.GetSuburbLocations(suburbId, filter);
 
 
                 var neighbourhoodLocationListDTO = new List<LocationDTO>();
@@ -116,14 +118,16 @@ namespace LarksWebApp.Controllers.API
 
  
         ///Location by Category 
-        [HttpGet("CategoryLocations")]
-        public IActionResult GetlocationinCategory(int categoryId)
+        [HttpGet("categorylocations")]
+        public IActionResult GetlocationinCategory([FromQuery] int categoryId,PaginationFilter filter)
         {
             try
             {
-                var neighbourhoodLocationList = locationRepo.GetCategoryLocations(categoryId);
+                var neighbourhoodLocationList = locationRepo.GetCategoryLocations(categoryId,filter);
 
-                //var neighbourhoodLocationListDTO = _mapper.Map<List<LocationDTO>>(neighbourhoodLocationList);
+                int totalRecords = locationRepo.CountLocationByAttribute("CATEGORY", categoryId);
+                var route = Request.Path.Value; 
+
                 var neighbourhoodLocationListDTO = new List<LocationDTO>();
 
                 foreach (var location in neighbourhoodLocationList)
@@ -148,8 +152,10 @@ namespace LarksWebApp.Controllers.API
                         });
                 }
 
+                var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
 
-                return Ok(neighbourhoodLocationListDTO);
+                var pagedResponse = PaginationHelper.CreatePageResponse<LocationDTO>(neighbourhoodLocationListDTO, validFilter, totalRecords, uriService, route);
+                return Ok(pagedResponse);
             }
             catch (Exception ex)
             {
@@ -194,7 +200,8 @@ namespace LarksWebApp.Controllers.API
         {
             try
             {
-                var neighbourhoodLocationList = locationRepo.GetSuburbLocations(neighbourhoodId);
+                var filter = new PaginationFilter();
+                var neighbourhoodLocationList = locationRepo.GetSuburbLocations(neighbourhoodId, filter);
 
                 var neighbourhoodLocationListDTO = new List<LocationDTO>();
 
@@ -458,6 +465,167 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
+        [HttpGet]
+        [Route("locationsinsuburb")]
+        public async Task<IActionResult> GetLocationInSuburb([FromQuery] decimal lat, decimal lng, double distance, int category, [FromQuery] PaginationFilter paginationFilter)
+        {
+            try
+            {
+                var locationsObjList = locationRepo.LocationCategoryByDistance(lat, lng, distance, paginationFilter, category);
+
+                int totalRecords = locationRepo.LocationCount(lat, lng, distance, paginationFilter, "SEARCHGEOCATEGORY", category);
+                string searchParams = $"?distance={distance}&category={category}&lat={lat}&lng={lng}";
+                var route = Request.Path.Value + searchParams;
+
+                var locationsDTOList = new List<ViewLocationDTO>();
+
+
+                foreach (var location in locationsObjList)
+                {
+                    var locationObjDTO = _mapper.Map<ViewLocationDTO>(location);
+
+                    var locationSubCategories = new List<SubCategoryDTO>();
+
+                    locationObjDTO.Subcategories = location.LocalSubcategories.Select(s => new SubCategoryDTO
+                    { Id = s.Subcategories.Id, Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng }).ToList();
+                    locationObjDTO.CategoryId = (int)location.CategoryId;
+                    locationObjDTO.Lat = location.Lat;
+                    locationObjDTO.Lng = location.Lng;
+                    locationObjDTO.Category = location.Category.Designation;
+                    locationObjDTO.Suburb = location.Suburb.Designation;
+                    locationObjDTO.Distance = location.Distance;
+                    locationObjDTO.City = location.City.Designation;
+                    locationObjDTO.Municipality = location.Municipality.Designation;
+                    locationObjDTO.Images = location.Images.Select(s => s.ImagePath).ToList();
+                    locationsDTOList.Add(locationObjDTO);
+
+                }
+
+
+                var validFilter = new PaginationFilter(paginationFilter.PageNumber, paginationFilter.PageSize);
+
+                var pagedResponse = PaginationHelper.CreatePageResponse<ViewLocationDTO>(locationsDTOList, validFilter, totalRecords, uriService, route);
+
+                return Ok(pagedResponse);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Failed to retrieve location error ->" + ex.Message);
+                return BadRequest();
+            }
+        }
+
+
+        [HttpGet]
+        [Route("locationsincity")]
+        public async Task<IActionResult> GetLocationInCity([FromQuery] PaginationFilter filter, int cityId)
+        {
+            
+                try
+                {
+                     var neighbourhoodLocationList = locationRepo.GetLocationsInCity(cityId, filter);
+                    int totalRecords = locationRepo.CountLocationByAttribute("CITY", cityId);
+
+                    string searchParams = $"?cityId={cityId}";
+                    var route = Request.Path.Value + searchParams;
+                
+
+                    //var neighbourhoodLocationListDTO = _mapper.Map<List<LocationDTO>>(neighbourhoodLocationList);
+
+                    var locationsDTOList = new List<ViewLocationDTO>();
+
+
+                    foreach (var location in neighbourhoodLocationList)
+                    {
+                        var locationObjDTO = _mapper.Map<ViewLocationDTO>(location);
+
+                        var locationSubCategories = new List<SubCategoryDTO>();
+
+                        locationObjDTO.Subcategories = location.LocalSubcategories.Select(s => new SubCategoryDTO
+                        { Id = s.Subcategories.Id, Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng }).ToList();
+                        locationObjDTO.CategoryId = (int)location.CategoryId;
+                        locationObjDTO.Lat = location.Lat;
+                        locationObjDTO.Lng = location.Lng;
+                        locationObjDTO.Category = location.Category.Designation;
+                        locationObjDTO.Suburb = location.Suburb.Designation;
+                        locationObjDTO.Distance = 0;
+                        locationObjDTO.City = location.City.Designation;
+                        locationObjDTO.Municipality = location.Municipality.Designation;
+                        locationObjDTO.Images = location.Images.Select(s => s.ImagePath).ToList();
+                        locationsDTOList.Add(locationObjDTO);
+
+                    }
+
+                    var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
+
+                        var pagedResponse = PaginationHelper.CreatePageResponse<ViewLocationDTO>(locationsDTOList, validFilter, totalRecords, uriService, route);
+
+                    return Ok(pagedResponse);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError("Error while fetching the locations in a category " + ex.Message);
+
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Error occurred while trying to fetch locations"); ;
+                }
+            
+        }
+
+
+        [HttpGet]
+        [Route("locationsinmunicipality")]
+        public async Task<IActionResult> GetLocationInmunicipality([FromQuery] int municipalityId,[FromQuery] PaginationFilter filter)
+        {
+            try
+            {
+                var locationsInMunicipalityList = locationRepo.GetLocationsInMunicipality(municipalityId,filter);
+                int totalRecords = locationRepo.CountLocationByAttribute("MUNICIPALITY", municipalityId);
+            
+                            
+
+                string searchParams = $"?municipalityId={municipalityId}";
+                var route = Request.Path.Value + searchParams;
+
+
+                //var neighbourhoodLocationListDTO = _mapper.Map<List<LocationDTO>>(neighbourhoodLocationList);
+
+                var locationsDTOList = new List<ViewLocationDTO>();
+
+
+                foreach (var location in locationsInMunicipalityList)
+                {
+                    var locationObjDTO = _mapper.Map<ViewLocationDTO>(location);
+
+                    var locationSubCategories = new List<SubCategoryDTO>();
+
+                    locationObjDTO.Subcategories = location.LocalSubcategories.Select(s => new SubCategoryDTO
+                    { Id = s.Subcategories.Id, Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng }).ToList();
+                    locationObjDTO.CategoryId = (int)location.CategoryId;
+                    locationObjDTO.Lat = location.Lat;
+                    locationObjDTO.Lng = location.Lng;
+                    locationObjDTO.Category = location.Category.Designation;
+                    locationObjDTO.Suburb = location.Suburb.Designation;
+                    locationObjDTO.Distance = 0;
+                    locationObjDTO.City = location.City.Designation;
+                    locationObjDTO.Municipality = location.Municipality.Designation;
+                    locationObjDTO.Images = location.Images.Select(s => s.ImagePath).ToList();
+                    locationsDTOList.Add(locationObjDTO);
+
+                }
+
+                var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
+
+                var pagedResponse = PaginationHelper.CreatePageResponse<ViewLocationDTO>(locationsDTOList, validFilter, totalRecords, uriService, route);
+
+                return Ok(pagedResponse);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error while fetching the locations in a category " + ex.Message);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occurred while trying to fetch locations"); ;
+            }
+        }
 
     }
 }

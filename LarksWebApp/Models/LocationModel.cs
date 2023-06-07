@@ -26,7 +26,7 @@ namespace LarksWebApp.Models
         public SuburbModel? Suburb { get; set; }
         public int? SuburbId { get; set; }
 
-        public virtual decimal ? Distance { get; set; }
+        public virtual decimal? Distance { get; set; } = 0;
 
         public CityModel? City { get; set; }
         public int? CityId { get; set; }

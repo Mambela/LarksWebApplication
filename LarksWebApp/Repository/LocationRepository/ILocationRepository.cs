@@ -10,15 +10,21 @@ namespace LarksWebApp.Repository.LocationRepository
 
         LocationModel GetLocation(int LocationId);
 
-        IList<LocationModel> GetCategoryLocations(int CategoryId);
+        IList<LocationModel> GetCategoryLocations(int CategoryId, PaginationFilter filter);
 
         IList<LocationModel> GetSubcategoryLocations(int SubcategoryId);
 
-        IList<LocationModel> GetSuburbLocations(int suburbId);
+        IList<LocationModel> GetSuburbLocations(int suburbId, PaginationFilter filter);
+
+        IList<LocationModel> GetLocationsInCity(int CityId, PaginationFilter filter);
+
+        IList<LocationModel> GetLocationsInMunicipality(int municipalityId, PaginationFilter filter);
 
         IList<LocationModel> LocationToInDistanceAsync(decimal lat,decimal lng,double distance,PaginationFilter pagination);
         IList<LocationModel> LocationCategoryByDistance(decimal lat,decimal lng,double distance,PaginationFilter pagination, int categoryId);
-      
+        public int CountLocationByAttribute(string attribute, int attributeId);
+
+
         int LocationCount(decimal lat,decimal lng,double distance, PaginationFilter pagination,string searchType, int CategoryId=0);
 
         int CountLocations(decimal lat, decimal lng, double distance,int categoryId = 0);
