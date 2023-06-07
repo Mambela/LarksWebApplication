@@ -8,6 +8,20 @@
 //const BASEURL = "https://localhost:7119/";
 const BASEURL = "https://localhost:44339/";
 
+//Address
+
+var createAddress = {
+    "optionalId": "",
+    "hookname": "",
+    "responseId": "",
+    "lat": "",
+    "lng": ""
+};
+document.getElementById("createAddress").textContent = JSON.stringify(createAddress, null, 2);
+
+
+
+
 
 //GET Locations by Category
 

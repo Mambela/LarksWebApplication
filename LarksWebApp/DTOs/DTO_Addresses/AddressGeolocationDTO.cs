@@ -2,6 +2,7 @@
 {
     public class AddressGeolocationDTO
     {
+        public int? OptionalId { get; set; }
         public Decimal Lat { get; set; }
         public Decimal Lng { get; set; }
 

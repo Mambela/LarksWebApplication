@@ -15,6 +15,7 @@ using LarksWebApp.Services.Loggers;
 using LarksWebApp.Services.WebHooks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Runtime.CompilerServices;
 
 namespace LarksWebApp.Controllers.API
@@ -69,23 +70,11 @@ namespace LarksWebApp.Controllers.API
             try
             {
 
-                var addressObj = _addressRepository.GetAddress(addressId);
-                if (addressObj == null)
-                {
-                    return NotFound();
-                }
+                var endPoint = "https://localhost:44339/api/location/locationsinmunicipality?municipalityId=1&pageNumber=2&pageSize=";
+                var lastIndex = endPoint.LastIndexOf("=");
+                var item = endPoint.Substring(endPoint.LastIndexOf('='),1);
 
-                var addressDTO = new ViewAddressDataTableDTO
-                {
-                    Id = addressObj.Id,
-                    Municipality = addressObj.Municipality.Designation,
-                    Neighbourhood = addressObj.Neighbourhood.Designation,
-                    StreetName = addressObj.Street.Designation,
-                    Province = addressObj.Province.Designation,
-                    FullAddress = addressObj.StreetNumber + " " + addressObj.Street.Designation + ", " + addressObj.Neighbourhood.Designation + ", " + addressObj.Province.Designation
-                };
-
-                return Ok(addressDTO);
+                return Ok(item);
             }
             catch (Exception ex)
             {
@@ -467,6 +456,7 @@ namespace LarksWebApp.Controllers.API
             try
             {
 
+                
                 //Make Nominati API CALL
                 externalHttpService = new ExternalHttpService(config);
                 var nominatimAddressDTO = await externalHttpService.RetrieveLocationByGeoLocationAsync(addressGeolocationDTO.Lat, addressGeolocationDTO.Lng);
@@ -662,11 +652,18 @@ namespace LarksWebApp.Controllers.API
                 {
                     id = addressGeolocationDTO.responseId,
                     suburbId = activeSuburb,
-                    municipalityId = activeMunicipalityId
+                    municipalityId = activeMunicipalityId,
+                    city = activeCityId
                 };
 
                 //Verify if there is any Id that has to be included. 
                 clientWebHook.EndPoint = clientWebHook.EndPoint + ((addressGeolocationDTO.responseId != 0) ? addressGeolocationDTO.responseId.ToString() : "");
+
+                var item = clientWebHook.EndPoint.Substring(clientWebHook.EndPoint.LastIndexOf('='), 1);
+                if(item != null)
+                {
+                    clientWebHook.EndPoint = (addressGeolocationDTO.OptionalId == 0) ? clientWebHook.EndPoint : clientWebHook.EndPoint +addressGeolocationDTO.OptionalId;
+                }
 
                 var result = await externalHttpService.ApiRequest(hookObj, clientWebHook.EndPoint, clientWebHook.Method);
 

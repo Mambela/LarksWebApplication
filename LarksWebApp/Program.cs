@@ -55,7 +55,7 @@ ConfigurationManager Configuration = builder.Configuration;
 
 
 //Prepare the Connection String
-var connectionString = builder.Configuration.GetConnectionString("DEV_ENV");
+var connectionString = builder.Configuration.GetConnectionString("PROD_CONN");
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 33));
  
 
