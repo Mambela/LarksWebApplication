@@ -23,9 +23,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
+                      @*  <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        </li>*@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Country" asp-action="Index">Country</a>
                         </li> 
@@ -39,12 +39,15 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Location" asp-action="Index">Location</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="ManageWebHooks" asp-action="Index">Web hooks</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ManageWebHooks" asp-action="Index">Webhooks</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Location" asp-action="Index">Token Manager</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="TokenManager" asp-action="Index">Tokens</a>
                         </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Apispecification" asp-action="Index">API Specitication</a>
+                        </li>
                     </ul>
                      <partial name="_LoginPartial"/>
                 </div>

@@ -3,6 +3,7 @@ using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LarksWebApp.Controllers
 {
@@ -54,33 +55,58 @@ namespace LarksWebApp.Controllers
 
         public async Task<IActionResult> Manage(string userId)
         {
-            ViewBag.userId = userId;
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
+            try
             {
+
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+
+                if (claimsIdentity != null)
+                {
+                    var userRoleClaim = claimsIdentity.Claims
+                   .FirstOrDefault(x => x.Type == ClaimTypes.Role);
+               
+                
+                    ViewBag.userId = userId;
+
+                    //ViewBag.UserName = user.UserName;
+                    var model = new List<ManageUserRolesViewModel>();
+
+
+                    foreach (var role in _roleManager.Roles)
+                    {
+                        var userRolesViewModel = new ManageUserRolesViewModel
+                        {
+                            RoleId = role.Id,
+                            RoleName = role.Name
+                        };
+                        if (User.IsInRole(role.Name))
+                        {
+                            userRolesViewModel.Selected = true;
+                        }
+                        else
+                        {
+                            userRolesViewModel.Selected = false;
+                        }
+                        model.Add(userRolesViewModel);
+                    }
+                    return View(model);
+
+                }
+
+                //var user = await _userManager.FindByIdAsync(userId);
+                //if (user == null)
+                //{
+                //    ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
+                //    return View("NotFound");
+
                 ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
                 return View("NotFound");
+
             }
-            ViewBag.UserName = user.UserName;
-            var model = new List<ManageUserRolesViewModel>();
-            foreach (var role in _roleManager.Roles)
+            catch (Exception ex)
             {
-                var userRolesViewModel = new ManageUserRolesViewModel
-                {
-                    RoleId = role.Id,
-                    RoleName = role.Name
-                };
-                if (await _userManager.IsInRoleAsync(user, role.Name))
-                {
-                    userRolesViewModel.Selected = true;
-                }
-                else
-                {
-                    userRolesViewModel.Selected = false;
-                }
-                model.Add(userRolesViewModel);
+                return RedirectToAction("Index");
             }
-            return View(model);
         }
 
 

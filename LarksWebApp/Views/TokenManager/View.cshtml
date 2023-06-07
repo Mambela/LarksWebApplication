@@ -1,0 +1,32 @@
+﻿@model IList<LarksWebApp.DTOs.DTO_Tokens.AuthTokenDTO>
+@{
+    ViewData["Title"] = "Token List";
+}
+<h3>List of Tokens</h3>
+
+<div class="row">
+    <div class="col-md-7">
+
+    <p>This is the list of your tokens.</p>
+    
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th cope="col">Name</th>
+                <th cope="col">Expiry Date</th>
+                <th cope="col">Action</th>
+                <th cope="col"></th>
+                
+            </tr>
+        </thead>
+       <tbody>
+           @foreach(var  token in Model)
+           {
+            }
+            
+       </tbody>
+    </table>
+
+</div> 

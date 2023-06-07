@@ -5,7 +5,7 @@ using LarksWebApp.DTOs.DTO_Provinces;
 
 namespace LarksWebApp.DTOs.DTO_Neighbourhoods
 {
-    public class Create_neighbourhood_DTO
+    public class Create_suburb_DTO
     {
 
         public int Id { get; set; }

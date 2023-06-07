@@ -9,9 +9,13 @@ namespace LarksWebApp.Repository.CityRepository
 
         CityModel GetCity(int id);
 
+        CityModel RetrieveCity(int id); 
+
 
 
         IList<CityModel> GetAllCitiesInProvince(int provinceId);  
+
+        IList<CityModel> GetAllCitiesInCountry(int countryId);
 
         CityModel CityExists(int ProvinceId, string designation);
 

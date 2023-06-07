@@ -39,12 +39,12 @@ namespace LarksWebApp.Repository.SubcategoryRepository
             return Save();
         }
 
-        public IList<SubcategoryModel> GetAllSubCategories()
+        public IList<SubcategoryModel> GetAllSubCategories(string lang)
         {
-            return _dbContext.Subcategories.ToList();
+            return _dbContext.Subcategories.Where(c=>c.Lng.ToLower().Trim() == lang.ToLower().Trim()).ToList();
         }
 
-        public SubcategoryModel GetCategoryById(int id)
+        public SubcategoryModel GetSubcateogryById(int id)
         {
             return _dbContext.Subcategories.FirstOrDefault(s => s.Id == id);
         }

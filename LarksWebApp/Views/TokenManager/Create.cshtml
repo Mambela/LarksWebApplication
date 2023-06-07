@@ -1,4 +1,38 @@
-﻿@page
-@model LarksWebApp.Views.TokenManager.CreateModel
+﻿@model LarksWebApp.DTOs.DTO_Tokens.AuthTokenDTO
+
 @{
+    ViewData["Title"] = "Token Manager";
 }
+
+
+
+<div class="row">
+    <h3>Create new tokens</h3>
+    <div class="col-md-10">
+    <p>Token will need to be reviewed often as tokens expire after 2 weeks.</p>
+    <span></span>
+    </div>
+    <div class="col-md-9">
+        @using(Html.BeginForm()){
+
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-8">
+                        @Html.Label("Label","Name of the Token", new{htmlAttributes = new { @class ="form-control"}})
+                        <div>
+                            @Html.EditorFor(model =>model.Name, new{htmlAttributes = new {@class = "form-control"}})
+                        </div>
+                    </div>
+                    </div>
+            </div>
+            <div class="form-group mt-3">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create Webhook" class="btn btn-primary" />
+                </div>
+            </div>
+        }
+    </div>
+
+     
+
+</div> 

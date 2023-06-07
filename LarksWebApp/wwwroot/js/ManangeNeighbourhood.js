@@ -159,7 +159,7 @@ $(document).ready(function () {
 
             var municipalityId = event.target.value;
 
-            RetrieveElementChildren('Neighbourhood/sectorNeighbourhood?sector=municipality&id=' + municipalityId, hoodDropDownList)
+            RetrieveElementChildren('Suburb/sectorNeighbourhood?sector=municipality&id=' + municipalityId, hoodDropDownList)
             addressMunicipalityid = municipalityId;
 
             if (previewMunicipality) {
@@ -175,7 +175,7 @@ $(document).ready(function () {
 
             var districtId = event.target.value;
 
-            RetrieveElementChildren('Neighbourhood/sectorNeighbourhood?sector=districts&id=' + districtId, hoodDropDownList)
+            RetrieveElementChildren('Suburb/sectorNeighbourhood?sector=districts&id=' + districtId, hoodDropDownList)
             addressDistrictid = districtId;
 
             if (previewDistrict) {
@@ -191,7 +191,7 @@ $(document).ready(function () {
 
             var cityId = event.target.value;
 
-            RetrieveElementChildren('Neighbourhood/sectorNeighbourhood?sector=city&id=' + cityId, hoodDropDownList)
+            RetrieveElementChildren('Suburb/sectorNeighbourhood?sector=city&id=' + cityId, hoodDropDownList)
             addressCityid = cityId;
 
             if (previewCity) {

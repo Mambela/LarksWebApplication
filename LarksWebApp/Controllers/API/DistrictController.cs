@@ -5,6 +5,7 @@ using LarksWebApp.Repository.DistrictRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace LarksWebApp.Controllers.API
 {
@@ -51,7 +52,24 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
+        [HttpGet]
+        [Route("districtsinprovice")]
+        public IActionResult GetDistrictsInProvince(int provinceID) {
 
+            try
+            {
+                var districtObjList = _districtRepository.GetDistrictModels(provinceID);
+
+                var districtDTOList = _mapper.Map<List<DistrictDTO>>(districtObjList);
+
+                return Ok(districtDTOList);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError(ex.Message);
+                return BadRequest("Failed to retrieve districts in province");
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> CreateDistrict(Create_Districts_DTO createDistrictDTO)
         {
@@ -70,7 +88,7 @@ namespace LarksWebApp.Controllers.API
                 }
 
 
-                if (_districtRepository.VerifyDistrictExist(createDistrictDTO.Designation, createDistrictDTO.ProvinceId) ==null)
+                if (_districtRepository.VerifyDistrictExist(createDistrictDTO.Designation, createDistrictDTO.ProvinceId) !=null)
                 {
                     ModelState.AddModelError("", $"The record {createDistrictDTO.Designation} already exists in this province");
 

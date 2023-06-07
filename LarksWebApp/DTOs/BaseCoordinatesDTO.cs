@@ -3,9 +3,9 @@
     public class BaseCoordinatesDTO
     {
 
-        public double lat { get; set; }
+        public decimal lat { get; set; }
 
-        public double lng { get; set; }
+        public decimal lng { get; set; }
 
     }
 }

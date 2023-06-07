@@ -98,7 +98,7 @@ $(document).ready(function () {
                 $hiddenInput.val(selectedMunicipalityId);
 
 
-                var endPoint = "api/Hood/sectorNeighbourhood?sector=municipality&id=" + selectedMunicipalityId;
+                var endPoint = "api/Suburb/sectorNeighbourhood?sector=municipality&id=" + selectedMunicipalityId;
 
                 console.log('Municipality Id ', selectedMunicipalityId);
                 FetchChildNodes(endPoint, '#dataListNeighbourhood');

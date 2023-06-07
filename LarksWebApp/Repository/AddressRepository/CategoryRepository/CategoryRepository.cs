@@ -45,9 +45,18 @@ namespace LarksWebApp.Repository.CategoryRepository
             
         }
 
-        public IList<CategoryModel> GetAllCategories()
+        public IList<CategoryModel> GetAllCategories(string lng=null)
         {
-            return _dbContext.Categories.ToList();
+            if(lng != null)
+            { 
+                return _dbContext.Categories
+                .Where(c =>c.Lng.ToLower().Trim() == lng.ToLower().Trim())
+                .ToList();
+            }
+
+            return _dbContext.Categories
+            .ToList();
+
         }
 
         public CategoryModel GetCategoryById(int id)

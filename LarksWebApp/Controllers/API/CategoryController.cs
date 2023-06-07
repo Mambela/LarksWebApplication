@@ -29,11 +29,11 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet]
-        public IActionResult GetCategories()
+        public IActionResult GetCategories(string lang)
         {
             try
             {
-                var listofCategoriesObj = _categoryRepository.GetAllCategories();
+                var listofCategoriesObj = _categoryRepository.GetAllCategories(lang);
 
                 var ListofCategoriesDTO = new List<CategoryDTO>();
 
@@ -105,14 +105,14 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpPatch]
-        public IActionResult UpdateCategory([FromBody] CreateCategoryDTO categoryDTO, int categoryID)
+        public IActionResult UpdateCategory([FromBody] CreateCategoryDTO categoryDTO, int categoryId)
         {
 
             try
             {
 
 
-                if (categoryDTO == null || categoryDTO.Id != categoryID)
+                if (categoryDTO == null || categoryDTO.Id != categoryId)
                 {
                     return BadRequest(ModelState);
                 }

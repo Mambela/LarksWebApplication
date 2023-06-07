@@ -32,6 +32,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Net.Http.Headers;
 using LarksWebApp.Repository.AddressRepository.HooksRepository;
 using LarksWebApp.Services.WebHooks;
+using LarksWebApp.Services.UserManager;
+using LarksWebApp.Repository.TokenRepository;
+using LarksWebApp.Services.PaginationService;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -142,13 +146,19 @@ var app = builder.Build();
 
 
 //app.UseDatabserrorPages();
+
+
+/*
+ * Update IP Address
+ * **/
+
 app.UseDeveloperExceptionPage();
 app.UseMigrationsEndPoint();
 
 
 ConfigureRolesServices(builder.Services);
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -211,6 +221,17 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<ILocationRepository, LocationRepository>();
     services.AddScoped<IHooksRepository,HooksRepository>();
     services.AddScoped<IWebhookService, WebHookService>();
+    services.AddScoped<IUserService, UserService>();
+    services.AddScoped<ITokenManager, TokenManager>();
+    services.AddSingleton<IUriService>(o =>
+    {
+        var accessor = o.GetRequiredService<IHttpContextAccessor>();
+        var request = accessor.HttpContext.Request;
+        var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+        return new UriService(uri);
+    });
+
+
 
 
     //var httpFactory = new IHttpClientFactory();
@@ -222,6 +243,8 @@ void ConfigureServices(IServiceCollection services)
     {
         options.HtmlHelperOptions.ClientValidationEnabled = true;
     });
+
+     
 }
 
 

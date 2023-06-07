@@ -25,5 +25,7 @@ namespace LarksWebApp.DTOs.DTO_Addresses
         public string FullAddress { get; set; }
 
         public BaseCoordinatesDTO Coordinates { get; set; }
+
+        
     }
 }

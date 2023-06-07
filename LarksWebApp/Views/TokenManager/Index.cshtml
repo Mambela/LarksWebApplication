@@ -1,5 +1,61 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model IList<LarksWebApp.DTOs.DTO_Tokens.AuthTokenDTO>
 @{
+    ViewData["Title"] = "Token Manager";
 }
+<h3 >List of tokens</h3>
+
+
+<div class="row justify-content-end">
+   @Html.ActionLink("New token","create")  
+
+</div>
+<br />
+<div class="row">
+    <div class="col-md-12">
+
+    @*    <p>This is the list of your tokens. You can track your tokens accoringly. You can only have 5 tokens. </p>*@
+
+    </div>
+
+    <div class="col-md-12">
+           
+               @foreach(var  token in Model)
+               {
+                    
+                        <div class="row">
+                            <div class="col-md-3">
+                                <h6>Token Name</h6> <p> @Html.DisplayFor(item =>token.Name)</p> 
+                            </div>
+                            <div class="col-md-2">
+                                <h6>Expires on</h6> <p> @Convert.ToDateTime(token.ExpiryDate).ToString("dd/MM/yyyy")</p>
+                            </div>
+                           
+                            <div class="row">
+                                <div class="col-md-12 bg-light bg-opacity-75">
+                                    <p class="text-break fs-6">
+                                        <code>
+                                            @Html.DisplayFor(item =>token.Value)
+                                        </code>
+                                    </p>
+                                </div>
+                                
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    Edit
+                                </div>
+                                <div class="col-md-2">
+                                    @Html.ActionLink("DELETE","delete",new {token.Id})
+                                </div>
+                                 
+
+                            </div>
+                        </div>
+                        <hr>
+               
+                   
+                }
+       
+    </div>
+
+</div> 

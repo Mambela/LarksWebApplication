@@ -50,6 +50,27 @@ namespace LarksWebApp.Controllers.API
           
         }
 
+        [HttpGet("ProvincesInCountry")]
+        public IActionResult GetProvincesinCountry(string countryname)
+        {
+            try
+            {
+                var provincesObj = _provinceRepository.GetProvincesInCountry(countryname);
+
+                var proviceDTO= new List<ProvinceDTO>();
+
+                proviceDTO= _mapper.Map<List<ProvinceDTO>>(provincesObj);
+
+                return Ok(proviceDTO);
+
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError(ex.Message);
+                return BadRequest("Failed to retrieve coutry");
+            }
+        }
+
         [HttpGet("Province")]
         public IActionResult GetProvince(int provinceID)
         {
@@ -99,42 +120,43 @@ namespace LarksWebApp.Controllers.API
                     return StatusCode(StatusCodes.Status500InternalServerError, provinceDTO);
                 }
 
-
-                if (provinceDTO.Points.Count > 2)
+                if (provinceDTO.Points.Count == null)
                 {
-                    var provinceCoordinatesList = new List<ProvinceCoordinates>();
-
-                    foreach (var point in provinceDTO.Points)
+                    if (provinceDTO.Points.Count > 2)
                     {
-                        var provinceCoordinate = new ProvinceCoordinates
+                        var provinceCoordinatesList = new List<ProvinceCoordinates>();
+
+                        foreach (var point in provinceDTO.Points)
                         {
-                            ProvinceId = provinceObj.Id,
-                            lat = point.lat,
-                            lng = point.lng
-                        };
+                            var provinceCoordinate = new ProvinceCoordinates
+                            {
+                                ProvinceId = provinceObj.Id,
+                                lat = point.lat,
+                                lng = point.lng
+                            };
 
-                        provinceCoordinatesList.Add(provinceCoordinate);
+                            provinceCoordinatesList.Add(provinceCoordinate);
+
+                        }
+
+
+                        if (!await _coordinatesRepository.CreateProvinceCoordinates(provinceCoordinatesList))
+                        {
+                            ModelState.AddModelError("", $" Something went wrong while creating the record {provinceObj.Designation} coordinates");
+
+                            return StatusCode(StatusCodes.Status500InternalServerError, provinceDTO);
+                        }
 
                     }
-
-
-                    if (!await _coordinatesRepository.CreateProvinceCoordinates(provinceCoordinatesList))
+                    else
                     {
-                        ModelState.AddModelError("", $" Something went wrong while creating the record {provinceObj.Designation} coordinates");
 
-                        return StatusCode(StatusCodes.Status500InternalServerError, provinceDTO);
+                        string message = "Province has been saved, please note that the coordinates have not been saved. You need at least 3 coordinates to make a polygon.";
+
+                        return StatusCode(StatusCodes.Status201Created, message);
+
                     }
-
                 }
-                else
-                {
-
-                    string message = "Province has been saved, please note that the coordinates have not been saved. You need at least 3 coordinates to make a polygon.";
-
-                    return StatusCode(StatusCodes.Status201Created, message);
-
-                }
-
                 provinceDTO.Id = provinceObj.Id;
 
 

@@ -7,7 +7,11 @@ namespace LarksWebApp.Repository.AddressRepository.HooksRepository
 
         Task<bool> CreateHookAsync(HooksModel model);
 
-        HooksModel GetHooksModel(int id);
+        HooksModel GetHook(int id);
+
+        bool DeleteWebHook(int id);
+
+        bool UpdateWebHook(HooksModel model);
 
         IList<HooksModel> GetHooksList();
         IList<HooksModel> GetHooksList(string userId);

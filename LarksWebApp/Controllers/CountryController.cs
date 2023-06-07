@@ -63,7 +63,7 @@ namespace LarksWebApp.Controllers
                     provincesListDTO.Add(_mapper.Map<ProvinceDTO>(province));
                 }
 
-                countryDTO.ProvincesDTO = provincesListDTO;
+                countryDTO.Provinces = provincesListDTO;
 
                 TempData["countryID"]= countryDTO.Id;
 
@@ -77,9 +77,6 @@ namespace LarksWebApp.Controllers
 
             
         }
-
-
-
 
         // GET: CountryController/Create
         public ActionResult Create()

@@ -7,9 +7,9 @@ namespace LarksWebApp.Models.CoordinatesModel
 
         public int Id { get; set; }
 
-        public double lat { get; set; }
+        public decimal lat { get; set; }
 
-        public double lng { get; set; }
+        public decimal lng { get; set; }
 
     }
 }

@@ -10,8 +10,10 @@ using LarksWebApp.DTOs.DTO_Neighbourhoods;
 using LarksWebApp.DTOs.DTO_Provinces;
 using LarksWebApp.DTOs.DTO_Streets;
 using LarksWebApp.DTOs.DTO_Subcategory;
+using LarksWebApp.DTOs.DTO_Tokens;
 using LarksWebApp.Models;
 using LarksWebApp.Models.CoordinatesModel;
+using LarksWebApp.Models.Users;
 
 namespace LarksWebApp.DAL
 {
@@ -24,7 +26,7 @@ namespace LarksWebApp.DAL
             CreateMap<ProvinceModel, Create_Province_DTO>().ReverseMap();
             CreateMap<MunicipalityModel, Create_Municipality_DTO>().ReverseMap();
             CreateMap<DistrictModel, Create_Districts_DTO>().ReverseMap();
-            CreateMap<SuburbModel, Create_neighbourhood_DTO>().ReverseMap();
+            CreateMap<SuburbModel, Create_suburb_DTO>().ReverseMap();
             CreateMap<StreetModel, Create_Street_DTO>().ReverseMap();
             CreateMap<AddressModel, Create_Addresses_DTO>().ReverseMap();
             CreateMap<CityModel, Create_City_DTO>().ReverseMap();
@@ -42,7 +44,13 @@ namespace LarksWebApp.DAL
             CreateMap<StreetCoordinates, BaseCoordinatesDTO>().ReverseMap();
             CreateMap<LocationModel, LocationDTO>().ReverseMap();
             CreateMap<HooksModel, HooksDTO>().ReverseMap();
-
+            CreateMap<AuthToken, AuthTokenDTO>().ReverseMap();
+            CreateMap<ViewLocationDTO, LocationModel>().ReverseMap();
+            CreateMap<ViewLocationDTO, LocationObj>().ReverseMap();
+            CreateMap<ViewCountryDTO,CountryModel>().ReverseMap();
+            CreateMap<ViewProvinceDTO,ProvinceModel>().ReverseMap();
+            
+       
         }
 
     }

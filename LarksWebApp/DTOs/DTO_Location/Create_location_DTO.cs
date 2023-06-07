@@ -7,6 +7,7 @@ namespace LarksWebApp.DTOs.DTO_Location
     public class Create_Location_DTO
     {
 
+        public int? Id { get; set; }
         [Required(ErrorMessage = "Please enter a designation for this location")]
         public string Designation { get; set; }
 
@@ -15,30 +16,26 @@ namespace LarksWebApp.DTOs.DTO_Location
 
         public IList<CountryDTO>? ListofCountryDTO { get; set; }
 
-        //public int ProvinceID { get; set; }
+        public int MunicipalityID { get; set; }
 
-        //public int MunicipalityID { get; set; }
+        public int SuburbId { get; set; }
+        public int CityId { get; set; }
 
-        //public int NeighbourhoodId { get; set; }
-        //public int StreetID { get; set; }
+        public IList<int> SubCategories { get; set; }
 
-        //public int AddressId { get; set; }
-
-
-        //public int SubCategoryId { get; set; }
-
-
-        [Required(ErrorMessage = "Please select files")]
-        public List<IFormFile> Files { get; set; }
+        
+        public List<IFormFile>? Files { get; set; }
 
         [Required(ErrorMessage = "Please add additional Information")]
         public string AdditionalInfo { get; set; }
 
+        
 
         public int CategoryId { get; set; }
 
         public IList<CategoryDTO>? ListOfCategories { get; set; }
 
+        #region Hidden Values
         public int searchCountryId_hidden { get; set; }
         public int searchProvince_hidden { get; set; }
         public int searchMunicipality_hidden { get; set; }
@@ -56,6 +53,10 @@ namespace LarksWebApp.DTOs.DTO_Location
 
         [Required(ErrorMessage = "Please select a subcategory")]
         public int searchSubcategoryId_hidden { get; set; }
+        #endregion
+        public decimal Lat { get; set; }
+
+        public decimal Lng { get; set; }
 
     }
 }

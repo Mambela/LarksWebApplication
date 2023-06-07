@@ -87,7 +87,7 @@ namespace LarksWebApp.Controllers
                     return RedirectToAction(nameof(Index),"Country");
                 }
 
-                var createNeighbourhood = new Create_neighbourhood_DTO();
+                var createNeighbourhood = new Create_suburb_DTO();
 
                 var provinceDTO = _mapper.Map<ProvinceDTO>(provinceObj);
 

@@ -84,7 +84,7 @@ namespace LarksWebApp.Controllers.API
         
                 if (municipalityDTO == null) return BadRequest();
 
-                if (_municipalityRepository.VerifyMunicipalityExist(municipalityDTO.Designation, municipalityDTO.ProvinceId) == null)
+                if (_municipalityRepository.VerifyMunicipalityExist(municipalityDTO.Designation, municipalityDTO.ProvinceId) != null)
                 {
                     ModelState.AddModelError("", $"The record {municipalityDTO.Designation} already exists as a country");
 
@@ -110,7 +110,7 @@ namespace LarksWebApp.Controllers.API
                 }
 
 
-                if (!municipalityDTO.IsUpdateCoordinates)
+                if (municipalityDTO.IsUpdateCoordinates)
                 {
                     if (municipalityDTO.Points.Count > 2)
                     {
@@ -157,7 +157,6 @@ namespace LarksWebApp.Controllers.API
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-
 
 
         [HttpPatch]

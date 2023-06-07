@@ -64,7 +64,7 @@ namespace LarksWebApp.Repository.HoodRepository
         {
 
 
-            if (sector == "districts")
+            if (sector == "district")
             {
                 return _dbContext.Suburb.Where(c => c.DistrictId == id).ToList();
             }
@@ -115,6 +115,12 @@ namespace LarksWebApp.Repository.HoodRepository
         public SuburbModel GetSuburbInMunicipality(string designation, string municipalityId)
         {
             throw new NotImplementedException();
+        }
+
+        public IList<SuburbModel> GetNeighbourhoodModels(int districtId, int municipalityId, int cityId)
+        {
+
+            return _dbContext.Suburb.Where(s => s.DistrictId == districtId || s.MunicipalityId == municipalityId || s.CityId == cityId).ToList();
         }
     }
 }

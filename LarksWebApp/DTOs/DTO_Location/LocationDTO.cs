@@ -1,4 +1,6 @@
 ﻿using LarksWebApp.DTOs.DTO_Addresses;
+using LarksWebApp.DTOs.DTO_Category;
+using LarksWebApp.DTOs.DTO_Subcategory;
 
 namespace LarksWebApp.DTOs.DTO_Location
 {
@@ -17,7 +19,7 @@ namespace LarksWebApp.DTOs.DTO_Location
         public string Category { get; set; }
 
         public int SubcategoryId { get; set; }
-        public string Subcategory { get; set; }
+        public  IEnumerable<SubCategoryDTO> Subcategory { get; set; }
 
         public string StreetName { get; set; }
 
@@ -27,5 +29,8 @@ namespace LarksWebApp.DTOs.DTO_Location
         public int AddressId { get; set; }
 
         public IList<string> Images { get; set; }
+
+        public decimal Lat { get; set; }
+        public decimal Lng { get; set; }
     }
 }

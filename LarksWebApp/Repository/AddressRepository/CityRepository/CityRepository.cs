@@ -42,6 +42,11 @@ namespace LarksWebApp.Repository.CityRepository
             return Save();
         }
 
+        public IList<CityModel> GetAllCitiesInCountry(int countryId)
+        {
+            return _dbContext.Cities.Where(c =>c.Province.CountryId == countryId).ToList(); 
+        }
+
         public IList<CityModel> GetAllCitiesInProvince(int provinceId)
         {
             return _dbContext.Cities.Where(p => p.ProvinceId == provinceId).ToList();
@@ -50,6 +55,11 @@ namespace LarksWebApp.Repository.CityRepository
         public CityModel GetCity(int id)
         {
             return _dbContext.Cities.Include(c => c.Neighbourhoods.Where(n => n.Id == id)).FirstOrDefault();   
+        }
+
+        public CityModel RetrieveCity(int id)
+        {
+            return _dbContext.Cities.FirstOrDefault(c => c.Id == id);
         }
 
         public bool Save()

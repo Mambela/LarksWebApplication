@@ -1,4 +1,5 @@
-﻿using LarksWebApp.Models;
+﻿using LarksWebApp.DTOs.PaginationDTO;
+using LarksWebApp.Models;
 
 namespace LarksWebApp.Repository.LocationRepository
 {
@@ -13,8 +14,16 @@ namespace LarksWebApp.Repository.LocationRepository
 
         IList<LocationModel> GetSubcategoryLocations(int SubcategoryId);
 
-        IList<LocationModel> GetNeighbourhoodLocations(int LocationId);
-        IList<LocationModel> GetStreetLocations(int Street);
+        IList<LocationModel> GetSuburbLocations(int suburbId);
+
+        IList<LocationModel> LocationToInDistanceAsync(decimal lat,decimal lng,double distance,PaginationFilter pagination);
+        IList<LocationModel> LocationCategoryByDistance(decimal lat,decimal lng,double distance,PaginationFilter pagination, int categoryId);
+      
+        int LocationCount(decimal lat,decimal lng,double distance, PaginationFilter pagination,string searchType, int CategoryId=0);
+
+        int CountLocations(decimal lat, decimal lng, double distance,int categoryId = 0);
+
+        Task<bool> Createlocationsubcategory(IEnumerable<LocationModelSubcategoryModel> Subcategory);
 
         Task<IList<LocationImageModel>> CreateLocationImage(IList<LocationImageModel> imageListLocation);
 

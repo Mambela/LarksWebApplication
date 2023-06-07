@@ -7,7 +7,7 @@
 
         public string HookName { get; set; }
 
-        public int CrimeId { get; set; }
+        public int responseId { get; set; }
 
         public string? UserId { get; set; }
 

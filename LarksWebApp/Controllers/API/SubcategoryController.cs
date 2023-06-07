@@ -77,10 +77,10 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("Allsubcategories")]
-        public IActionResult GetSubcategories()
+        public IActionResult GetSubcategories(string lang)
         {
 
-            var listofSubcategoriesObj = _subcategoryRepository.GetAllSubCategories();
+            var listofSubcategoriesObj = _subcategoryRepository.GetAllSubCategories(lang);
 
             var listOfSubcategoriesDTO = _mapper.Map<List<SubCategoryDTO>>(listofSubcategoriesObj);
 
@@ -98,13 +98,23 @@ namespace LarksWebApp.Controllers.API
             return Ok(listOfSubcategoriesDTO);
         }
 
+        [HttpGet("Subcategory")]
+        public IActionResult GetSubcategory(int Id)
+        {
+            try
+            {
+                var subCategory = _subcategoryRepository.GetSubcateogryById(Id);
 
-        //[HttpGet("subCategoryId:int", Name = "getAllsubcategories")]
-        //public IActionResult GetSubcategory(int subCategoryId)
-        //{
+                var subcategoryDTO = _mapper.Map<SubCategoryDTO>(subCategory);
 
-        //    return Ok();
-        //}
+                return Ok(subcategoryDTO);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Error retrieving subcategory " + ex.Message);
+                return BadRequest("Failed to return a category");
+            }
+        }
 
 
         [HttpDelete]
@@ -112,6 +122,8 @@ namespace LarksWebApp.Controllers.API
         {
             try
             {
+
+
                 return Ok();
             }
             catch (Exception)
@@ -122,13 +134,26 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpPatch]
-        public IActionResult UpdateSubcategory()
+        public IActionResult UpdateSubcategory(Create_subcategoryDTO create_SubcateogryDTO,int subcategoryId)
         {
-
             try
             {
 
-                return Ok();
+                if(create_SubcateogryDTO == null ||  subcategoryId != create_SubcateogryDTO.Id)
+                {
+                    return BadRequest();
+                }
+
+
+                var subcategoryObj = _mapper.Map<SubcategoryModel>(create_SubcateogryDTO);
+
+
+                if (!_subcategoryRepository.UpdateSubCategory(subcategoryObj))
+                {
+                    return BadRequest();
+                }
+
+                return NoContent();
 
             }
             catch (Exception)

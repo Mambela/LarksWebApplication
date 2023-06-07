@@ -57,7 +57,7 @@ namespace LarksWebApp.DTOs.DTO_Addresses
         public string ?Municipality { get; set; }
 
         [JsonProperty("county")]
-        public string? county { get; set; }
+        public string? County { get; set; }
 
         [JsonProperty("city_district")]
         public string ?City_District { get; set; }

@@ -20,6 +20,7 @@ namespace LarksWebApp.Repository.HoodRepository
         IList<SuburbModel> GetNeighbourhoodModels();
 
         IList<SuburbModel> GetNeighbourhoodModels(string sector, int id);
+        IList<SuburbModel> GetNeighbourhoodModels(int districtId, int municipalityId,int cityId);
 
 
         IList<SuburbModel> GetNeighbourhoodInDistricts(int districtiD);

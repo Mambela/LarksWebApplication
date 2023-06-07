@@ -3,6 +3,7 @@ using LarksWebApp.DTOs.DTO_Addresses;
 using LarksWebApp.Models;
 using LarksWebApp.Models.Users;
 using LarksWebApp.Repository.AddressRepository.HooksRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using System.Security.Claims;
 
 namespace LarksWebApp.Controllers
 {
+    [Authorize]
     public class ManageWebHooksController : Controller
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -58,7 +60,24 @@ namespace LarksWebApp.Controllers
         // GET: ManageWebHooksController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            try
+            {
+                var hookObj = hooksRepository.GetHook(id);
+
+                if (hookObj == null)
+                {
+                    return View();
+                }
+
+                var hookDTO = mapper.Map<HooksDTO>(hookObj);
+
+                return View(hookDTO);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         // GET: ManageWebHooksController/Create
@@ -128,7 +147,24 @@ namespace LarksWebApp.Controllers
         // GET: ManageWebHooksController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            try
+            {
+                var hookObj = hooksRepository.GetHook(id);
+
+                if (hookObj == null)
+                {
+                    return View();
+                }
+
+                var hookDTO = mapper.Map<HooksDTO>(hookObj);
+
+                return View(hookDTO);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         // POST: ManageWebHooksController/Edit/5
@@ -138,9 +174,53 @@ namespace LarksWebApp.Controllers
         {
             try
             {
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                string userId = "";
+
+                if (claimsIdentity != null)
+                {
+                    // the principal identity is a claims identity.
+                    // now we need to find the NameIdentifier claim
+                    var userIdClaim = claimsIdentity.Claims
+                        .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
+
+
+                    if (userIdClaim != null)
+                    {
+
+                        // var userIdValue = userIdClaim.Value;
+                        userId = userIdClaim.Value.ToString();
+
+                    }
+                }
+
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+ 
+
+                var updateHookObj = new HooksModel
+                {
+                    Id = id,
+                    ApplicationUserId = userId,
+                    Designation = collection["designation"],   
+                    IsActive = true,
+                    Owner = collection["owner"],
+                    EndPoint = collection["endPoint"],
+                    Method = collection["method"]
+            };
+
+                if (! hooksRepository.UpdateWebHook(updateHookObj))
+                {
+                    return BadRequest();
+                }
+
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
                 return View();
             }
@@ -149,7 +229,24 @@ namespace LarksWebApp.Controllers
         // GET: ManageWebHooksController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            try
+            {
+                var hookObj = hooksRepository.GetHook(id);
+
+                if (hookObj == null)
+                {
+                    return View();
+                }
+
+                var hookDTO = mapper.Map<HooksDTO>(hookObj);
+
+                return View(hookDTO);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         // POST: ManageWebHooksController/Delete/5
@@ -159,6 +256,8 @@ namespace LarksWebApp.Controllers
         {
             try
             {
+                hooksRepository.DeleteWebHook(id);
+
                 return RedirectToAction(nameof(Index));
             }
             catch

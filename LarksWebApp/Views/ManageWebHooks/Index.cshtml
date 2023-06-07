@@ -27,8 +27,10 @@
                 <th cope="col">Owner</th>
                 <th cope="col">End Point</th>
                 <th cope="col">Method</th>
-                <th cope="col">Details</th>
                 <th>Active Hook</th>
+                <th cope="col">Details</th>
+                <th cope="col"></th>
+                <th cope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -39,7 +41,6 @@
                     <td>@Html.DisplayFor(item =>hook.Owner)</td>
                     <td>@Html.DisplayFor(item =>hook.EndPoint)</td>
                     <td>@Html.DisplayFor(item =>hook.Method)</td>
-                    <td>@Html.ActionLink("Details","Details",new {hook.Id})</td>
                     <td>
                         @if (hook.IsActive)
                         {
@@ -51,6 +52,10 @@
                         }
 
                     </td>
+                    <td>@Html.ActionLink("Details","Details",new {hook.Id})</td>
+                    <td>@Html.ActionLink("Edit","Edit",new {hook.Id})</td>
+                    <td>@Html.ActionLink("Delete","Delete",new {hook.Id})</td>
+                    
                     @*<td>@Html.DisplayFor(item =>hook.IsActive ?"Active":"Not Active")</td>*@
                 </tr>
             }

@@ -109,6 +109,7 @@ namespace LarksWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([FromForm] Create_Location_DTO locationCollection, IList<IFormFile> Files)
         {
+
             try
             {
 
@@ -118,11 +119,11 @@ namespace LarksWebApp.Controllers
 
                     locationCollection.ListofCountryDTO = _mapper.Map<List<CountryDTO>>(listofCountry);
 
-                    locationCollection.ListOfCategories =  _mapper.Map<List<CategoryDTO>>(_categoryRepo.GetAllCategories());
+                    locationCollection.ListOfCategories = _mapper.Map<List<CategoryDTO>>(_categoryRepo.GetAllCategories());
 
                     return View(locationCollection);
                 }
-                
+
 
 
                 var savedImages = new List<string>();
@@ -139,11 +140,13 @@ namespace LarksWebApp.Controllers
 
                 // Save the Location first then use the object.
 
-                var locationObj = new LocationModel 
+                var locationObj = new LocationModel
                 {
                     AddressId = locationCollection.searchAddress_hidden,
                     CategoryId = locationCollection.searchCategoryId_hidden,
-                    SubcategoryId = locationCollection.searchSubcategoryId_hidden,
+                    MunicipalityId = locationCollection.MunicipalityID,
+                    CityId = locationCollection.CityId,
+                    SuburbId = locationCollection.SuburbId,
                     Designation = locationCollection.Designation,
                     AdditionalInformation = locationCollection.AdditionalInfo
                 };
@@ -155,6 +158,7 @@ namespace LarksWebApp.Controllers
                 }
 
 
+             
 
                 foreach (var image in savedImages)
                 {
@@ -183,6 +187,7 @@ namespace LarksWebApp.Controllers
                 logger.LogError("Error thrown when creating location "+ ex.Message);
                 return View();
             }
+        
         }
 
         // GET: LocationController/Edit/5

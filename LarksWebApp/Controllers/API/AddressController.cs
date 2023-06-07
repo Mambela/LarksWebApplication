@@ -39,12 +39,12 @@ namespace LarksWebApp.Controllers.API
         private readonly IConfiguration config;
 
         public AddressController(
-            IAddressRepository addressRepository, IMapper mapper, 
-            ILoggerTrace serviceLogger,ICountryRepository _countryRepo,
-            IProvinceRepository _provinceRepository,ICityRepository _cityRepository,
+            IAddressRepository addressRepository, IMapper mapper,
+            ILoggerTrace serviceLogger, ICountryRepository _countryRepo,
+            IProvinceRepository _provinceRepository, ICityRepository _cityRepository,
             ISuburbRepository _neighbourhood, IDistrictRepository _districtRepository,
-            IMunicipalityRepository  _municipalityRepo,
-            IHooksRepository _hookRepository,IWebhookService _webHookService,
+            IMunicipalityRepository _municipalityRepo,
+            IHooksRepository _hookRepository, IWebhookService _webHookService,
             IConfiguration configuration)
         {
             _addressRepository = addressRepository;
@@ -67,7 +67,7 @@ namespace LarksWebApp.Controllers.API
         public IActionResult GetAddress(int addressId)
         {
             try
-            { 
+            {
 
                 var addressObj = _addressRepository.GetAddress(addressId);
                 if (addressObj == null)
@@ -139,12 +139,12 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("NeighbourhoodAddress")]
-        public IActionResult GetNeighbourhoodAddress(int neighbourhoodId)
+        public IActionResult GetNeighbourhoodAddress(int suburbId)
         {
 
             try
             {
-                var addressObjList = _addressRepository.GetAddressesInNeighbourhood(neighbourhoodId);
+                var addressObjList = _addressRepository.GetAddressesInSuburb(suburbId);
 
                 var viewAddressDTOList = new List<ViewAddressDTO>();
 
@@ -267,7 +267,7 @@ namespace LarksWebApp.Controllers.API
         [Route("CreateCountryDemographicDivision")]
         public async Task<IActionResult> CreateLocationEntity(NominatimAddressDTO nominatimAddressDTO)
         {
-             
+
             try
             {
                 int activeCountryId = 0, activeProvinceId = 0, activeMunicipalityId = 0, activeCityId = 0, activeDisctrictId = 0, activeSuburb = 0;
@@ -295,7 +295,7 @@ namespace LarksWebApp.Controllers.API
 
                 #region Province
 
-                var currentProvinceOBJ = (nominatimAddressDTO.Address.Province != null) ? nominatimAddressDTO.Address.Province : (nominatimAddressDTO.Address.State !=null) ? nominatimAddressDTO.Address.State : nominatimAddressDTO.Address.City;
+                var currentProvinceOBJ = (nominatimAddressDTO.Address.Province != null) ? nominatimAddressDTO.Address.Province : (nominatimAddressDTO.Address.State != null) ? nominatimAddressDTO.Address.State : nominatimAddressDTO.Address.City;
 
                 var province = provinceRepository.VerifyProvinceExist(currentProvinceOBJ, country.Id);
 
@@ -386,7 +386,7 @@ namespace LarksWebApp.Controllers.API
 
                 #region Municipality Manipulation
 
-                var currentMunicipality = (nominatimAddressDTO.Address.Municipality != null) ? nominatimAddressDTO.Address.Municipality : nominatimAddressDTO.Address.county;
+                var currentMunicipality = (nominatimAddressDTO.Address.Municipality != null) ? nominatimAddressDTO.Address.Municipality : nominatimAddressDTO.Address.County;
 
                 if (currentMunicipality != null)
                 {
@@ -406,7 +406,7 @@ namespace LarksWebApp.Controllers.API
                         }
 
                     }
-                        activeMunicipalityId = municipality.Id;
+                    activeMunicipalityId = municipality.Id;
                 }
                 #endregion
 
@@ -417,18 +417,18 @@ namespace LarksWebApp.Controllers.API
                     CityId = (activeCityId == 0) ? null : activeCityId,
                     DistrictId = (activeDisctrictId == 0) ? null : activeDisctrictId,
                     MunicipalityId = (activeMunicipalityId == 0) ? null : activeMunicipalityId,
-                    Designation = (nominatimAddressDTO.Address.Suburb == null) ? nominatimAddressDTO.Address.Suburb : (nominatimAddressDTO.Address.City_District !=null) ? nominatimAddressDTO.Address.City_District:(nominatimAddressDTO.Address.Town == null) ? nominatimAddressDTO.Address.City : nominatimAddressDTO.Address.Town
+                    Designation = (nominatimAddressDTO.Address.Suburb == null) ? nominatimAddressDTO.Address.Suburb : (nominatimAddressDTO.Address.City_District != null) ? nominatimAddressDTO.Address.City_District : (nominatimAddressDTO.Address.Town == null) ? nominatimAddressDTO.Address.City : nominatimAddressDTO.Address.Town
 
                 };
 
 
                 //Check if this Suburb doesn't exist 
-                if (suburbRepository.VerifySuburbExist(nominatimAddressDTO.Address.Suburb,activeMunicipalityId,activeCityId,activeDisctrictId) ==null)
+                if (suburbRepository.VerifySuburbExist(nominatimAddressDTO.Address.Suburb, activeMunicipalityId, activeCityId, activeDisctrictId) == null)
                 {
                     //suburb doesn't exist let's create it
                     if (await suburbRepository.CreateSuburb(suburb) == null)
                     {
-                        
+
                     }
                 }
 
@@ -446,7 +446,7 @@ namespace LarksWebApp.Controllers.API
                 //{
                 //    suburbId=activeSuburb,
                 //    municipalityId =activeMunicipalityId,
-                    
+
                 //};
 
                 #endregion
@@ -473,6 +473,7 @@ namespace LarksWebApp.Controllers.API
 
                 int activeCountryId = 0, activeProvinceId = 0, activeMunicipalityId = 0, activeCityId = 0, activeDisctrictId = 0, activeSuburb = 0;
 
+
                 var country = countryRepository.CountryExistis(nominatimAddressDTO.Address.Country);
 
                 if (addressGeolocationDTO == null)
@@ -483,7 +484,7 @@ namespace LarksWebApp.Controllers.API
                 if (!ModelState.IsValid)
                 {
 
-                    return BadRequest(ModelState);    
+                    return BadRequest(ModelState);
                 }
 
 
@@ -599,7 +600,7 @@ namespace LarksWebApp.Controllers.API
 
                 #region Municipality Manipulation
 
-                var currentMunicipality = (nominatimAddressDTO.Address.Municipality != null) ? nominatimAddressDTO.Address.Municipality : nominatimAddressDTO.Address.county;
+                var currentMunicipality = (nominatimAddressDTO.Address.Municipality != null) ? nominatimAddressDTO.Address.Municipality : nominatimAddressDTO.Address.County;
 
                 if (currentMunicipality != null)
                 {
@@ -625,25 +626,27 @@ namespace LarksWebApp.Controllers.API
 
                 #region UpdateSuburb
 
-                var suburb = new SuburbModel
+                //Verify that Suburb Exists.
+                var suburb = suburbRepository.VerifySuburbExist(nominatimAddressDTO.Address.Suburb, activeMunicipalityId, activeCityId, activeDisctrictId);
+
+                if (suburb == null)
                 {
-                    CityId = (activeCityId == 0) ? null : activeCityId,
-                    DistrictId = (activeDisctrictId == 0) ? null : activeDisctrictId,
-                    MunicipalityId = (activeMunicipalityId == 0) ? null : activeMunicipalityId,
-                    Designation = (nominatimAddressDTO.Address.Suburb == null) ? nominatimAddressDTO.Address.Suburb : (nominatimAddressDTO.Address.City_District != null) ? nominatimAddressDTO.Address.City_District : (nominatimAddressDTO.Address.Town == null) ? nominatimAddressDTO.Address.City : nominatimAddressDTO.Address.Town
+                    suburb = new SuburbModel
+                    {
+                        CityId = (activeCityId == 0) ? null : activeCityId,
+                        DistrictId = (activeDisctrictId == 0) ? null : activeDisctrictId,
+                        MunicipalityId = (activeMunicipalityId == 0) ? null : activeMunicipalityId,
+                        Designation = (nominatimAddressDTO.Address.Suburb != null) ? nominatimAddressDTO.Address.Suburb : (nominatimAddressDTO.Address.City_District != null) ? nominatimAddressDTO.Address.City_District : (nominatimAddressDTO.Address.Town == null) ? nominatimAddressDTO.Address.City : nominatimAddressDTO.Address.Town
 
-                };
+                    };
 
-
-                //Check if this Suburb doesn't exist 
-                if (suburbRepository.VerifySuburbExist(nominatimAddressDTO.Address.Suburb, activeMunicipalityId, activeCityId, activeDisctrictId) == null)
-                {
-                    //suburb doesn't exist let's create it
                     if (await suburbRepository.CreateSuburb(suburb) == null)
                     {
-
+                        //Log something here. Information Logs For a particular suburb. 
                     }
                 }
+
+
 
                 activeSuburb = suburb.Id;
 
@@ -657,10 +660,18 @@ namespace LarksWebApp.Controllers.API
 
                 var hookObj = new
                 {
+                    id = addressGeolocationDTO.responseId,
                     suburbId = activeSuburb,
-                    municipalityId = activeMunicipalityId,
-
+                    municipalityId = activeMunicipalityId
                 };
+
+                //Verify if there is any Id that has to be included. 
+                clientWebHook.EndPoint = clientWebHook.EndPoint + ((addressGeolocationDTO.responseId != 0) ? addressGeolocationDTO.responseId.ToString() : "");
+
+                var result = await externalHttpService.ApiRequest(hookObj, clientWebHook.EndPoint, clientWebHook.Method);
+
+
+                return Ok(result);
 
                 #endregion
 
@@ -669,10 +680,250 @@ namespace LarksWebApp.Controllers.API
                 return Ok(nominatimAddressDTO);
             }
             catch (Exception ex)
-            { 
-                return BadRequest(); 
+            {
+                return BadRequest();
             }
         }
 
+        [HttpPost]
+        [Route("CreateLocationByGeoposition")]
+        public async Task<IActionResult> CreateDemographicByGeolocation([FromBody] BaseCoordinatesDTO baseCordinates)
+        {
+            try
+            {
+                externalHttpService = new ExternalHttpService(config);
+                var nominatimAddressDTO = await externalHttpService.RetrieveLocationByGeoLocationAsync(baseCordinates.lat, baseCordinates.lng);
+
+                int activeCountryId = 0, activeProvinceId = 0, activeMunicipalityId = 0, activeCityId = 0, activeDisctrictId = 0, activeSuburb = 0;
+
+
+                var country = countryRepository.CountryExistis(nominatimAddressDTO.Address.Country);
+
+                if (baseCordinates == null)
+                {
+                    return BadRequest();
+                }
+
+                if (!ModelState.IsValid)
+                {
+
+                    return BadRequest(ModelState);
+                }
+
+
+                //
+                //COUNTRY
+                //Create Country if it doesn't exist
+                //If it does exist select it.
+                #region Country manipulation
+                if (country == null)
+                {
+                    country = new CountryModel
+                    {
+                        Designation = nominatimAddressDTO.Address.Country
+                    };
+
+                    if (await countryRepository.CreateCountry(country) == null)
+                    {
+                        throw new Exception("Failed to create location attributes", new Exception("Failed to create a new country in "));
+                    }
+                }
+                #endregion
+
+                #region Province
+
+                var currentProvinceOBJ = (nominatimAddressDTO.Address.Province != null) ? nominatimAddressDTO.Address.Province : (nominatimAddressDTO.Address.State != null) ? nominatimAddressDTO.Address.State : nominatimAddressDTO.Address.City;
+
+                var province = provinceRepository.VerifyProvinceExist(currentProvinceOBJ, country.Id);
+
+                if (province == null)
+                {
+                    //First need to check which of the subdivision of a province was provided.
+                    /*
+                     * if all were provided then use all elese just use the ones provided as othere could be kept as null.
+                     * #CITY or STATE
+                     * #Municipality or County
+                     * #District
+                     * **/
+
+                    province = new ProvinceModel
+                    {
+                        CountryId = country.Id,
+                        Designation = currentProvinceOBJ,
+                    };
+
+                    if (await provinceRepository.CreateProvinceModel(province) == null)
+                    {
+                        //Add Error.
+                    }
+                }
+                #endregion
+
+                #region City Manipulation
+
+                var extractCity = (nominatimAddressDTO.Address.City != null) ? nominatimAddressDTO.Address.City : nominatimAddressDTO.Address.State;
+
+                
+
+                if (extractCity != null)
+                {
+                    //Check and Create City Existence.
+                    //
+                    var city = cityRepository.CityExists(province.Id, extractCity);
+
+                    //Check If this city doesn't exist create it
+
+                    if (city == null)
+                    {
+                        var newCity = new CityModel
+                        {
+                            Designation = extractCity,
+                            ProvinceId = province.Id
+                        };
+
+                        if (await cityRepository.CreateCity(newCity) != null)
+                        {
+                            activeCityId = newCity.Id;
+                        }
+                        else
+                        {
+                            // report the error to the some log
+
+                        }
+                    }
+                    else
+                    {
+                        //City does exist
+                        activeCityId = city.Id;
+                    }
+                }
+                else {
+
+                    //Use it to create a town 
+
+                   var  city = cityRepository.CityExists(province.Id, nominatimAddressDTO.Address.Town);
+
+                    //Check If this city doesn't exist create it
+
+                    if (city == null)
+                    {
+                        var newCity = new CityModel
+                        {
+                            Designation = nominatimAddressDTO.Address.Town,
+                            ProvinceId = province.Id
+                        };
+
+                        if (await cityRepository.CreateCity(newCity) != null)
+                        {
+                            activeCityId = newCity.Id;
+                        }
+                        else
+                        {
+                            // report the error to the some log
+
+                        }
+                    }
+                    else
+                    {
+                        //City does exist
+                        activeCityId = city.Id;
+                    }
+
+                }
+                #endregion
+
+                #region District Manipulation 
+                if (nominatimAddressDTO.Address.City_District != null)
+                {
+                    var district = districtRepository.VerifyDistrictExist(nominatimAddressDTO.Address.City_District, country.Id);
+
+                    if (district == null)
+                    {
+                        var newDistrict = new DistrictModel
+                        {
+                            Designation = nominatimAddressDTO.Address.City_District,
+                            ProvinceId = province.Id
+                        };
+
+                        if (await districtRepository.CreateDistrictModel(newDistrict) != null)
+                        {
+                            activeDisctrictId = newDistrict.Id;
+                        }
+                        else
+                        {
+                            // report the error to the some log
+
+                        }
+                    }
+                }
+                #endregion
+
+
+                #region Municipality Manipulation
+
+                var currentMunicipality = (nominatimAddressDTO.Address.Municipality != null) ? nominatimAddressDTO.Address.Municipality : nominatimAddressDTO.Address.County;
+
+                if (currentMunicipality != null)
+                {
+                    var municipality = municipalityRepository.VerifyMunicipalityExist(currentMunicipality, country.Id);
+
+                    if (municipality == null)
+                    {
+                        municipality = new MunicipalityModel
+                        {
+                            Designation = currentMunicipality,
+                            ProvinceId = province.Id
+                        };
+
+                        if (await municipalityRepository.CreateMunicipalityModel(municipality) == null)
+                        {
+                            // Log an error
+                        }
+
+                    }
+                    activeMunicipalityId = municipality.Id;
+                }
+                #endregion
+
+                #region UpdateSuburb
+
+                var extractSuburb = (nominatimAddressDTO.Address.Suburb == null) ? (nominatimAddressDTO.Address.Town != null)? nominatimAddressDTO.Address.Town:nominatimAddressDTO.Address.County : nominatimAddressDTO.Address.Suburb;
+
+                extractSuburb = (extractSuburb == null)? nominatimAddressDTO.Address.City : extractSuburb;
+
+                //Verify that Suburb Exists.
+                var suburb = suburbRepository.VerifySuburbExist(extractSuburb, activeMunicipalityId, activeCityId, activeDisctrictId);
+
+                if (suburb == null)
+                {
+                    suburb = new SuburbModel
+                    {
+                        CityId = (activeCityId == 0) ? null : activeCityId,
+                        DistrictId = (activeDisctrictId == 0) ? null : activeDisctrictId,
+                        MunicipalityId = (activeMunicipalityId == 0) ? null : activeMunicipalityId,
+                        Designation = (nominatimAddressDTO.Address.Suburb != null) ? nominatimAddressDTO.Address.Suburb : (nominatimAddressDTO.Address.City_District != null) ? nominatimAddressDTO.Address.City_District : (nominatimAddressDTO.Address.Town == null) ? nominatimAddressDTO.Address.City : nominatimAddressDTO.Address.Town
+
+                    };
+
+                    if (await suburbRepository.CreateSuburb(suburb) == null)
+                    {
+                        //Log something here. Information Logs For a particular suburb. 
+                    }
+                }
+
+                #endregion
+
+                return StatusCode(StatusCodes.Status201Created,"Coordinates mapped out successfully");
+
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest();
+            }
+
+
+        }
     }
+     
 }

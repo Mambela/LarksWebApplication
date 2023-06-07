@@ -9,6 +9,7 @@ namespace LarksWebApp.Repository.CountryRepository
         bool CountryExists(int countryID);
 
         CountryModel CountryExistis(string designation);
+        CountryModel CountryandDivisions(string designation);
 
         Task<CountryModel> CreateCountry(CountryModel Country);
 

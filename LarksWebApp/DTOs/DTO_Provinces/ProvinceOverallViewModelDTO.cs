@@ -21,6 +21,6 @@ namespace LarksWebApp.DTOs.DTO_Provinces
         public List<CitiesDTO> Cities { get; set; }
         public List<MunicipalityDTO> Municipalities { get; set; }
 
-        public Create_neighbourhood_DTO CreateNeighbourhood { get; set; }
+        public Create_suburb_DTO CreateNeighbourhood { get; set; }
     }
 }

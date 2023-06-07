@@ -60,11 +60,11 @@ namespace LarksWebApp.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<double>("lat")
-                        .HasColumnType("double");
+                    b.Property<decimal>("lat")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<double>("lng")
-                        .HasColumnType("double");
+                    b.Property<decimal>("lng")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
@@ -172,11 +172,11 @@ namespace LarksWebApp.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<double>("lat")
-                        .HasColumnType("double");
+                    b.Property<decimal>("lat")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<double>("lng")
-                        .HasColumnType("double");
+                    b.Property<decimal>("lng")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
@@ -201,11 +201,11 @@ namespace LarksWebApp.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<double>("lat")
-                        .HasColumnType("double");
+                    b.Property<decimal>("lat")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<double>("lng")
-                        .HasColumnType("double");
+                    b.Property<decimal>("lng")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
@@ -230,11 +230,11 @@ namespace LarksWebApp.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<double>("lat")
-                        .HasColumnType("double");
+                    b.Property<decimal>("lat")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<double>("lng")
-                        .HasColumnType("double");
+                    b.Property<decimal>("lng")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
@@ -259,11 +259,11 @@ namespace LarksWebApp.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<double>("lat")
-                        .HasColumnType("double");
+                    b.Property<decimal>("lat")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<double>("lng")
-                        .HasColumnType("double");
+                    b.Property<decimal>("lng")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
@@ -288,11 +288,11 @@ namespace LarksWebApp.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<double>("lat")
-                        .HasColumnType("double");
+                    b.Property<decimal>("lat")
+                        .HasColumnType("decimal(65,30)");
 
-                    b.Property<double>("lng")
-                        .HasColumnType("double");
+                    b.Property<decimal>("lng")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
@@ -428,10 +428,13 @@ namespace LarksWebApp.Migrations
                         .HasMaxLength(260)
                         .HasColumnType("varchar(260)");
 
-                    b.Property<int>("AddressId")
+                    b.Property<int?>("AddressId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CityId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDate")
@@ -442,7 +445,18 @@ namespace LarksWebApp.Migrations
                         .HasColumnType("longtext")
                         .HasColumnOrder(1);
 
-                    b.Property<int>("SubcategoryId")
+                    b.Property<decimal>("Lat")
+                        .HasPrecision(8, 6)
+                        .HasColumnType("decimal(8,6)");
+
+                    b.Property<decimal>("Lng")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<int?>("MunicipalityId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SuburbId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedDate")
@@ -450,13 +464,30 @@ namespace LarksWebApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
-
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("SubcategoryId");
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("MunicipalityId");
+
+                    b.HasIndex("SuburbId");
 
                     b.ToTable("Location");
+                });
+
+            modelBuilder.Entity("LarksWebApp.Models.LocationModelSubcategoryModel", b =>
+                {
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubcategoriesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LocationId", "SubcategoriesId");
+
+                    b.HasIndex("SubcategoriesId");
+
+                    b.ToTable("LocationModelSubcategoryModel");
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.MunicipalityModel", b =>
@@ -694,6 +725,39 @@ namespace LarksWebApp.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("LarksWebApp.Models.Users.AuthToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("IssueDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tokens");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -974,29 +1038,48 @@ namespace LarksWebApp.Migrations
 
             modelBuilder.Entity("LarksWebApp.Models.LocationModel", b =>
                 {
-                    b.HasOne("LarksWebApp.Models.AddressModel", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("LarksWebApp.Models.CategoryModel", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
-                    b.HasOne("LarksWebApp.Models.SubcategoryModel", "Subcategory")
+                    b.HasOne("LarksWebApp.Models.CityModel", "City")
                         .WithMany()
-                        .HasForeignKey("SubcategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CityId");
 
-                    b.Navigation("Address");
+                    b.HasOne("LarksWebApp.Models.MunicipalityModel", "Municipality")
+                        .WithMany()
+                        .HasForeignKey("MunicipalityId");
+
+                    b.HasOne("LarksWebApp.Models.SuburbModel", "Suburb")
+                        .WithMany()
+                        .HasForeignKey("SuburbId");
 
                     b.Navigation("Category");
 
-                    b.Navigation("Subcategory");
+                    b.Navigation("City");
+
+                    b.Navigation("Municipality");
+
+                    b.Navigation("Suburb");
+                });
+
+            modelBuilder.Entity("LarksWebApp.Models.LocationModelSubcategoryModel", b =>
+                {
+                    b.HasOne("LarksWebApp.Models.LocationModel", "Location")
+                        .WithMany("LocalSubcategories")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LarksWebApp.Models.SubcategoryModel", "Subcategories")
+                        .WithMany("LocalSubcategories")
+                        .HasForeignKey("SubcategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Location");
+
+                    b.Navigation("Subcategories");
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.MunicipalityModel", b =>
@@ -1070,6 +1153,17 @@ namespace LarksWebApp.Migrations
                     b.Navigation("Neighbourhood");
 
                     b.Navigation("Streets");
+                });
+
+            modelBuilder.Entity("LarksWebApp.Models.Users.AuthToken", b =>
+                {
+                    b.HasOne("LarksWebApp.Models.Users.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1146,6 +1240,8 @@ namespace LarksWebApp.Migrations
             modelBuilder.Entity("LarksWebApp.Models.LocationModel", b =>
                 {
                     b.Navigation("Images");
+
+                    b.Navigation("LocalSubcategories");
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.MunicipalityModel", b =>
@@ -1173,6 +1269,11 @@ namespace LarksWebApp.Migrations
                     b.Navigation("NeighbourhoodStreets");
 
                     b.Navigation("StreetCoordinates");
+                });
+
+            modelBuilder.Entity("LarksWebApp.Models.SubcategoryModel", b =>
+                {
+                    b.Navigation("LocalSubcategories");
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.SuburbModel", b =>

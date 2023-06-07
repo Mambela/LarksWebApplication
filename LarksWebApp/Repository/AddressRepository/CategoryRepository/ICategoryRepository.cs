@@ -12,7 +12,7 @@ namespace LarksWebApp.Repository.CategoryRepository
 
         public CategoryModel GetCategoryById(int id);
 
-        public IList<CategoryModel> GetAllCategories();
+        public IList<CategoryModel> GetAllCategories(string lang=null);
 
         public bool DeleteCategory(CategoryModel category);
 

@@ -29,15 +29,18 @@ namespace LarksWebApp.Services.FileManagement
                         Directory.CreateDirectory(path);
 
 
-
-                    string fileNameWithPath = Path.Combine(path, file.FileName);
+                    var newguid = Guid.NewGuid().ToString();
+                    var fileName = newguid + new FileInfo(file.FileName).Extension;
+                    
+                    string fileNameWithPath = Path.Combine(path, fileName);
 
 
                   await  using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
                     {
                         file.CopyToAsync(stream);
                     }
-                    uploadedFiles.Add(file.FileName);
+                    uploadedFiles.Add(fileName);
+                  //  uploadedFiles.Add(file.FileName);
 
                 }
 

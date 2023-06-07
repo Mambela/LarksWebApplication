@@ -11,5 +11,7 @@ namespace LarksWebApp.Models
 
         //Language related
         public string Lng { get; set; }
+
+        public IList<LocationModelSubcategoryModel> LocalSubcategories { get; set; }
     }
 }

@@ -1,0 +1,529 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Larks API specification</h1>
+    <h6>Larks api offers you the ability to integrate your apps with  larks API. You can query demographic locations such as Country, Provinces, Municipalities and Suburbs.</h6>
+    <br />  
+</div>
+
+<div class="margin">
+   
+   @* Address API METHODS*@
+    <h4 class="display-6 text-success" >Address  </h4>
+    <hr />
+     <div class="col-12 mb-4">
+        <div class="col-12">
+            <h4> Create Country division with an object</h4>
+            <br/>
+            <p> Create locations division based on geocoding. With this method you can provide a name of a registration webhook </p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">POST</span> /api/Address/CreateCountryDemographicDivision</h6><br/>
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Request</span></h6>
+            <div class="bg-success bg-opacity-25 p-3">
+                <code class="m-3 text-dark">
+                    <pre id="createAddressByDemographic"></pre>
+                 </code>
+            </div>
+        </div>
+
+        <div class="col-12 mt-2">
+            <h4>Create Country division by geoloaction with webhook</h4>
+           <br/>
+            <p> Create a country division based on a particular object. You need to provide an object with a registered hookname and an optional responseId, and optional userid</p>
+            <h6> <span class="fw-bold text-light bg-success p-2">POST</span> /api/Address/CreateDivisionsByGeolocation</h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="py-3 text-dark">
+                    <span> &ensp;{</span><br />
+                    &ensp; &ensp;"hookname":<br />
+                    &ensp; &ensp;"responseId":<br />
+                    &ensp; &ensp;"userid":<br />
+                    &ensp; &ensp;"lat":<br />
+                    &ensp; &ensp;"lng":<br />
+                        &ensp;}<br />
+                </code>
+            </div>
+        </div>
+        
+        <div class="col-12 mt-2">
+            <h4> Create Country division by geoloaction</h4>
+           <br/>
+            <p>
+                Create a country division based on a particular geolocation.
+            </p>
+            <h6> <span class="fw-bold text-light bg-success p-2">POST</span> /api/Address/CreateLocationByGeoposition</h6>
+            <div class="bg-success bg-opacity-25 text-dark">
+                <code class="py-3 text-dark">
+                    <span> &ensp;{</span><br />
+                                       &ensp; &ensp;"lat":<br />
+                                       &ensp; &ensp;"lng":<br />
+                            &ensp;}<br />
+                </code>
+            </div>
+        </div>
+    
+    </div>
+
+    @*All Categories*@
+    <h4 class="display-6 text-success">Category </h4>
+    <hr />
+    <div class="col-12">
+        <h4>Get All Categories</h4>
+       <br/>
+        <p>Returns all location categories, in a particular language. <code> parameter</code> has to be a language code <code>en,pt,fr</code> </p>
+        <h6 class="mb-2"> <span class="fw-bold text-light bg-success p-2 ">GET</span> /api/category?lang={parameter}</h6><br />
+        <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+        <div class="bg-success bg-opacity-25 p-3">
+            <code class="py-3 text-dark">
+                <pre id="getAllCategories"></pre>
+            </code>
+        </div>
+        @*End of categories*@
+
+        
+        @*Create Category*@
+        <h4>Create category</h4>
+       <br/>
+        <p>Create a new category to be associated with a location. </p>
+        <h6 class="mb-2"> <span class="fw-bold text-light bg-success p-2 ">POST</span> /api/category</h6><br />
+        <h6> <span class="fw-bold text-light bg-secondary p-2">Request</span></h6>
+        <div class="bg-success bg-opacity-25 p-3">
+            <code class="py-3 text-dark">
+                {<br/>
+                &emsp;&ensp;"designation":"Parks",<br/>
+                &emsp;&ensp;"lng":"en"<br/>
+                }
+                 
+            </code>
+        </div>
+        @*End of create category*@
+
+
+        @*Create Category*@
+        <h4>Update a category</h4>
+       <br/>
+        <p>Create a new category to be associated with a location. </p>
+        <h6 class="mb-2"> <span class="fw-bold text-light bg-success p-2 ">PATCH</span> /api/category?categoryId=<code>parameter</code></h6><br />
+        <h6> <span class="fw-bold text-light bg-secondary p-2">Request</span></h6>
+        <div class="bg-success bg-opacity-25 p-3">
+            <code class="py-3 text-dark">
+                <pre id="updateCategory"></pre>
+            </code>
+        </div>
+        @*End of create category*@
+         
+    </div>
+
+
+    @*City*@
+    <h4 class="display-6 text-success">City </h4>
+    <hr />
+    <div class="col-12">
+        <div class="col-12">
+            <h4>Create City</h4>
+            <br />
+            <p> Create a new city based on  a object </p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">POST</span> /api/City</h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Request</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="createCity"></pre>
+               </code>
+            </div>
+        </div>
+        <div class="col-12">
+            <h4>Get city by Id </h4>
+            <br />
+            <p> Get a city based on the Id of that city. The parameter is the <code>id</code> of the city currently registered in larks.</p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span> /api/city/city?cityId=<code>parameter</code></h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="cityById"></pre>
+               </code>
+            </div>
+        </div>
+        
+        <div class="col-12">
+            <h4>Get cities in a province</h4>
+            <br />
+            <p> Returns all the cities in a province. The parameter is the province id. </p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span> /api/City/citiesinprovince?provinceId=<code>parameter</code></h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="citiesinaprovince"></pre>
+               </code>
+            </div>
+        </div>
+        
+        <div class="col-12">
+            <h4>Get country cities </h4>
+            <br />
+            <p> Returns all the cities in a spefic country. The parameter is the country id.  </p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span> /api/City/citiesincountry?countryId=<code>parameter</code></h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="citiesinacountry"></pre>
+               </code>
+            </div>
+        </div>
+
+
+    </div>
+
+    @*Country*@
+    <h4 class="display-6 text-success mt-4">Country</h4>
+    <hr />
+    <div class="col-12">
+        <h4>Get All Countries</h4>
+       
+        <p>Retrieve all countries in stored in LARKS</p>
+        <h6 class="mb-2"> <span class="fw-bold text-light bg-success p-2 ">GET</span> /api/countries/allcountries</h6><br />
+        <div class="bg-success bg-opacity-25 p-3">
+            <code class="py-3 text-dark" >
+                <pre id="allcountries"></pre>
+            </code>
+        </div>
+   
+        <h4>Get country by country Id</h4>
+        <hr/>
+        <p>Retrieves a single country by Id and it includes provinces and municipalities or districts or cities.</p>
+        <h6 class="mb-2"> <span class="fw-bold text-light bg-success p-2 ">GET</span> /api/countries?id=<code>parameter</code></h6><br />
+        <div class="bg-success bg-opacity-25 p-3">
+            <code class="py-3 text-dark" >
+                <pre id="countrybyId"></pre>
+            </code>
+        </div>
+     
+        <h4>Get Country by given name</h4>
+        <hr/>
+        <p>Retrieves a country and its provinces or states by the country given name. </p>
+        <h6 class="mb-2"> <span class="fw-bold text-light bg-success p-2 ">GET</span> /api/countries/countryByName?countryName=<code>Country name</code></h6><br />
+        <div class="bg-success bg-opacity-25 p-3">
+            <code class="py-3 text-dark" >
+                <pre id="countriesByName"></pre>
+            </code>
+        </div>
+    </div>
+    @*End country*@
+    @*District*@
+    <h4 class="display-6 text-success">Districts </h4>
+    <hr />
+    <div class="col-12">
+
+        <div class="col-12">
+            <h4>Create District</h4>
+            <br />
+            <p> Create a new district based on  a object, under a specific province </p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">POST</span> /api/district</h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Request</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="createDistrict"></pre>
+                </code>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <h4>Get District</h4>
+            <br />
+            <p> Returns a single district, based on a district id. </p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span> /api/district?districtId=<code>parameter</code></h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Request</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="getSingleDistrict"></pre>
+                </code>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <h4>Get districts in a particular province. </h4>
+            <br />
+            <p> Returns a list of districts that belong to a single province.</p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span> /api/district/districtsinprovice?provinceId=<code>parameter</code></h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Request</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="getprovincedistricts"></pre>
+                </code>
+            </div>
+        </div>
+
+
+    </div>
+
+    @*Location*@
+    <h4 class="display-6 text-success mt-4">Location</h4>
+    <hr />
+    <div class="col-12"
+        @*Create Location*@
+        <h4>Create Location</h4>
+       <br/>
+        <p>Create a new location with images and a specific division. This end point expects a form-data, this is because you can create locations with images or videos</p>
+        <h6 class="mb-2"> <span class="fw-bold text-light bg-success p-2 ">POST</span> /api/newLocation</h6><br />
+        <h6> <span class="fw-bold text-light bg-secondary p-2">Request</span></h6>
+        <div class="bg-success bg-opacity-25 p-3">
+            <code class="py-3 text-dark">
+                curl --location 'https://larks.africa/api/Location/newLocation' \
+                --form 'designation="Mercedez Midrand"' \
+                --form 'additionalInfo="Mercedez benz main seller in Midrand. "' \
+                --form 'countryId="1"' \
+                --form 'municipalityID="1"' \
+                --form 'categoryId="1"' \
+                --form 'suburbId="3"' \
+                --form 'subCategories="4"' \
+                --form 'subCategories="3"' \
+                --form 'Files=' \
+                --form 'cityId="3"' \
+                --form 'lat="-25.973972"' \
+                --form 'Lng="28.117133"'
+
+            </code>
+        </div>
+        @*End of create Location*@
+    
+
+    @*Get location by Category*@
+    <h4>Get locations by Category</h4>
+   <br/>
+    <p>Retrieve list of locations with images and a specific divisions. This end point expects a form-data, this is because you can create locations with images or videos</p>
+    <h6 class="mb-2"> <span class="fw-bold text-light bg-success p-2 ">GET</span> /api/location/CategoryLocations?categoryid=<code>parameter</code></h6><br />
+    <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+    <div class="bg-success bg-opacity-25 p-3">
+        <code class="json py-3 text-dark ">
+            <pre id="getlocationsByCategoryResponse"></pre>
+        </code>
+    </div>
+    @*End of create Location*@
+
+
+
+    @*Get location by distance *@
+    <h4 class="mt-3">Location by distance</h4>
+   <br/>
+    <p>Retrieve a list of locations with images and divisions. This end point expects a geoposition and a distance in KM. </p>
+    <h6 class="mb-2"> <span class="fw-bold text-light bg-success p-2 ">GET</span> /api/location/locationbydistance?distance=<code>1.0</code>&pageNumber=<code>1</code>&pageSize=<code>2</code>&lat=<code>-25.973419</code>&lng=<code>28.119508</code></h6><br />
+    <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+    <div class="bg-success bg-opacity-25 p-3">
+        <code class="json py-3 text-dark ">
+            <pre id="locationsByDistanceCategory"></pre>
+        </code>
+    </div>
+    @*End of create Location*@ 
+
+    @*Get location by distance *@
+    <h4 class="mt-3">Location by distance and category</h4>
+   <br/>
+    <p>Retrieve a list of locations with images and divisions. This end point expects a form-data, this is because you can create locations with images or videos</p>
+    <h6 class="mb-2"> <span class="fw-bold text-light bg-success p-2 ">GET</span> /api/location/locationbydistanceandcategory?distance=<code>1.0</code>&category=<code>2</code>&pageNumber=<code>1</code>&pageSize=<code>2</code>&lat=<code>-25.973419</code>&lng=<code>28.119508</code></h6><br />
+    <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+    <div class="bg-success bg-opacity-25 p-3">
+        <code class="json py-3 text-dark ">
+            <pre id="locationsByDistance"></pre>
+        </code>
+    </div>
+    @*End of create Location*@
+    
+    </div>
+
+    @*Media*@
+    <h4 class="display-6 text-success">Media </h4>
+    <hr />
+    <div class="col-12">
+        <h4>Get Location Media</h4>
+        <p>Return an image of if it exists in the larks filestore.</p>
+        <h6> <span class="fw-semibold text-light bg-success p-2">GET</span>/api/media/locationimages?category=<code>category</code>&filename=<code>filename</code></h6><br />
+        <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+         <div class="bg-success bg-opacity-25 py-3">
+            <code class="text-dark">
+                <pre>
+                    image/jpeg
+                </pre>
+            </code>
+         </div>
+    </div>
+
+    @*Municipality*@
+    <h4 class="display-6 text-success">Municipalities </h4>
+    <hr />
+    <div class="col-12">
+    <div class="col-12">
+        <br />
+        <h4>Create a new municipality.</h4>
+        <p> Creates a new municipality under a specific province.</p>
+        <h6> <span class="fw-semibold text-light bg-success p-2">POST</span> /api/Municipality</h6><br />
+        <h6> <span class="fw-bold text-light bg-secondary p-2">Request</span></h6>
+        <div class="bg-success bg-opacity-25">
+            <code class="p-2 text-dark">
+                <pre id="createMunicipalityObj"></pre>
+            </code>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <br />
+        <h4>Get Municipality</h4>
+        <p> Returns a single municipality object.</p>
+        <h6> <span class="fw-semibold text-light bg-success p-2">GET</span>/api/Municipality?muncipalityId=<code>parameter</code></h6><br />
+        <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+        <div class="bg-success bg-opacity-25">
+            <code class="p-2 text-dark">
+                <pre id="retrieveMunicipality"></pre>
+            </code>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <br />
+        <h4>Get municipalities .</h4>
+        <p> Returns a list of municipalities in a specific province. </p>
+        <h6> <span class="fw-semibold text-light bg-success p-2">GET</span> /api/Municipality/MunicipalitiesInProvince?provinceId=<code>parameter</code></h6><br />
+        <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+        <div class="bg-success bg-opacity-25">
+            <code class="p-2 text-dark">
+                <pre id="municipalitiesInProvince"></pre>
+            </code>
+        </div>
+    </div>
+    </div>
+
+    @*Provinces*@
+     <h4 class="display-6 text-success">Provinces</h4>
+    <hr />
+    <div class="col-12">
+        <div class="col-12">
+            <br />
+            <h4>Create Province </h4>
+            <p> Creates a new procince based on a specific object.</p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">POST</span>/api/Province</h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="provinceCreate"></pre>
+                </code>
+            </div>
+        </div>
+        
+        <div class="col-12">
+            <br />
+            <h4>Provinces in a country </h4>
+            <p> Returns a list of provinces based on a particular country by name.</p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span>/api/province/ProvincesInCountry?countryname=<code>parameter</code></h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="provincesInCountrybyName"></pre>
+                </code>
+            </div>
+        </div>
+        
+        <div class="col-12">
+            <br />
+            <h4>Provinces in a country </h4>
+            <p> Returns a list of provinces based on a country id.</p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span>/api/province/CountryProvinces?CountryId=<code>parameter</code></h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="provincesInCountry"></pre>
+                </code>
+            </div>
+        </div>
+    </div>
+
+
+    @*SubCategory*@
+    
+    <h4 class="display-6 text-success">Subcategories </h4>
+    <hr />
+    <div class="col-12">
+        <div class="col-12">
+            <br />
+            <h4>Create a new subcategories.</h4>
+            <p> Creates a new subcategories under a specific category.</p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">POST</span>/api/Subcategory</h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Request</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="subcategoriesCreate"></pre>
+                </code>
+            </div>
+        </div>
+        <div class="col-12">
+            <br />
+            <h4>Get subcategories by id.</h4>
+            <p> Returns an object of a subcategory. Parameter represents subcategory id.</p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span> /api/Subcategory/SubcategoriesInCategory?categoryId=<code>parameters</code></h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="subcategoriesInCategory"></pre>
+                </code>
+            </div>
+        </div> 
+        
+        <div class="col-12">
+            <br />
+            <h4>Get subcategories under a specific category.</h4>
+            <p> Returns a list of subcategories under a specific category. Parameter represents category id.</p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span> /api/subcategory/Subcategory?id=<code>parameters</code></h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="singleCategory"></pre>
+                </code>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <br />
+            <h4>Get all subcategories.</h4>
+            <p> Returns a list of all the subcategories, under a specific language. The supported languages codes are <code>en,pt,fr</code> </p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span> /api/Subcategory/Allsubcategories?lang=<code>paramenter</code></h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="allSubcategories"></pre>
+                </code>
+            </div>
+        </div>
+
+      
+    </div>
+
+    @*Suburb*@
+    <h4 class="display-6 text-success">Suburbs</h4>
+    <hr />
+    <div class="col-12">
+        <div class="col-12">
+            <br />
+            <h4>Get suburbs by sector</h4>
+            <p> Returns a list of all suburbs that under a specific sector, this sector can be district, municipality or city. The <code>id</code> parameter represents the id of provided sector</p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span>/api/suburb/sectorNeighbourhood?sector=municipality&id=</h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="suburbBySector"></pre>
+                </code>
+            </div>
+        </div>
+     
+        <div class="col-12">
+            <br />
+            <h4>Get a single subcategory</h4>
+            <p> Returns an object of a single suburb. </p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span>/api/suburb/Suburb?id=<code>parameter</code></h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="suburbById"></pre>
+                </code>
+            </div>
+        </div>
+    </div>
+
+   
+</div>

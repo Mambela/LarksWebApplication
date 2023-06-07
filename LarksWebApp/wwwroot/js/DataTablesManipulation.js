@@ -17,7 +17,7 @@ $(document).ready(function () {
             "filter": true,
             "ajax": {
                 "url": 
- + "api/Hood/AddressesInNeighbourhood?neighbourhoodId=" + hoodId,
+                    + "api/Suburb/AddressesInNeighbourhood?neighbourhoodId=" + hoodId,
                 "type": "POST",
                 "headers": {
                     "Content-Type": "application/x-www-form-urlencoded"

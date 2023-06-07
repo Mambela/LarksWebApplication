@@ -19,4 +19,17 @@ namespace LarksWebApp.DTOs.DTO_Provinces
 
         public IList<CitiesDTO> Cities { get; set; }
     }
+
+
+    public class ViewProvinceDTO 
+    {
+        public int Id { get; set; }
+        public string Designation { get; set; }
+
+        public int CountryId { get; set; }
+        public IList<MunicipalityDTO> Municipalities { get; set; }
+        public IList<DistrictDTO> Districts { get; set; }
+
+        public IList<CitiesDTO> Cities { get; set; }
+    }
 }

@@ -45,6 +45,11 @@ namespace LarksWebApp.DAL
 
         public DbSet<HooksModel> HooksModel { get; set; }
 
+        public DbSet<AuthToken> Tokens { get; set; }
+
+       public DbSet<LocationModelSubcategoryModel> LocationModelSubcategoryModel { get; set; }
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -58,8 +63,13 @@ namespace LarksWebApp.DAL
         {
 
             modelBuilder.Entity<SuburbStreets>().HasKey(n => new { n.StreetsID, n.SuburbId });
+            modelBuilder.Entity<LocationModel>().Property(p => p.Lat).HasPrecision(8, 6);
+            modelBuilder.Entity<LocationModel>().Property(p => p.Lng).HasPrecision(9, 6);
 
+            modelBuilder.Entity<LocationModelSubcategoryModel>().HasKey(n => new { n.LocationId, n.SubcategoriesId });
+            
 
+            #region SQL SERVER 
             //modelBuilder.HasDefaultSchema("LARKS_UAT");
             //modelBuilder.Entity<IdentityUser>(entity =>
             //{
@@ -89,7 +99,7 @@ namespace LarksWebApp.DAL
             //{
             //    entity.ToTable("UserTokens");
             //});
-
+            #endregion
             base.OnModelCreating(modelBuilder);
         }
 

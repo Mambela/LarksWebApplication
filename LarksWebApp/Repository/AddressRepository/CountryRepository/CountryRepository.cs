@@ -14,6 +14,14 @@ namespace LarksWebApp.Repository.CountryRepository
             _dbContext = dbContext;
         }
 
+        public CountryModel CountryandDivisions(string designation)
+        {
+            return _dbContext.Countries.Include(p => p.Provinces).ThenInclude(m=>m.Municipalities)
+                .Include(p => p.Provinces).ThenInclude(m => m.Districts)
+                .Include(p => p.Provinces).ThenInclude(m => m.Cities)
+                .Where(c => c.Designation.ToLower() == designation.ToLower()).FirstOrDefault();
+        }
+
         public CountryModel CountryExistis(string designation)
         {
             return _dbContext.Countries.Include(p => p.Provinces).Where(c => c.Designation.ToLower() == designation.ToLower()).FirstOrDefault();
@@ -67,11 +75,13 @@ namespace LarksWebApp.Repository.CountryRepository
 
         public CountryModel GetCountry(int countryId)
         {
-           return _dbContext.Countries.Include(p => p.Provinces).Where(c => c.Id == countryId).FirstOrDefault();
+           return _dbContext.Countries
+                .Include(p => p.Provinces).ThenInclude(c =>c.Cities)
+                .Include(p => p.Provinces).ThenInclude(c =>c.Municipalities)
+                .Include(p => p.Provinces).ThenInclude(c =>c.Districts)
+                .Where(c => c.Id == countryId).FirstOrDefault();
           
-           }
-
-
+        }
 
         public bool Save()
         {

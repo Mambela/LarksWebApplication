@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using LarksWebApp.DTOs;
+using LarksWebApp.DTOs.DTO_City;
+using LarksWebApp.DTOs.DTO_Districts;
+using LarksWebApp.DTOs.DTO_Municipalities;
 using LarksWebApp.DTOs.DTO_Provinces;
 using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Services.Loggers;
@@ -36,16 +39,37 @@ namespace LarksWebApp.Controllers.API
                     return StatusCode(StatusCodes.Status404NotFound);
                 }
 
-                var countryDTO = _mapper.Map<CountryDTO>(countryObj);
+                var countryDTO = _mapper.Map<ViewCountryDTO>(countryObj);
 
-                var provincesListDTO = new List<ProvinceDTO>();
+                var provincesListDTO = new List<ViewProvinceDTO>();
+
+                var municipalitiesDTO = new List<MunicipalityDTO>();
+                var districts = new List<DistrictDTO>();
+                var cities = new List<CitiesDTO>();
 
                 foreach (var province in countryObj.Provinces)
                 {
-                    provincesListDTO.Add(_mapper.Map<ProvinceDTO>(province));
+                    var provinceDTO = _mapper.Map<ViewProvinceDTO>(province);
+
+                    if (province.Districts!=null)
+                    {
+                        provinceDTO.Districts = _mapper.Map<List<DistrictDTO>>(province.Districts);  
+                    }
+
+                    if (province.Municipalities != null)
+                    {
+                        provinceDTO.Municipalities = _mapper.Map<List<MunicipalityDTO>>(province.Municipalities);
+                    }
+
+                    if (province.Cities != null)
+                    {
+                        provinceDTO.Cities = _mapper.Map<List<CitiesDTO>>(province.Cities);
+                    }
+
+                    provincesListDTO.Add(provinceDTO);
                 }
 
-                countryDTO.ProvincesDTO = provincesListDTO;
+                countryDTO.Provinces = provincesListDTO;
 
                 return Ok(countryDTO);
             }
@@ -75,8 +99,25 @@ namespace LarksWebApp.Controllers.API
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-           
 
+        [HttpGet]
+        [Route("countryByName")]
+        public IActionResult GetCountries(string countryName)
+        {
+            try
+            {
+                var countryObj = _countryRepository.CountryExistis(countryName);
+
+                var countryDTO = _mapper.Map<ViewCountryDTO>(countryObj);
+
+                return Ok(countryDTO);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError(ex.Message);
+                return BadRequest("Failed to retrieve country");
+            }
+        }
         
     }
 }

@@ -13,7 +13,7 @@
         public IList<CountryDTO>? ListofCountryDTO { get; set; }
 
 
-        public IList<BaseCoordinatesDTO> Points { get; set; }
+        public IList<BaseCoordinatesDTO>? Points { get; set; }
         public Boolean IsUpdateCoordinates { get; set; }
 
     }

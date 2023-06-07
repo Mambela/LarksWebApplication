@@ -32,7 +32,7 @@ namespace LarksWebApp.Controllers.API
         }
 
         /**
-         * https://localhost:44339/api/hood/all
+         * https://localhost:44339/api/Suburb/all
          * **/
         [HttpGet("all")]
         public IActionResult GetHood()
@@ -67,6 +67,38 @@ namespace LarksWebApp.Controllers.API
             {   
                 var hoodObjList = _hoodRepository.GetNeighbourhoodModels(sector,id);
 
+
+                if (hoodObjList == null)
+                {
+                    return Ok(hoodObjList);
+                }
+                var hoodDTOList = new List<NeighbourhoodDTO>();
+
+                foreach (var hood in hoodObjList)
+                {
+                    hoodDTOList.Add(_mapper.Map<NeighbourhoodDTO>(hood));
+                }
+
+                
+                return Ok(hoodDTOList);
+
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Neighbourhood Sector " + ex.Message);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while trying to retrieve neighbourhood ");
+            }
+
+        }
+
+        [HttpGet("suburbInAnySector")]
+        public IActionResult suburbInAnySector(int districtId,int municipalityId, int cityId)
+        {
+            try
+            {   
+                var hoodObjList = _hoodRepository.GetNeighbourhoodModels(districtId,municipalityId,cityId);
+
                 var hoodDTOList = new List<NeighbourhoodDTO>();
 
                 foreach (var hood in hoodObjList)
@@ -88,16 +120,14 @@ namespace LarksWebApp.Controllers.API
         }
 
 
-
-
         [HttpPost]
-        public async Task<IActionResult> CreateSuburb(Create_neighbourhood_DTO neighbourhood_DTO)
+        public async Task<IActionResult> CreateSuburb(Create_suburb_DTO suburb_DTO)
         {
 
             try
             {
 
-                if (neighbourhood_DTO == null)
+                if (suburb_DTO == null)
                 {
                     return BadRequest(ModelState);
                 }
@@ -108,14 +138,14 @@ namespace LarksWebApp.Controllers.API
                 }
 
 
-                if (_hoodRepository.VerifySuburbExist(neighbourhood_DTO.Designation, neighbourhood_DTO.MunicipalityId) ==null)
+                if (_hoodRepository.VerifySuburbExist(suburb_DTO.Designation, suburb_DTO.MunicipalityId) ==null)
                 {
-                    ModelState.AddModelError("", $"The record {neighbourhood_DTO.Designation} already exists as a country");
+                    ModelState.AddModelError("", $"The record {suburb_DTO.Designation} already exists as a country");
 
                     return BadRequest(ModelState);
                 }
 
-                var HoodObj = _mapper.Map<SuburbModel>(neighbourhood_DTO);
+                var HoodObj = _mapper.Map<SuburbModel>(suburb_DTO);
 
 
                 if (await _hoodRepository.CreateSuburb(HoodObj) == null)
@@ -126,7 +156,7 @@ namespace LarksWebApp.Controllers.API
                 }
 
 
-                return StatusCode(StatusCodes.Status201Created, neighbourhood_DTO);
+                return StatusCode(StatusCodes.Status201Created, suburb_DTO);
             }
             catch (Exception ex)
             {
@@ -138,12 +168,12 @@ namespace LarksWebApp.Controllers.API
 
         [Route("[action]")]
         [HttpPost]
-        public IActionResult AddressesInNeighbourhood(int neighbourhoodId)
+        public IActionResult AddressesInSuburb(int suburbId)
         {
             try
             {
                 //fetching data 
-                var addressObjList = _addressRepository.GetAddressesInNeighbourhood(neighbourhoodId);
+                var addressObjList = _addressRepository.GetAddressesInSuburb(suburbId);
 
                 var viewAddressDTOList = new List<ViewAddressDataTableDTO>();
 
@@ -212,7 +242,7 @@ namespace LarksWebApp.Controllers.API
          * https://localhost:44339/api/hood/Neighbourhood?id=1
          * **/
 
-        [HttpGet("Neighbourhood")]
+        [HttpGet("Suburb")]
         public IActionResult GetNeighbourhood([FromQuery] int id)
         {
 
@@ -234,7 +264,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpPut]
-        public IActionResult UpdateNeighbourhood([FromBody] Create_neighbourhood_DTO hoodDTO, int hoodId)
+        public IActionResult UpdateNeighbourhood([FromBody] Create_suburb_DTO hoodDTO, int hoodId)
         {
 
             try
