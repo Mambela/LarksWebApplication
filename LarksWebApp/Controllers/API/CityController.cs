@@ -5,6 +5,7 @@ using LarksWebApp.Models;
 using LarksWebApp.Repository.CityRepository;
 using LarksWebApp.Services.Loggers;
 using LarksWebApp.Services.PaginationService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +26,7 @@ namespace LarksWebApp.Controllers.API
             logger = loggerTrace;   
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateCity(Create_City_DTO createCityDTO)
         {

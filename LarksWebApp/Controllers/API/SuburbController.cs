@@ -5,6 +5,7 @@ using LarksWebApp.Models;
 using LarksWebApp.Repository.AddressRepository.Address_Repository;
 using LarksWebApp.Repository.HoodRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -120,6 +121,7 @@ namespace LarksWebApp.Controllers.API
         }
 
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateSuburb(Create_suburb_DTO suburb_DTO)
         {
@@ -262,7 +264,7 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPut]
         public IActionResult UpdateNeighbourhood([FromBody] Create_suburb_DTO hoodDTO, int hoodId)
         {

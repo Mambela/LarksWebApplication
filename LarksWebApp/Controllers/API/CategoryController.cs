@@ -3,6 +3,7 @@ using LarksWebApp.DTOs.DTO_Category;
 using LarksWebApp.Models;
 using LarksWebApp.Repository.CategoryRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -56,6 +57,7 @@ namespace LarksWebApp.Controllers.API
  
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCategories(CreateCategoryDTO createCategoryDTO)
         {
 
@@ -103,7 +105,7 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
-
+        
         [HttpPatch]
         public IActionResult UpdateCategory([FromBody] CreateCategoryDTO categoryDTO, int categoryId)
         {
@@ -180,3 +182,4 @@ namespace LarksWebApp.Controllers.API
         }
     }
 }
+//Authorize

@@ -75,6 +75,8 @@ namespace LarksWebApp.Controllers.API
 
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
 
         public async Task<IActionResult> CreateMuncipality(Create_Municipality_DTO municipalityDTO)
@@ -158,7 +160,7 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPatch]
         public async Task<IActionResult> UpdateMunicipality([FromBody] Create_Municipality_DTO municipality_DTO, int municipalityID)
         {
@@ -226,6 +228,7 @@ namespace LarksWebApp.Controllers.API
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         public IActionResult DeleteMunicipality(int MunicipalityID)
         {

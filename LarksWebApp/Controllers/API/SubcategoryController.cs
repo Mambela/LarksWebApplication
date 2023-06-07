@@ -4,6 +4,7 @@ using LarksWebApp.DTOs.DTO_Subcategory;
 using LarksWebApp.Models;
 using LarksWebApp.Repository.SubcategoryRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +27,7 @@ namespace LarksWebApp.Controllers.API
             serviceLogger = new ServiceLogger();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
 
         public async Task<IActionResult> CreateCategory(Create_subcategoryDTO create_SubcateogryDTO) {
@@ -133,6 +135,7 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch]
         public IActionResult UpdateSubcategory(Create_subcategoryDTO create_SubcateogryDTO,int subcategoryId)
         {

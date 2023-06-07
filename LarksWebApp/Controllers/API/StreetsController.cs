@@ -8,6 +8,7 @@ using LarksWebApp.Repository.AddressRepository.StreetRepository;
 using LarksWebApp.Repository.AssoHoodStreetRepository;
 using LarksWebApp.Repository.StreetRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -233,6 +234,7 @@ namespace LarksWebApp.Controllers.API
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateStreet(Create_Street_DTO streetDTO)
         {

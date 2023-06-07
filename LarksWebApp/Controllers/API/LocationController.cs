@@ -12,6 +12,7 @@ using LarksWebApp.Repository.LocationRepository;
 using LarksWebApp.Services.FileManagement;
 using LarksWebApp.Services.Loggers;
 using LarksWebApp.Services.PaginationService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -253,6 +254,8 @@ namespace LarksWebApp.Controllers.API
 
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("newLocation")]
         public async Task<IActionResult> CreateLocation([FromForm] Create_Location_DTO locationCollection) 

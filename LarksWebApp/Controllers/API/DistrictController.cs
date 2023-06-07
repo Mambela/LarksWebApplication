@@ -3,6 +3,7 @@ using LarksWebApp.DTOs.DTO_Districts;
 using LarksWebApp.Models;
 using LarksWebApp.Repository.DistrictRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -70,6 +71,9 @@ namespace LarksWebApp.Controllers.API
                 return BadRequest("Failed to retrieve districts in province");
             }
         }
+
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateDistrict(Create_Districts_DTO createDistrictDTO)
         {

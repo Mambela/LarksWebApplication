@@ -5,6 +5,7 @@ using LarksWebApp.Models.CoordinatesModel;
 using LarksWebApp.Repository.Coordinates.ProviceCoordinateRepository;
 using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -86,6 +87,7 @@ namespace LarksWebApp.Controllers.API
             return Ok(provinceDTO);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateProvince(Create_Province_DTO provinceDTO)
         {
@@ -170,6 +172,7 @@ namespace LarksWebApp.Controllers.API
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
 
         public IActionResult DeleteProvince(int ProvinceID)
@@ -194,7 +197,7 @@ namespace LarksWebApp.Controllers.API
             return NoContent();
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPatch]
         public async Task<IActionResult> UpdateProvince(Create_Province_DTO provinceDTO, int ProvinceId)
         {
