@@ -2,6 +2,7 @@
 using LarksWebApp.DTOs.DTO_Tokens;
 using LarksWebApp.Models.Users;
 using LarksWebApp.Repository.TokenRepository;
+using LarksWebApp.Services.Loggers;
 using LarksWebApp.Services.UserManager;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -22,22 +23,31 @@ namespace LarksWebApp.Controllers
         private readonly ITokenManager tokenManager;
         private readonly IMapper mapper;
         private readonly IUserService userService;
+        private readonly ILoggerTrace logger; 
 
         public TokenManagerController(
             UserManager<ApplicationUser> _userManager,
             ITokenManager _tokenManager,IMapper _mapper,
-            IUserService _userService)
+            IUserService _userService,
+            ILoggerTrace _logger )
         {
             userManager = _userManager;
             tokenManager = _tokenManager;
             mapper = _mapper;
             userService = _userService;
+            logger = _logger;
+
+
         }
         // GET: TokenManagerController
         public async Task<ActionResult> Index()
         {
+            var tokenDTOList = new List<AuthTokenDTO>();
             try
             {
+
+             
+
                 var user = await userManager.GetUserAsync(User);
 
                 if (user == null)
@@ -45,17 +55,41 @@ namespace LarksWebApp.Controllers
                     return BadRequest();
                 }
 
-                var tokenList = tokenManager.GetAllTokens(user.Id);
 
-                var tokenDTOList  = mapper.Map<IList<AuthTokenDTO>>(tokenList);
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                if (claimsIdentity != null)
+                {
+                    // the principal identity is a claims identity.
+                    // now we need to find the NameIdentifier claim
+                    var userIdClaim = claimsIdentity.Claims
+                        .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
 
-               
+                    string userId = "";
+
+                    if (userIdClaim == null)
+                    {
+
+                        return View(tokenDTOList);
+                    }
+                        userId = userIdClaim.Value.ToString();
+
+                    var tokenList = tokenManager.GetAllTokens(user.Id);
+
+                    tokenDTOList = mapper.Map<List<AuthTokenDTO>>(tokenList);
+
+
+                    return View(tokenDTOList);
+                }
+
                 return View(tokenDTOList);
+                        
             }
-            catch (Exception)
+            catch (Exception ex )
             {
+                logger.LogError("Error " + ex.Message);
+                
 
-                throw;
+                return View(tokenDTOList);
             }
 
         }

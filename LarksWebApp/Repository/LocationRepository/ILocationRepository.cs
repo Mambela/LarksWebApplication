@@ -20,20 +20,23 @@ namespace LarksWebApp.Repository.LocationRepository
 
         IList<LocationModel> GetLocationsInMunicipality(int municipalityId, PaginationFilter filter);
 
-        IList<LocationModel> LocationToInDistanceAsync(decimal lat,decimal lng,double distance,PaginationFilter pagination);
-        IList<LocationModel> LocationCategoryByDistance(decimal lat,decimal lng,double distance,PaginationFilter pagination, int categoryId);
-        public int CountLocationByAttribute(string attribute, int attributeId);
+        IList<LocationModel> LocationToInDistanceAsync(decimal lat, decimal lng, double distance, PaginationFilter pagination);
+        IList<LocationModel> LocationCategoryByDistance(decimal lat, decimal lng, double distance, PaginationFilter pagination, int categoryId);
+        public int CountLocationByAttribute(string attribute, int attributeId=0,string searchParam=null);
 
 
-        int LocationCount(decimal lat,decimal lng,double distance, PaginationFilter pagination,string searchType, int CategoryId=0);
+        int LocationCount(decimal lat, decimal lng, double distance, PaginationFilter pagination, string searchType, int CategoryId = 0);
 
-        int CountLocations(decimal lat, decimal lng, double distance,int categoryId = 0);
+        int CountLocations(decimal lat, decimal lng, double distance, int categoryId = 0);
 
         Task<bool> Createlocationsubcategory(IEnumerable<LocationModelSubcategoryModel> Subcategory);
 
         Task<IList<LocationImageModel>> CreateLocationImage(IList<LocationImageModel> imageListLocation);
 
         Task<IList<LocationImageModel>> GetLocationImageModels(int locationId);
+
+        IList<LocationModel>GetLocationByLocationName(string searchParameter, PaginationFilter filter);
+        
 
         bool RemoveLocationImage(LocationImageModel imageModel);
 

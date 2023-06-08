@@ -1,6 +1,7 @@
 ﻿
 using LarksWebApp.Model.BaseModels;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LarksWebApp.Models
 {
@@ -26,7 +27,8 @@ namespace LarksWebApp.Models
         public SuburbModel? Suburb { get; set; }
         public int? SuburbId { get; set; }
 
-        public virtual decimal? Distance { get; set; } = 0;
+        [NotMapped]
+        public decimal? Distance { get; set; } = 0;
 
         public CityModel? City { get; set; }
         public int? CityId { get; set; }

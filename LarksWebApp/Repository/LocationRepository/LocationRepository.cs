@@ -259,7 +259,7 @@ namespace LarksWebApp.Repository.LocationRepository
                        .ToList();
         }
 
-        public int CountLocationByAttribute(string attribute, int attributeId)
+        public int CountLocationByAttribute(string attribute, int attributeId=0,string searchParam=null)
         {
 
             var filter = new PaginationFilter();
@@ -275,9 +275,30 @@ namespace LarksWebApp.Repository.LocationRepository
 
                 case "MUNICIPALITY":
                     return _dbContext.Location.Where(l => l.MunicipalityId == attributeId).Count();
+                case "LOCATION_NAME":
+                    return _dbContext.Location.Where(l => l.Designation.Contains(searchParam)).Count();
                 default:
                     return 0;
             }
+        }
+
+        public IList<LocationModel> GetLocationByLocationName(string searchParameter, PaginationFilter filter)
+        {
+            var sqlRaw = string.Format("SELECT * FROM (SELECT *, (((acos(sin(( 0 * pi() / 180)) * sin(( `Lat` * pi() / 180)) + cos(( 0 * pi() /180 )) * cos(( `Lat` * pi() / 180)) * cos((( 0 - `Lng`) * pi()/180))) ) * 180/pi()) * 60 * 1.1515 * 1.609344) as distance FROM `Location` ) Location WHERE distance >=0 ");
+
+
+            return _dbContext.Location.FromSqlRaw(sqlRaw)
+                        .Include(c => c.Category)
+                       .Include(l => l.LocalSubcategories).ThenInclude(c => c.Subcategories)
+                       .Include(l => l.Images)
+                       .Include(a => a.Municipality)
+                       .Include(a => a.Suburb)
+                       .Include(c => c.City)
+                       .Include(m => m.Municipality)
+                       .Where(n => n.Designation.Contains(searchParameter))
+                       .Skip((filter.PageNumber - 1) * filter.PageSize)
+                       .Take(filter.PageSize)
+                       .ToList(); ;
         }
     }
 }

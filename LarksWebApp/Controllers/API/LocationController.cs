@@ -262,7 +262,7 @@ namespace LarksWebApp.Controllers.API
         }
 
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin,SuperAdmin")]
         [HttpPost]
         [Route("newLocation")]
         public async Task<IActionResult> CreateLocation([FromForm] Create_Location_DTO locationCollection) 
@@ -584,6 +584,70 @@ namespace LarksWebApp.Controllers.API
                             
 
                 string searchParams = $"?municipalityId={municipalityId}";
+                var route = Request.Path.Value + searchParams;
+
+
+                //var neighbourhoodLocationListDTO = _mapper.Map<List<LocationDTO>>(neighbourhoodLocationList);
+
+                var locationsDTOList = new List<ViewLocationDTO>();
+
+
+                foreach (var location in locationsInMunicipalityList)
+                {
+                    var locationObjDTO = _mapper.Map<ViewLocationDTO>(location);
+
+                    var locationSubCategories = new List<SubCategoryDTO>();
+
+                    locationObjDTO.Subcategories = location.LocalSubcategories.Select(s => new SubCategoryDTO
+                    { Id = s.Subcategories.Id, Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng }).ToList();
+                    locationObjDTO.CategoryId = (int)location.CategoryId;
+                    locationObjDTO.Lat = location.Lat;
+                    locationObjDTO.Lng = location.Lng;
+                    locationObjDTO.Category = location.Category.Designation;
+                    locationObjDTO.Suburb = location.Suburb.Designation;
+                    locationObjDTO.Distance = 0;
+                    locationObjDTO.City = location.City.Designation;
+                    locationObjDTO.Municipality = location.Municipality.Designation;
+                    locationObjDTO.Images = location.Images.Select(s => s.ImagePath).ToList();
+                    locationsDTOList.Add(locationObjDTO);
+
+                }
+
+                var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
+
+                var pagedResponse = PaginationHelper.CreatePageResponse<ViewLocationDTO>(locationsDTOList, validFilter, totalRecords, uriService, route);
+
+                return Ok(pagedResponse);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error while fetching the locations in a category " + ex.Message);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error occurred while trying to fetch locations"); ;
+            }
+        }
+
+
+
+        [HttpGet]
+        [Route("searchlocation")]
+        public async Task<IActionResult> GetLocationByName([FromQuery] string searchParameter, [FromQuery] PaginationFilter filter)
+        {
+            try
+            {
+
+                if (searchParameter.Length < 3)
+                {
+                    ModelState.AddModelError("error","Search parameter must be more than 2 characters");
+                    return BadRequest(ModelState);
+                }
+
+                var locationsInMunicipalityList = locationRepo.GetLocationByLocationName(searchParameter, filter);
+                int totalRecords = locationRepo.CountLocationByAttribute("LOCATION_NAME", 0, searchParameter);
+
+
+
+                string searchParams = $"?searchParameter={searchParameter}";
                 var route = Request.Path.Value + searchParams;
 
 

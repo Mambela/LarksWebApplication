@@ -27,7 +27,7 @@ namespace LarksWebApp.Controllers.API
             serviceLogger = new ServiceLogger();
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost]
 
         public async Task<IActionResult> CreateCategory(Create_subcategoryDTO create_SubcateogryDTO) {

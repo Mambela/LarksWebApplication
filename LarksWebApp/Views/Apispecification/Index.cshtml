@@ -263,6 +263,8 @@
         <h6> <span class="fw-bold text-light bg-secondary p-2">Request</span></h6>
         <div class="bg-success bg-opacity-25 p-3">
             <code class="py-3 text-dark">
+                <pre>
+
                 curl --location 'https://larks.africa/api/Location/newLocation' \
                 --form 'designation="Mercedez Midrand"' \
                 --form 'additionalInfo="Mercedez benz main seller in Midrand. "' \
@@ -276,9 +278,19 @@
                 --form 'cityId="3"' \
                 --form 'lat="-25.973972"' \
                 --form 'Lng="28.117133"'
+                </pre>
 
             </code>
         </div>
+        <br />
+        <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+        <div class="bg-success bg-opacity-25 p-3">
+            <code class="py-3 text-dark">
+                <pre id="createLocationResponse"></pre>
+            </code>
+        </div>
+
+
         @*End of create Location*@
     
 

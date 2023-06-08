@@ -25,6 +25,29 @@ document.getElementById("createAddress").textContent = JSON.stringify(createAddr
 
 //GET Locations by Category
 
+var createLocationResponse = {
+    "id": 12,
+    "designation": "BMW Waterfall",
+    "country": null,
+    "countryId": 2,
+    "listofCountryDTO": null,
+    "municipalityID": 1,
+    "suburbId": 5,
+    "cityId": 3,
+    "subCategories": [
+        4,
+        3
+    ],
+    "files": null,
+    "additionalInfo": "BMW sellerlocated in front of mall of africa.",
+    "categoryId": 1,
+    "lat": -26.011366,
+    "lng": 28.109463
+}
+
+document.getElementById("createLocationResponse").textContent = JSON.stringify(createLocationResponse, null, 2);
+
+
 var getlocationsByCategoryResponse =
     [
         {

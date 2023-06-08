@@ -57,7 +57,7 @@ namespace LarksWebApp.Controllers.API
  
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCategories(CreateCategoryDTO createCategoryDTO)
         {
 
