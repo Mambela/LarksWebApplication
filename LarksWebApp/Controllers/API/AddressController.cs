@@ -2,6 +2,7 @@
 using LarksWebApp.DTOs;
 using LarksWebApp.DTOs.DTO_Addresses;
 using LarksWebApp.Models;
+using LarksWebApp.Models.CoordinatesModel;
 using LarksWebApp.Repository.AddressRepository.Address_Repository;
 using LarksWebApp.Repository.AddressRepository.HooksRepository;
 using LarksWebApp.Repository.CityRepository;
@@ -209,6 +210,33 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
+
+        [HttpGet("GetGeolocationAddress")]
+        public async Task<IActionResult> GetGeolocationAddress(int distance, decimal latitude, decimal longitude)
+        {
+            try
+            {
+                externalHttpService = new ExternalHttpService(config);
+                var nominatimAddressDTO = await externalHttpService.RetrieveLocationByGeoLocationAsync(latitude, longitude);
+
+                var fullAddress = new FullAddress_DTO();
+
+                fullAddress.City = (nominatimAddressDTO.Address.City != null) ? nominatimAddressDTO.Address.City : (nominatimAddressDTO.Address.Town != null) ? nominatimAddressDTO.Address.Town: "";
+                fullAddress.Suburb= (nominatimAddressDTO.Address.Suburb!= null) ? nominatimAddressDTO.Address.Suburb: "";
+                fullAddress.District = (nominatimAddressDTO.Address.City_District!= null) ? nominatimAddressDTO.Address.City_District: (nominatimAddressDTO.Address.Suburb != null) ? nominatimAddressDTO.Address.Suburb :"";
+                fullAddress.Country= (nominatimAddressDTO.Address.Country!= null) ? nominatimAddressDTO.Address.Country: "";
+                fullAddress.Province = (nominatimAddressDTO.Address.State != null) ? nominatimAddressDTO.Address.State : "";
+                fullAddress.CountryCode = (nominatimAddressDTO.Address.CountryCode != null) ? nominatimAddressDTO.Address.CountryCode : "";
+                fullAddress.FullAddress = nominatimAddressDTO.DisplayName;
+
+                return Ok(fullAddress);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
 
         [HttpPost]
         [Route("CreateAddress")]
@@ -657,11 +685,16 @@ namespace LarksWebApp.Controllers.API
                 };
 
                 //Verify if there is any Id that has to be included. 
-                clientWebHook.EndPoint = clientWebHook.EndPoint + ((addressGeolocationDTO.responseId != 0) ? addressGeolocationDTO.responseId.ToString() : "");
+                //clientWebHook.EndPoint = clientWebHook.EndPoint + ((addressGeolocationDTO.responseId != 0) ? addressGeolocationDTO.responseId.ToString() : "");
 
-                var item = clientWebHook.EndPoint.Substring(clientWebHook.EndPoint.LastIndexOf('='), 1);
-                if(item != null)
+
+                int verifyParameter = clientWebHook.EndPoint.LastIndexOf('=');
+
+
+
+                if(verifyParameter != -1)
                 {
+                    var item = clientWebHook.EndPoint.Substring(verifyParameter, 1);
                     clientWebHook.EndPoint = (addressGeolocationDTO.OptionalId == 0) ? clientWebHook.EndPoint : clientWebHook.EndPoint +addressGeolocationDTO.OptionalId;
                 }
 

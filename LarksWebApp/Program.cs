@@ -49,7 +49,7 @@ builder.Services.AddAutoMapper(typeof(EntityMapping));
 
 ConfigureServices(builder.Services);
 ConfigurationManager Configuration = builder.Configuration;
-
+ 
 //trying to setup email 
  
 

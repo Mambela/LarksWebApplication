@@ -49,6 +49,7 @@ namespace LarksWebApp.DAL
             CreateMap<ViewLocationDTO, LocationObj>().ReverseMap();
             CreateMap<ViewCountryDTO,CountryModel>().ReverseMap();
             CreateMap<ViewProvinceDTO,ProvinceModel>().ReverseMap();
+            CreateMap<SuburbDTO, SuburbModel>().ReverseMap();
             
        
         }

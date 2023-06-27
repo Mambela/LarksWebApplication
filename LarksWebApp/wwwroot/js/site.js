@@ -1049,3 +1049,20 @@ var suburbById = {
 };
 
 document.getElementById("suburbById").textContent = JSON.stringify(suburbById, null, 2);
+
+
+
+
+var suburbList = [
+    {
+        "id": 2,
+        "designation": "Carlswald"
+    },
+    {
+        "id": 3,
+        "designation": "Hatfield"
+    }
+]
+
+document.getElementById("suburbList").textContent = JSON.stringify(suburbList, null, 2);
+document.getElementById("suburbListbyParam").textContent = JSON.stringify(suburbList, null, 2);

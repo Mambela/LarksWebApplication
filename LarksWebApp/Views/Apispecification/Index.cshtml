@@ -491,7 +491,7 @@
         <div class="col-12">
             <br />
             <h4 class="fw-light">
-                Get subcategories by id.</h>
+                Get subcategories by id.</h4>
             <p> Returns an object of a subcategory. Parameter represents subcategory id.</p>
             <h6> <span class="fw-semibold text-light bg-success p-2">GET</span> /api/Subcategory/SubcategoriesInCategory?categoryId=<code>parameters</code></h6><br />
             <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
@@ -550,13 +550,41 @@
      
         <div class="col-12">
             <br />
-            <h4 class="fw-light">Get a single subcategory</h4>
+            <h4 class="fw-light">Get a single suburb</h4>
             <p> Returns an object of a single suburb. </p>
             <h6> <span class="fw-semibold text-light bg-success p-2">GET</span>/api/suburb/Suburb?id=<code>parameter</code></h6><br />
             <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
             <div class="bg-success bg-opacity-25">
                 <code class="p-2 text-dark">
                     <pre id="suburbById"></pre>
+                </code>
+            </div>
+        </div>
+
+
+        <div class="col-12">
+            <br />
+            <h4 class="fw-light">Get a list of suburbs</h4>
+            <p> Returns a list of suburbs based on the given list of id </p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span>/api/suburb/ListOfSuburb?suburbsQuery=<code>2,3</code></h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="suburbList"></pre>
+                </code>
+            </div>
+        </div>
+
+
+        <div class="col-12 px-3">
+            <br />
+            <h4 class="fw-light">Get a list of suburbs by query parameter</h4>
+            <p> Returns a list of suburbs based on the given list of id </p>
+            <h6> <span class="fw-semibold text-light bg-success p-2">GET</span>/api/suburb/SuburbList?suburbList=<code>2</code>&suburbList=<code>3</code></h6><br />
+            <h6> <span class="fw-bold text-light bg-secondary p-2">Response</span></h6>
+            <div class="bg-success bg-opacity-25">
+                <code class="p-2 text-dark">
+                    <pre id="suburbListbyParam"></pre>
                 </code>
             </div>
         </div>

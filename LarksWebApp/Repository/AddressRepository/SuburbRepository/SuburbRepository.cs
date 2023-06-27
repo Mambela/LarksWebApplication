@@ -122,5 +122,10 @@ namespace LarksWebApp.Repository.HoodRepository
 
             return _dbContext.Suburb.Where(s => s.DistrictId == districtId || s.MunicipalityId == municipalityId || s.CityId == cityId).ToList();
         }
+
+        public IList<SuburbModel> GetSuburbs(IList<int> suburbs)
+        {
+            return _dbContext.Suburb.Where(c => suburbs.Contains(c.Id)).OrderBy(s =>s.Designation).ToList();
+        }
     }
 }

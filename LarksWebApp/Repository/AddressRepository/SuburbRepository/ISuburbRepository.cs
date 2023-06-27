@@ -27,6 +27,8 @@ namespace LarksWebApp.Repository.HoodRepository
      
         IList<SuburbModel> GetNeighbourhoodInCities(int cityID);
 
+        IList<SuburbModel> GetSuburbs(IList<int> suburbs);
+
 
         public bool DeleteNeighbourhood(SuburbModel neighbourhood);
 

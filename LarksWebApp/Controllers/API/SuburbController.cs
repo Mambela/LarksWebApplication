@@ -19,7 +19,7 @@ namespace LarksWebApp.Controllers.API
     public class SuburbController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private readonly ISuburbRepository _hoodRepository;
+        private readonly ISuburbRepository suburbRepository;
         private readonly IAddressRepository _addressRepository;
         private readonly ServiceLogger serviceLogger;
 
@@ -27,7 +27,7 @@ namespace LarksWebApp.Controllers.API
         public SuburbController(IMapper mapper, ISuburbRepository hoodRepository,IAddressRepository addressRepository)
         {
             _mapper = mapper;
-            _hoodRepository = hoodRepository;
+            suburbRepository = hoodRepository;
             serviceLogger = new ServiceLogger();
             _addressRepository = addressRepository;
         }
@@ -40,7 +40,7 @@ namespace LarksWebApp.Controllers.API
         {
             try
             {
-                var hoodListObj = _hoodRepository.GetNeighbourhoodModels();
+                var hoodListObj = suburbRepository.GetNeighbourhoodModels();
 
                 var hoodListDTO = new List<NeighbourhoodDTO>();
 
@@ -66,7 +66,7 @@ namespace LarksWebApp.Controllers.API
             
             try
             {   
-                var hoodObjList = _hoodRepository.GetNeighbourhoodModels(sector,id);
+                var hoodObjList = suburbRepository.GetNeighbourhoodModels(sector,id);
 
 
                 if (hoodObjList == null)
@@ -98,7 +98,7 @@ namespace LarksWebApp.Controllers.API
         {
             try
             {   
-                var hoodObjList = _hoodRepository.GetNeighbourhoodModels(districtId,municipalityId,cityId);
+                var hoodObjList = suburbRepository.GetNeighbourhoodModels(districtId,municipalityId,cityId);
 
                 var hoodDTOList = new List<NeighbourhoodDTO>();
 
@@ -140,7 +140,7 @@ namespace LarksWebApp.Controllers.API
                 }
 
 
-                if (_hoodRepository.VerifySuburbExist(suburb_DTO.Designation, suburb_DTO.MunicipalityId) ==null)
+                if (suburbRepository.VerifySuburbExist(suburb_DTO.Designation, suburb_DTO.MunicipalityId) ==null)
                 {
                     ModelState.AddModelError("", $"The record {suburb_DTO.Designation} already exists as a country");
 
@@ -150,7 +150,7 @@ namespace LarksWebApp.Controllers.API
                 var HoodObj = _mapper.Map<SuburbModel>(suburb_DTO);
 
 
-                if (await _hoodRepository.CreateSuburb(HoodObj) == null)
+                if (await suburbRepository.CreateSuburb(HoodObj) == null)
                 {
                     ModelState.AddModelError("", $"Something went wrong while creating the record {HoodObj.Designation}");
 
@@ -239,6 +239,47 @@ namespace LarksWebApp.Controllers.API
         }
 
 
+        [HttpGet("ListOfSuburb")]
+        public IActionResult GetListSububurb([FromQuery] string suburbsQuery)
+        {
+            try
+            {
+
+                var suburbList = suburbsQuery.Split(',')?.Select(Int32.Parse)?.ToList();
+
+                var suburbObjList = suburbRepository.GetSuburbs(suburbList);
+
+
+                var suburbDTOList = _mapper.Map<IList<SuburbDTO>>(suburbObjList);
+                return Ok(suburbDTOList);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("error " + ex.Message);
+
+                return BadRequest();
+            }
+        }
+
+
+        [HttpGet("SuburbList")]
+        public IActionResult GetSuburbList([FromQuery] int []suburbList)
+        {
+            try
+            {
+                var suburbObjList = suburbRepository.GetSuburbs(suburbList);
+
+
+                var suburbDTOList = _mapper.Map<IList<SuburbDTO>>(suburbObjList);
+                return Ok(suburbDTOList);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("error " + ex.Message);
+
+                return BadRequest();
+            }
+        }
 
         /**
          * https://localhost:44339/api/hood/Neighbourhood?id=1
@@ -250,7 +291,7 @@ namespace LarksWebApp.Controllers.API
 
             try
             {
-                var hoodObj = _hoodRepository.GetNeighbourhood(id);
+                var hoodObj = suburbRepository.GetNeighbourhood(id);
 
                 var hoodDTO = _mapper.Map<NeighbourhoodDTO>(hoodObj);
 
@@ -275,7 +316,7 @@ namespace LarksWebApp.Controllers.API
 
                 var neighbourHoodObj = _mapper.Map<SuburbModel>(hoodDTO);
 
-                if (!_hoodRepository.UpdateNeighbourhoody(neighbourHoodObj))
+                if (!suburbRepository.UpdateNeighbourhoody(neighbourHoodObj))
                 {
                     ModelState.AddModelError("", $"Something went wrong while updatig the record {neighbourHoodObj.Designation}");
 
