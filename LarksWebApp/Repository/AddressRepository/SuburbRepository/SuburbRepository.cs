@@ -32,7 +32,7 @@ namespace LarksWebApp.Repository.HoodRepository
             return Save();
         }
 
-        public SuburbModel GetNeighbourhood(int suburbId)
+        public SuburbModel GetSuburb(int suburbId)
         {
             return _dbContext.Suburb.Include(s =>s.NeighbourhoodStreets)
                 .ThenInclude(s =>s.Streets).Where(n =>n.Id == suburbId).FirstOrDefault();
@@ -126,6 +126,11 @@ namespace LarksWebApp.Repository.HoodRepository
         public IList<SuburbModel> GetSuburbs(IList<int> suburbs)
         {
             return _dbContext.Suburb.Where(c => suburbs.Contains(c.Id)).OrderBy(s =>s.Designation).ToList();
+        }
+
+        public IList<SuburbModel> GetSuburbsByName(string designation)
+        {
+            return _dbContext.Suburb.Where(s => s.Designation.Contains(designation)).ToList();
         }
     }
 }

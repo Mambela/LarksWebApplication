@@ -28,43 +28,30 @@ namespace LarksWebApp.Migrations
                     b.Property<string>("AdditionalInfo")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("BuildingTypeId")
+                    b.Property<int?>("BuildingTypeId")
                         .HasColumnType("int");
 
                     b.Property<int?>("CountryID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("MunicipalityID")
+                    b.Property<int?>("MunicipalityID")
                         .HasColumnType("int");
 
-                    b.Property<int>("NeighbourhoodId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProvinceID")
+                    b.Property<int?>("ProvinceID")
                         .HasColumnType("int");
 
                     b.Property<string>("Reference")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("StreetID")
+                    b.Property<int?>("StreetID")
                         .HasColumnType("int");
 
                     b.Property<string>("StreetNumber")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("varchar(10)");
 
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<decimal>("lat")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("lng")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<int?>("SuburbId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -74,11 +61,11 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("MunicipalityID");
 
-                    b.HasIndex("NeighbourhoodId");
-
                     b.HasIndex("ProvinceID");
 
                     b.HasIndex("StreetID");
+
+                    b.HasIndex("SuburbId");
 
                     b.ToTable("Addresses");
                 });
@@ -892,9 +879,7 @@ namespace LarksWebApp.Migrations
                 {
                     b.HasOne("LarksWebApp.Models.BuildingTypeModel", "BuildingType")
                         .WithMany("AddressModels")
-                        .HasForeignKey("BuildingTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BuildingTypeId");
 
                     b.HasOne("LarksWebApp.Models.CountryModel", "Country")
                         .WithMany()
@@ -902,27 +887,19 @@ namespace LarksWebApp.Migrations
 
                     b.HasOne("LarksWebApp.Models.MunicipalityModel", "Municipality")
                         .WithMany("Addresses")
-                        .HasForeignKey("MunicipalityID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LarksWebApp.Models.SuburbModel", "Neighbourhood")
-                        .WithMany("Addresses")
-                        .HasForeignKey("NeighbourhoodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MunicipalityID");
 
                     b.HasOne("LarksWebApp.Models.ProvinceModel", "Province")
                         .WithMany()
-                        .HasForeignKey("ProvinceID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProvinceID");
 
                     b.HasOne("LarksWebApp.Models.StreetModel", "Street")
                         .WithMany("Addresses")
-                        .HasForeignKey("StreetID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StreetID");
+
+                    b.HasOne("LarksWebApp.Models.SuburbModel", "Suburb")
+                        .WithMany("Addresses")
+                        .HasForeignKey("SuburbId");
 
                     b.Navigation("BuildingType");
 
@@ -930,11 +907,11 @@ namespace LarksWebApp.Migrations
 
                     b.Navigation("Municipality");
 
-                    b.Navigation("Neighbourhood");
-
                     b.Navigation("Province");
 
                     b.Navigation("Street");
+
+                    b.Navigation("Suburb");
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.CityModel", b =>

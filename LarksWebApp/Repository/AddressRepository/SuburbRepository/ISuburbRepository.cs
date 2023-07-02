@@ -12,7 +12,9 @@ namespace LarksWebApp.Repository.HoodRepository
 
         Task<SuburbModel> CreateSuburb(SuburbModel neighbourhood);
 
-        SuburbModel GetNeighbourhood(int neighbourhoodId);
+        SuburbModel GetSuburb(int neighbourhoodId);
+
+        IList<SuburbModel> GetSuburbsByName(string designation);
 
         IList<SuburbModel> GetNeighbourhoodInMunicipality(int provinceId);
         

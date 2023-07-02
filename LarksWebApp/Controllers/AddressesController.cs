@@ -57,7 +57,7 @@ namespace LarksWebApp.Controllers
 
                 return BadRequest();
             }
-            return View();
+             
         }
 
         // GET: AddressesController/Details/5

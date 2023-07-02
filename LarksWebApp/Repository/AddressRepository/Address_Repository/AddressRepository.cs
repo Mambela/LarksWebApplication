@@ -51,7 +51,7 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
         public AddressModel GetAddress(int AddressId)
         {
             return _dbContext.Addresses
-                .Include(n => n.Neighbourhood)
+                .Include(n => n.Suburb)
                 .Include(m => m.Municipality)
                 .Include(s => s.Street)
                 .Include(p => p.Province)
@@ -62,7 +62,7 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
         public List<AddressModel> GetAddressesInStreets(int streetsId)
         {
             return _dbContext.Addresses.Where(a => a.StreetID == streetsId)
-                .Include(n =>n.Neighbourhood)
+                .Include(n =>n.Suburb)
                 .Include(m => m.Municipality)
                 .Include(s => s.Street)
                 .Include(p =>p.Province)
@@ -90,8 +90,8 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
 
         public List<AddressModel> GetAddressesInSuburb(int neighbourhoodId)
         {
-            return _dbContext.Addresses.Where(a => a.NeighbourhoodId == neighbourhoodId)
-              .Include(n => n.Neighbourhood)
+            return _dbContext.Addresses.Where(a => a.SuburbId == neighbourhoodId)
+              .Include(n => n.Suburb)
               .Include(m => m.Municipality)
               .Include(s => s.Street)
               .Include(p => p.Province)

@@ -6,6 +6,7 @@ namespace LarksWebApp.Repository.StreetRepository
     {
 
         bool VerifyStreetExist(string designation);
+        StreetModel VerifyStreetExistance(string designation);
 
         bool VerifyStreetExist(int Id);
 

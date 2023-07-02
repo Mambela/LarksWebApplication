@@ -76,5 +76,10 @@ namespace LarksWebApp.Repository.StreetRepository
         {
             return _dbContext.Streets.Any(s => s.Id == Id);
         }
+
+        public StreetModel VerifyStreetExistance(string designation)
+        {
+            return _dbContext.Streets.FirstOrDefault(s => s.Designation.ToLower() == designation.ToLower());
+        }
     }
 }

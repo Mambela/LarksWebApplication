@@ -6,9 +6,12 @@ using LarksWebApp.DTOs.DTO_Location;
 using LarksWebApp.DTOs.DTO_Subcategory;
 using LarksWebApp.DTOs.PaginationDTO;
 using LarksWebApp.Models;
+using LarksWebApp.Repository.AddressRepository.Address_Repository;
 using LarksWebApp.Repository.CategoryRepository;
 using LarksWebApp.Repository.CountryRepository;
+using LarksWebApp.Repository.HoodRepository;
 using LarksWebApp.Repository.LocationRepository;
+using LarksWebApp.Repository.StreetRepository;
 using LarksWebApp.Services.FileManagement;
 using LarksWebApp.Services.Loggers;
 using LarksWebApp.Services.PaginationService;
@@ -29,24 +32,31 @@ namespace LarksWebApp.Controllers.API
         private readonly ICountryRepository _countryRepo;
         private readonly ICategoryRepository _categoryRepo;
         private readonly IFileManagement _fileManagement;
+        private readonly ISuburbRepository suburbRepository;
         private readonly ILoggerTrace logger;
         private readonly IMapper _mapper;
         private readonly IUriService uriService;
+        private readonly IStreetRepository streetRepository;
+        private readonly IAddressRepository addressRepository;
 
         public LocationController(ILocationRepository repository, ILoggerTrace logger, IMapper mapper, 
             ICountryRepository countryRepo,
             ICategoryRepository categoryRepo,
             IFileManagement fileManagement,
-            IUriService _uriService)
+            IUriService _uriService, ISuburbRepository _suburbRepository, IStreetRepository _streetRepository,
+            IAddressRepository _addressRepository)
         {
 
             _countryRepo = countryRepo;
             _categoryRepo = categoryRepo;
             _fileManagement = fileManagement;
-            this.locationRepo = repository;
+            locationRepo = repository;
             this.logger = logger;
             _mapper = mapper;
             uriService = _uriService;
+            suburbRepository = _suburbRepository;
+            streetRepository = _streetRepository;
+            addressRepository = _addressRepository;
         }
 
         ///Locations By Neighbourhood 
@@ -362,6 +372,215 @@ namespace LarksWebApp.Controllers.API
 
         }
 
+        [HttpPost]
+        [Route("newlocationwithaddress")]
+        public async Task<IActionResult> CreateLocationWithSuggestions([FromForm] CreateLocation_w_address_DTO locationDTO)
+        {
+            try
+            {
+                int suburbId = 0;
+                int streetId = 0;
+                int districtId = (int)((locationDTO.DistrictId == null) ? 0 : locationDTO.DistrictId);
+                int cityId = locationDTO.CityId;
+                int addressId = 0;
+
+                //Check if Suburb Provided Exists if not then Create it 
+                if (locationDTO.SuburbId == 0 || locationDTO.SuburbId == null && locationDTO.Suburb != null)
+                {
+                    if (locationDTO.Suburb != null)
+                    {
+                        var suburb = suburbRepository.VerifySuburbExist(locationDTO.Suburb, locationDTO.MunicipalityId, cityId, districtId);
+
+                        if (suburb == null)
+                        {
+                            if (districtId == 0 || districtId == null)
+                            {
+                                suburb = new SuburbModel
+                                {
+                                    CityId = cityId,
+                                    MunicipalityId = locationDTO.MunicipalityId,
+                                    Designation = locationDTO.Suburb,
+                                };
+                            }
+                            else {
+
+                                suburb = new SuburbModel
+                                {
+                                    CityId = cityId,
+                                    DistrictId = districtId,
+                                    MunicipalityId = locationDTO.MunicipalityId,
+                                    Designation = locationDTO.Suburb,
+                                };
+
+                            }
+                         
+
+                           
+
+
+                            if (await suburbRepository.CreateSuburb(suburb) == null)
+                            {
+                                throw new Exception("Failed to create suburb.");
+                            }
+                        }
+                        suburbId = suburb.Id;
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("error", "A suburb is required, either provide an Id or a suburb name");
+                        return BadRequest(ModelState);
+                    }
+                }
+
+                //Check if Street Exist if not then Create it 
+                if (locationDTO.StreetId == 0 || locationDTO.StreetId == null)
+                {
+
+                    if (locationDTO.Street != null)
+                    {
+                        var street = streetRepository.VerifyStreetExistance(locationDTO.Street);
+
+                        if (street == null)
+                        {
+                            street = new StreetModel
+                            {
+                                Designation = locationDTO.Street
+                            };
+
+                            if (await streetRepository.CreateStreetModel(street) != null)
+                            {
+                                
+                            }
+                        }
+
+                        streetId = street.Id;
+
+                    }
+
+                }
+                else
+                {
+
+                    streetId = (int)locationDTO.StreetId;
+                }
+
+
+                //Create address first 
+                if (locationDTO.IncludeAddress)
+                {
+                    if (locationDTO.BuildingTypeId == 0 || locationDTO.BuildingTypeId == null)
+                    {
+                        ModelState.AddModelError("error", "If you are creating a new address then provide a building type.");
+                        return BadRequest(ModelState);  
+                    }
+
+                    var address = new AddressModel
+                    {
+                        StreetID = streetId,
+                        CountryID = locationDTO.CountryId,
+                        ProvinceID = locationDTO.ProvinceId,
+                        SuburbId = suburbId,
+                        AdditionalInfo = (locationDTO.AdditionalInfo == null) ? "" : locationDTO.AdditionalInfo,
+                        StreetNumber = (locationDTO.StreetNumber == null) ? "" : locationDTO.StreetNumber,
+                        BuildingTypeId = locationDTO.BuildingTypeId
+                    };
+
+                    if (await addressRepository.CreateAddress(address) !=null)
+                    {
+                        addressId = address.Id;
+                    }
+                }
+
+                //Now we can create a location
+                var location = new LocationModel 
+                {
+                    Designation = locationDTO.Designation,
+                    CategoryId = locationDTO.CategoryId,
+                    CityId = cityId,
+                    AdditionalInformation = locationDTO.LocationDescription,
+                    AddressId = addressId,
+                    MunicipalityId = locationDTO.MunicipalityId,
+                    SuburbId = suburbId,
+                    Lat = locationDTO.Lat,
+                    Lng = locationDTO.Lng
+                };
+
+                if (await locationRepo.CreateLocation(location) == null)
+                {
+                    ModelState.AddModelError("error", "Failed to create a new Location ");
+                }
+
+                var savedImages = new List<string>();
+
+                var LocationImageList = new List<LocationImageModel>();
+
+                if (locationDTO.Files != null)
+                {
+                    if (locationDTO.Files.Count > 0)
+                    {
+                        var _categoryObj = _categoryRepo.GetCategoryById((locationDTO.CategoryId != 0) ? locationDTO.CategoryId  : locationDTO.CategoryId);
+
+                        savedImages = await _fileManagement.MultipleFileUploads(locationDTO.Files, "Locations", _categoryObj.Designation);
+                    }
+                }
+
+
+                var LocationSubcategory = locationDTO.SubCategories.Select(id => new LocationModelSubcategoryModel { LocationId = location.Id, SubcategoriesId = id });
+
+                if (!await locationRepo.Createlocationsubcategory(LocationSubcategory))
+                {
+                    return BadRequest();
+                }
+
+
+
+
+                foreach (var image in savedImages)
+                {
+
+                    var locatinImageModel = new LocationImageModel
+                    {
+                        ImagePath = image,
+                        LocationId = location.Id
+
+                    };
+
+                    LocationImageList.Add(locatinImageModel);
+                }
+
+
+                if (await locationRepo.CreateLocationImage(LocationImageList) == null)
+                {
+                    return BadRequest();
+                }
+
+
+
+                var createdLocation = new Created_Location_DTO 
+                {
+                    Id=location.Id,
+                    AddressId = addressId,
+                    CategoryId = locationDTO.CategoryId,
+                    CityId = locationDTO.CityId,
+                    ProvinceId   = locationDTO.ProvinceId,
+                    Designation = locationDTO.Designation,
+                    MunicipalityId = locationDTO.MunicipalityId,
+                    Lat = locationDTO.Lat,
+                    Lng = locationDTO.Lng,
+                    SuburbId = suburbId
+                };
+
+                return StatusCode(StatusCodes.Status201Created,createdLocation);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error creating location "+ex.Message+" Inner Exception "+ ex.InnerException.Message);
+
+                 ModelState.AddModelError("errors", "Failed to create a new location");
+
+                return BadRequest(ModelState);
+            }
+        }
 
         ///Location near a POINT 
         [HttpGet]
@@ -413,6 +632,8 @@ namespace LarksWebApp.Controllers.API
                 return BadRequest();
             }
         }
+
+
 
         ///Location by Proximity 
         [HttpGet]

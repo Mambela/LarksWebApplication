@@ -188,10 +188,10 @@ namespace LarksWebApp.Controllers.API
                     {
                         Id = addressObj.Id,
                         Municipality = addressObj.Municipality.Designation,
-                        Neighbourhood = addressObj.Neighbourhood.Designation,
+                        Neighbourhood = addressObj.Suburb.Designation,
                         StreetName = addressObj.Street.Designation,                        
                         Province = addressObj.Province.Designation,
-                        FullAddress = addressObj.StreetNumber + ", " + addressObj.Street.Designation + ", " + addressObj.Neighbourhood.Designation + ", " + addressObj.Province.Designation
+                        FullAddress = addressObj.StreetNumber + ", " + addressObj.Street.Designation + ", " + addressObj.Suburb.Designation + ", " + addressObj.Province.Designation
 
                     };
 
@@ -291,10 +291,37 @@ namespace LarksWebApp.Controllers.API
 
             try
             {
-                var hoodObj = suburbRepository.GetNeighbourhood(id);
+                var hoodObj = suburbRepository.GetSuburb(id);
 
                 var hoodDTO = _mapper.Map<NeighbourhoodDTO>(hoodObj);
 
+
+                return Ok(hoodDTO);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+
+        [HttpGet("SuburbByName")]
+        public IActionResult GetNeighbourhoodByName([FromQuery] string suburbname)
+        {
+
+            try
+            {
+                if(suburbname.Length < 3)
+                {
+                    ModelState.AddModelError("errors", "Suburb name has to be more than 2 characters");
+                  
+                    return BadRequest(ModelState);
+                }
+
+                var hoodObj = suburbRepository.GetSuburbsByName(suburbname);
+
+                var hoodDTO = _mapper.Map<IList<NeighbourhoodDTO>>(hoodObj);
 
                 return Ok(hoodDTO);
             }

@@ -105,10 +105,10 @@ namespace LarksWebApp.Controllers.API
                     {
                         Id = addressObj.Id,
                         Municipality = addressObj.Municipality.Designation,
-                        Neighbourhood = addressObj.Neighbourhood.Designation,
+                        Neighbourhood = addressObj.Suburb.Designation,
                         StreetName = addressObj.Street.Designation,
                         Province = addressObj.Province.Designation,
-                        FullAddress = addressObj.StreetNumber + " " + addressObj.Street.Designation + ", " + addressObj.Neighbourhood.Designation + ", " + addressObj.Province.Designation
+                        FullAddress = addressObj.StreetNumber + " " + addressObj.Street.Designation + ", " + addressObj.Suburb.Designation + ", " + addressObj.Province.Designation
                     };
 
                     viewAddressDTOList.Add(addressDTO);
@@ -147,7 +147,7 @@ namespace LarksWebApp.Controllers.API
                     {
                         Id = addressObj.Id,
                         Municipality = addressObj.Municipality.Designation,
-                        Neighbourhood = addressObj.Neighbourhood.Designation,
+                        Neighbourhood = addressObj.Suburb.Designation,
                         StreetName = addressObj.Street.Designation,
                         StreetNumber = addressObj.StreetNumber,
                         Province = addressObj.Province.Designation,
@@ -189,7 +189,7 @@ namespace LarksWebApp.Controllers.API
                     {
                         Id = addressObj.Id,
                         Municipality = addressObj.Municipality.Designation,
-                        Neighbourhood = addressObj.Neighbourhood.Designation,
+                        Neighbourhood = addressObj.Suburb.Designation,
                         StreetName = addressObj.Street.Designation,
                         StreetNumber = addressObj.StreetNumber,
                         Province = addressObj.Province.Designation,
@@ -256,8 +256,7 @@ namespace LarksWebApp.Controllers.API
 
 
                 var addressObj = _mapper.Map<AddressModel>(addressDTO);
-                addressObj.lat = addressDTO.Coordinates.lat;
-                addressObj.lng = addressDTO.Coordinates.lng;
+                
 
                 if (await _addressRepository.CreateAddress(addressObj) == null)
                 {
