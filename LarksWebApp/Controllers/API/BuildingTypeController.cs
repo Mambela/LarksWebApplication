@@ -88,16 +88,16 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
-        [HttpGet]
+        [HttpGet("buildingTypesbyname")]
         public IActionResult GetAllBuildingTypes(string lng)
         {
             try
             {
 
-                var buiildingTypeObjList = buildingTypeRepository.GetAll(lng);
+                var buildingTypeObjList = buildingTypeRepository.GetAll(lng);
 
 
-                var buildingDTOList = _mapper.Map<Create_BuildingType_DTO>(buiildingTypeObjList);
+                var buildingDTOList = _mapper.Map<IList<Create_BuildingType_DTO>>(buildingTypeObjList);
 
 
                 return Ok(buildingDTOList);

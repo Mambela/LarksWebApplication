@@ -25,6 +25,13 @@ namespace LarksWebApp.Repository.StreetRepository
             return null;
         }
 
+        public async Task<bool> CreateSuburbStreetsLink(SuburbStreets suburbStreets)
+        {
+
+            await _dbContext.SuburbStreets.AddAsync(suburbStreets);
+            return Save();
+        }
+
         public bool DeleteStreet(StreetModel street)
         {
 
@@ -49,7 +56,7 @@ namespace LarksWebApp.Repository.StreetRepository
         {
 
             return _dbContext.Streets.Include(m => m.StreetCoordinates)
-                .Include(s => s.NeighbourhoodStreets).ThenInclude(n => n.Neighbourhood)
+                .Include(s => s.NeighbourhoodStreets).ThenInclude(n => n.Suburb)
                 .FirstOrDefault(s => s.Id == StreetId);
 
         }
@@ -80,6 +87,11 @@ namespace LarksWebApp.Repository.StreetRepository
         public StreetModel VerifyStreetExistance(string designation)
         {
             return _dbContext.Streets.FirstOrDefault(s => s.Designation.ToLower() == designation.ToLower());
+        }
+
+        public bool VerifyStreetSuburbLink(int streetsId, int suburbId)
+        {
+            return _dbContext.SuburbStreets.Any(s => s.StreetsID == streetsId && s.SuburbId == suburbId);
         }
     }
 }

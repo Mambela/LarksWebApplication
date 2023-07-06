@@ -610,6 +610,9 @@ namespace LarksWebApp.Migrations
                     b.Property<int?>("MunicipalityId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("ReviewName")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime(6)");
 
@@ -632,12 +635,9 @@ namespace LarksWebApp.Migrations
                     b.Property<int>("SuburbId")
                         .HasColumnType("int");
 
-                    b.Property<int>("NeighbourhoodId")
-                        .HasColumnType("int");
-
                     b.HasKey("StreetsID", "SuburbId");
 
-                    b.HasIndex("NeighbourhoodId");
+                    b.HasIndex("SuburbId");
 
                     b.ToTable("SuburbStreets");
                 });
@@ -1115,21 +1115,21 @@ namespace LarksWebApp.Migrations
 
             modelBuilder.Entity("LarksWebApp.Models.SuburbStreets", b =>
                 {
-                    b.HasOne("LarksWebApp.Models.SuburbModel", "Neighbourhood")
-                        .WithMany("NeighbourhoodStreets")
-                        .HasForeignKey("NeighbourhoodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("LarksWebApp.Models.StreetModel", "Streets")
                         .WithMany("NeighbourhoodStreets")
                         .HasForeignKey("StreetsID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Neighbourhood");
+                    b.HasOne("LarksWebApp.Models.SuburbModel", "Suburb")
+                        .WithMany("NeighbourhoodStreets")
+                        .HasForeignKey("SuburbId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Streets");
+
+                    b.Navigation("Suburb");
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.Users.AuthToken", b =>

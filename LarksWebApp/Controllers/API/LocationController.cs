@@ -385,7 +385,7 @@ namespace LarksWebApp.Controllers.API
                 int addressId = 0;
 
                 //Check if Suburb Provided Exists if not then Create it 
-                if (locationDTO.SuburbId == 0 || locationDTO.SuburbId == null && locationDTO.Suburb != null)
+                if (locationDTO.SuburbId == 0 || locationDTO.SuburbId == null)
                 {
                     if (locationDTO.Suburb != null)
                     {
@@ -399,7 +399,7 @@ namespace LarksWebApp.Controllers.API
                                 {
                                     CityId = cityId,
                                     MunicipalityId = locationDTO.MunicipalityId,
-                                    Designation = locationDTO.Suburb,
+                                    Designation = locationDTO.Suburb, //Suburb designation is from the Client. 
                                 };
                             }
                             else {
@@ -464,6 +464,26 @@ namespace LarksWebApp.Controllers.API
                     streetId = (int)locationDTO.StreetId;
                 }
 
+
+                /*
+                 * 
+                    Link Street to Suburb. 
+                    Check if the street is created 
+                 * **/
+
+                if (!streetRepository.VerifyStreetSuburbLink(streetId, suburbId))
+                {
+                    //Suburb streets don't exist create it 
+
+                    var streetSuburb = new SuburbStreets { StreetsID = streetId, SuburbId = suburbId };
+
+                    if (!await streetRepository.CreateSuburbStreetsLink(streetSuburb))
+                    {
+                        throw new Exception("Failed to create a suburb and Street link");
+                    }
+
+                }
+                                  
 
                 //Create address first 
                 if (locationDTO.IncludeAddress)

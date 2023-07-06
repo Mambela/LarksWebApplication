@@ -15,6 +15,8 @@ namespace LarksWebApp.Models
 
         public CityModel City { get; set; }
 
+        public bool ReviewName { get; set; } = false;
+
         public int? DistrictId { get; set; }
         public DistrictModel District { get; set; }
 

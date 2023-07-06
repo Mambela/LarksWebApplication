@@ -916,7 +916,8 @@ namespace LarksWebApp.Controllers.API
 
                 #region UpdateSuburb
 
-                var extractSuburb = (nominatimAddressDTO.Address.Suburb == null) ? (nominatimAddressDTO.Address.Town != null)? nominatimAddressDTO.Address.Town:nominatimAddressDTO.Address.County : nominatimAddressDTO.Address.Suburb;
+                var extractSuburb = (nominatimAddressDTO.Address.Suburb != null) ? nominatimAddressDTO.Address.Suburb : (nominatimAddressDTO.Address.Town != null)? 
+                    nominatimAddressDTO.Address.Town: (nominatimAddressDTO.Address.County != null) ? nominatimAddressDTO.Address.County : (nominatimAddressDTO.Address.Municipality != null) ? nominatimAddressDTO.Address.Municipality :nominatimAddressDTO.Address.Suburb;
 
                 extractSuburb = (extractSuburb == null)? nominatimAddressDTO.Address.City : extractSuburb;
 
@@ -930,7 +931,8 @@ namespace LarksWebApp.Controllers.API
                         CityId = (activeCityId == 0) ? null : activeCityId,
                         DistrictId = (activeDisctrictId == 0) ? null : activeDisctrictId,
                         MunicipalityId = (activeMunicipalityId == 0) ? null : activeMunicipalityId,
-                        Designation = (nominatimAddressDTO.Address.Suburb != null) ? nominatimAddressDTO.Address.Suburb : (nominatimAddressDTO.Address.City_District != null) ? nominatimAddressDTO.Address.City_District : (nominatimAddressDTO.Address.Town == null) ? nominatimAddressDTO.Address.City : nominatimAddressDTO.Address.Town
+                        Designation = extractSuburb,
+                        ReviewName = true
 
                     };
 
@@ -947,7 +949,7 @@ namespace LarksWebApp.Controllers.API
             }
             catch (Exception ex)
             {
-
+                serviceLogger.LogError("Error creating location by position " + ex.Message);
                 return BadRequest();
             }
 

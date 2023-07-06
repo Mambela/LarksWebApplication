@@ -196,9 +196,9 @@ namespace LarksWebApp.Controllers.API
 
                     var neighbourhood = new NeighbourhoodDTO
                     {
-                        Id = neighbourhoodStreet.Neighbourhood.Id,
-                        MunicipalityId = (int)neighbourhoodStreet.Neighbourhood.MunicipalityId,
-                        Designation = neighbourhoodStreet.Neighbourhood.Designation
+                        Id = neighbourhoodStreet.Suburb.Id,
+                        MunicipalityId = (int)neighbourhoodStreet.Suburb.MunicipalityId,
+                        Designation = neighbourhoodStreet.Suburb.Designation
                     };
 
                     neighbourhoods.Add(neighbourhood);

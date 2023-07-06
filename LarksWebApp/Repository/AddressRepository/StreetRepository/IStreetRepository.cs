@@ -10,7 +10,11 @@ namespace LarksWebApp.Repository.StreetRepository
 
         bool VerifyStreetExist(int Id);
 
+        bool VerifyStreetSuburbLink(int streetsId, int suburbId);
+
         Task<StreetModel> CreateStreetModel(StreetModel Street);
+
+        Task<bool> CreateSuburbStreetsLink(SuburbStreets suburbStreets);
 
         List<SuburbStreets> GetStreetInNeighBourhood(int neighbourhoodId);
 

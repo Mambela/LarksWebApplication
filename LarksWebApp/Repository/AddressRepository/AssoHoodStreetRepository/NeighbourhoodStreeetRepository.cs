@@ -36,7 +36,7 @@ namespace LarksWebApp.Repository.AssoHoodStreetRepository
         public SuburbStreets GetNeighbourhoodStreet(int hoodId, int StreetId)
         {
             return _dbContext.SuburbStreets.Where(h => h.SuburbId == hoodId && h.StreetsID == StreetId)
-                .Include(n =>n.Neighbourhood)
+                .Include(n =>n.Suburb)
                 .Include(s =>s.Streets).FirstOrDefault();
         }
 
