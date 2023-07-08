@@ -39,7 +39,7 @@ namespace LarksWebApp.Controllers.API
         private readonly IStreetRepository streetRepository;
         private readonly IAddressRepository addressRepository;
 
-        public LocationController(ILocationRepository repository, ILoggerTrace logger, IMapper mapper, 
+        public LocationController(ILocationRepository repository, ILoggerTrace _logger, IMapper mapper, 
             ICountryRepository countryRepo,
             ICategoryRepository categoryRepo,
             IFileManagement fileManagement,
@@ -51,7 +51,7 @@ namespace LarksWebApp.Controllers.API
             _categoryRepo = categoryRepo;
             _fileManagement = fileManagement;
             locationRepo = repository;
-            this.logger = logger;
+            logger = _logger;
             _mapper = mapper;
             uriService = _uriService;
             suburbRepository = _suburbRepository;
@@ -378,7 +378,7 @@ namespace LarksWebApp.Controllers.API
         {
             try
             {
-                int suburbId = 0;
+                int suburbId = (int)((locationDTO.SuburbId ==0 || locationDTO.SuburbId ==null) ? 0:locationDTO.SuburbId);
                 int streetId = 0;
                 int districtId = (int)((locationDTO.DistrictId == null) ? 0 : locationDTO.DistrictId);
                 int cityId = locationDTO.CityId;
@@ -594,7 +594,7 @@ namespace LarksWebApp.Controllers.API
             }
             catch (Exception ex)
             {
-                logger.LogError("Error creating location "+ex.Message+" Inner Exception "+ ex.InnerException.Message);
+                logger.LogError("Error creating location "+ex.Message);
 
                  ModelState.AddModelError("errors", "Failed to create a new location");
 
