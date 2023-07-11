@@ -49,7 +49,14 @@ namespace LarksWebApp.Repository.LocationRepository
 
         public LocationModel GetLocation(int LocationId)
         {
-            return _dbContext.Location.FirstOrDefault(c => c.Id == LocationId);
+            return _dbContext.Location
+                .Include(c =>c.Category)
+                .Include(c =>c.City)
+                .Include(m =>m.Municipality)
+                .Include(l =>l.LocalSubcategories).ThenInclude(c =>c.Subcategories)
+                .Include(l =>l.Images)
+                .Include(s =>s.Suburb)
+                .FirstOrDefault(c => c.Id == LocationId);
         }
 
         public IList<LocationModel> GetSuburbLocations(int suburbId, PaginationFilter filter)
@@ -299,6 +306,12 @@ namespace LarksWebApp.Repository.LocationRepository
                        .Skip((filter.PageNumber - 1) * filter.PageSize)
                        .Take(filter.PageSize)
                        .ToList(); ;
+        }
+
+        public bool UpdateLocation(LocationModel location)
+        {
+             _dbContext.Update(location);
+            return Save();
         }
     }
 }

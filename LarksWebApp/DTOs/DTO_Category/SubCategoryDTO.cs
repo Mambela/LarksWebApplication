@@ -10,5 +10,10 @@
 
         //Language related
         public string Lng { get; set; }
+
+        public static implicit operator List<object>(SubCategoryDTO v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

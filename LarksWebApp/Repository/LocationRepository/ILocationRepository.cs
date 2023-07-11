@@ -42,6 +42,6 @@ namespace LarksWebApp.Repository.LocationRepository
 
 
         bool Save();
-
+        bool UpdateLocation(LocationModel location);
     }
 }
