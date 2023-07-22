@@ -2,7 +2,9 @@
 using LarksWebApp.DAL;
 using LarksWebApp.DTOs.PaginationDTO;
 using LarksWebApp.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 using NuGet.Protocol;
 
 namespace LarksWebApp.Repository.LocationRepository
@@ -312,6 +314,27 @@ namespace LarksWebApp.Repository.LocationRepository
         {
              _dbContext.Update(location);
             return Save();
+        }
+
+        public IList<LocationModel> GetLocationUsingStoreProc(string searchParam, string countryName, int ? categoryId , int ? suburbId, int ? cityId,int ? municipalityId, int pageSize = 10, int skip = 0)
+        {
+   
+           return _dbContext.Location
+                .Include(c => c.City)
+                .Include(c => c.Category)
+                .Include(l => l.LocalSubcategories).ThenInclude(c => c.Subcategories)
+                .Include(m => m.Municipality)
+                .Include(s => s.Suburb)
+                .Include(l => l.Images)
+                .Include(c => c.Municipality).ThenInclude(p => p.Province).ThenInclude(c => c.Country)
+                .Where(l => (l.Designation.Contains(searchParam) && l.Municipality.Province.Country.Designation.Contains(countryName))
+                    && ((categoryId == null) || (l.CategoryId == categoryId))
+                    && ((suburbId == null) || (l.SuburbId == suburbId))
+                    && ((municipalityId == null) || (l.MunicipalityId== municipalityId)))
+                .Take(pageSize)
+                .Skip(skip)
+                .ToList();
+
         }
     }
 }

@@ -990,6 +990,47 @@ namespace LarksWebApp.Controllers.API
         }
 
 
+        [HttpGet] 
+        [Route("searchlocationAll")]
+        public async Task<IActionResult> SearchlocationAll([FromQuery] string searchParameter,[FromQuery] string countryName,[FromQuery] int pageSize,[FromQuery] int skip, [FromQuery] int ? categoryId, [FromQuery] int ? suburbId, [FromQuery] int ? cityId, [FromQuery] int ? municipalityId)
+        {
+            try
+            {
+                var locationList = locationRepo.GetLocationUsingStoreProc(searchParameter,countryName,categoryId,suburbId, cityId, municipalityId,pageSize,skip);
+
+                var locationsDTOList = new List<ViewLocationDTO>();
+
+
+                foreach (var location in locationList)
+                {
+                    var locationObjDTO = _mapper.Map<ViewLocationDTO>(location);
+
+                    var locationSubCategories = new List<SubCategoryDTO>();
+
+                    locationObjDTO.Subcategories = location.LocalSubcategories.Select(s => new SubCategoryDTO
+                    { Id = s.Subcategories.Id, Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng }).ToList();
+                    locationObjDTO.CategoryId = (int)location.CategoryId;
+                    locationObjDTO.Lat = location.Lat;
+                    locationObjDTO.Lng = location.Lng;
+                    locationObjDTO.Category = location.Category.Designation;
+                    locationObjDTO.Suburb = location.Suburb.Designation;
+                    locationObjDTO.Distance = 0;
+                    locationObjDTO.City = location.City.Designation;
+                    locationObjDTO.Municipality = location.Municipality.Designation;
+                    locationObjDTO.Images = location.Images.Select(s => s.ImagePath).ToList();
+                    locationsDTOList.Add(locationObjDTO);
+
+                }
+
+                return Ok(locationsDTOList);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex);
+            }
+        }
+
         [HttpPatch]
         [Route("updateLocation")]
         public async Task<IActionResult> updateLocationAsync([FromForm] UpdateLocationDTO locationDTO) {

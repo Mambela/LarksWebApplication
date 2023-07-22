@@ -10,6 +10,12 @@ namespace LarksWebApp.Repository.LocationRepository
 
         LocationModel GetLocation(int LocationId);
 
+        //object GetLocationUsingStoreProc(string searchParam, string countryName, string categoryId = null, string suburbId = null
+        //    , string cityId = null, string municipalityId = null,int pageSize=10,int skip = 0);
+
+        IList<LocationModel> GetLocationUsingStoreProc(string searchParam, string countryName, int? categoryId, int? suburbId, int? cityId, int? municipalityId, int pageSize = 10, int skip = 0);
+
+
         IList<LocationModel> GetCategoryLocations(int CategoryId, PaginationFilter filter);
 
         IList<LocationModel> GetSubcategoryLocations(int SubcategoryId);
