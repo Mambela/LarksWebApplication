@@ -38,7 +38,7 @@ namespace LarksWebApp.DAL
             CreateMap<DistrictModel, DistrictDTO>().ReverseMap();
             CreateMap<MunicipalityModel, MunicipalityDTO>().ReverseMap();
             CreateMap<ProvinceModel, ProvinceDTO>().ReverseMap();
-            CreateMap<SuburbModel, NeighbourhoodDTO>().ReverseMap();
+            CreateMap<SuburbModel, DTOs.DTO_Neighbourhoods.SuburbDTO>().ReverseMap();
             CreateMap<StreetModel, View_Street_DTO>().ReverseMap();
             CreateMap<BuildingTypeModel, Create_BuildingType_DTO>().ReverseMap();
             CreateMap<StreetCoordinates, BaseCoordinatesDTO>().ReverseMap();
@@ -49,7 +49,7 @@ namespace LarksWebApp.DAL
             CreateMap<ViewLocationDTO, LocationObj>().ReverseMap();
             CreateMap<ViewCountryDTO,CountryModel>().ReverseMap();
             CreateMap<ViewProvinceDTO,ProvinceModel>().ReverseMap();
-            CreateMap<SuburbDTO, SuburbModel>().ReverseMap();
+            CreateMap<DTOs.DTO_Addresses.SuburbDTO, SuburbModel>().ReverseMap();
             CreateMap<Create_BuildingType_DTO, BuildingTypeModel>().ReverseMap();
             
        

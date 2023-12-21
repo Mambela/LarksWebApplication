@@ -39,11 +39,11 @@ namespace LarksWebApp.Controllers
             {
                 var NeighbourHoodObj = _hoodRepository.GetNeighbourhoodInMunicipality(provinId);
 
-                var NeighbourHoodDTOList = new List<NeighbourhoodDTO>();
+                var NeighbourHoodDTOList = new List<SuburbDTO>();
 
                 for (int i = 0; i < NeighbourHoodObj.Count; i++)
                 {
-                    NeighbourHoodDTOList.Add(_mapper.Map<NeighbourhoodDTO>(NeighbourHoodObj[i]));
+                    NeighbourHoodDTOList.Add(_mapper.Map<SuburbDTO>(NeighbourHoodObj[i]));
                 }
 
                 return View(NeighbourHoodDTOList);
@@ -160,11 +160,11 @@ namespace LarksWebApp.Controllers
             {
                 var hoodObjList = _hoodRepository.GetNeighbourhoodModels(sector, id);
 
-                var hoodDTOList = new List<NeighbourhoodDTO>();
+                var hoodDTOList = new List<SuburbDTO>();
 
                 foreach (var hood in hoodObjList)
                 {
-                    hoodDTOList.Add(_mapper.Map<NeighbourhoodDTO>(hood));
+                    hoodDTOList.Add(_mapper.Map<SuburbDTO>(hood));
                 }
 
 

@@ -56,6 +56,7 @@ ConfigurationManager Configuration = builder.Configuration;
 
 //Prepare the Connection String
 var connectionString = builder.Configuration.GetConnectionString("DEV_ENV_DOCKER");
+//var connectionString = builder.Configuration.GetConnectionString("UAT_CONN");
  
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 33));
  

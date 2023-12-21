@@ -11,6 +11,7 @@ namespace LarksWebApp.Models
         
         [StringLength(260)]
         public string AdditionalInformation { get; set; }
+
         /*
          * Locations may have multiple categories
          * 
@@ -38,6 +39,8 @@ namespace LarksWebApp.Models
         public decimal Lat { get; set; }
 
         public decimal Lng { get; set; }
+
+        public bool isReference { get; set; }
 
         public IList<LocationModelSubcategoryModel> LocalSubcategories { get; set; }
 

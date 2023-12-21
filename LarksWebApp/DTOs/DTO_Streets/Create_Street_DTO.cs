@@ -23,7 +23,7 @@ namespace LarksWebApp.DTOs.DTO_Streets
 
         public IList<DistrictDTO> ? ListofDistrictDTO { get; set; }
         public IList<MunicipalityDTO> ? ListofMunicipalityDTO { get; set; }
-        public IList<NeighbourhoodDTO> ? ListofNeighbourhoodDTO { get; set; }
+        public IList<SuburbDTO> ? ListofNeighbourhoodDTO { get; set; }
         public IList<BaseCoordinatesDTO> ? Coordinates{ get; set; }
 
 

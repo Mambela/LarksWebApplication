@@ -54,6 +54,8 @@ namespace LarksWebApp.Repository.LocationRepository
             return _dbContext.Location
                 .Include(c =>c.Category)
                 .Include(c =>c.City)
+                .Include(p=>p.Suburb.District)
+                .Include(p=>p.Municipality.Province.Country)
                 .Include(m =>m.Municipality)
                 .Include(l =>l.LocalSubcategories).ThenInclude(c =>c.Subcategories)
                 .Include(l =>l.Images)
@@ -72,6 +74,7 @@ namespace LarksWebApp.Repository.LocationRepository
                         .Where(n => n.SuburbId == suburbId)
                         .Skip((filter.PageNumber - 1) * filter.PageSize)
                         .Take(filter.PageSize)
+                        .OrderBy(c =>c.Designation)
                         .ToList();
         }
 
@@ -143,6 +146,7 @@ namespace LarksWebApp.Repository.LocationRepository
                 .Include(l =>l.LocalSubcategories).ThenInclude(s =>s.Subcategories)
                 .Skip((filter.PageNumber - 1) * filter.PageSize)
                 .Take(filter.PageSize)
+                .OrderBy(c =>c.Designation)
                 .ToList();
                        
         }
@@ -227,6 +231,7 @@ namespace LarksWebApp.Repository.LocationRepository
                 .Where(c  =>c.CategoryId == categoryId )
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
                 .Take(pagination.PageSize)
+                .OrderBy(c =>c.Designation)
                 .ToList();
         }
 
@@ -247,6 +252,7 @@ namespace LarksWebApp.Repository.LocationRepository
                       .Where(n => n.CityId == CityId)
                       .Skip((filter.PageNumber - 1) * filter.PageSize)
                       .Take(filter.PageSize)
+                      .OrderBy(c =>c.Designation)
                       .ToList();
         }
 
@@ -265,6 +271,7 @@ namespace LarksWebApp.Repository.LocationRepository
                        .Where(n => n.MunicipalityId == municipalityId)
                        .Skip((filter.PageNumber - 1) * filter.PageSize)
                        .Take(filter.PageSize)
+                       .OrderBy(c =>c.Designation)
                        .ToList();
         }
 
@@ -307,6 +314,7 @@ namespace LarksWebApp.Repository.LocationRepository
                        .Where(n => n.Designation.Contains(searchParameter))
                        .Skip((filter.PageNumber - 1) * filter.PageSize)
                        .Take(filter.PageSize)
+                       .OrderBy(c =>c.Designation)
                        .ToList(); ;
         }
 
@@ -316,10 +324,11 @@ namespace LarksWebApp.Repository.LocationRepository
             return Save();
         }
 
-        public IList<LocationModel> GetLocationUsingStoreProc(string searchParam, string countryName, int ? categoryId , int ? suburbId, int ? cityId,int ? municipalityId, int pageSize = 10, int skip = 0)
+ 
+
+        public IList<LocationModel> GetLocationUsingStoreProc(string countryName, string? searchParam, int? categoryId, int? suburbId, int? cityId, int? municipalityId, int pageSize = 10, int skip = 0)
         {
-   
-           return _dbContext.Location
+            return _dbContext.Location
                 .Include(c => c.City)
                 .Include(c => c.Category)
                 .Include(l => l.LocalSubcategories).ThenInclude(c => c.Subcategories)
@@ -327,14 +336,30 @@ namespace LarksWebApp.Repository.LocationRepository
                 .Include(s => s.Suburb)
                 .Include(l => l.Images)
                 .Include(c => c.Municipality).ThenInclude(p => p.Province).ThenInclude(c => c.Country)
-                .Where(l => (l.Designation.Contains(searchParam) && l.Municipality.Province.Country.Designation.Contains(countryName))
+                .Where(l => ((l.Designation.Contains(searchParam) || searchParam == null || searchParam.Equals("")) && l.Municipality.Province.Country.Designation.Contains(countryName))
                     && ((categoryId == null) || (l.CategoryId == categoryId))
                     && ((suburbId == null) || (l.SuburbId == suburbId))
-                    && ((municipalityId == null) || (l.MunicipalityId== municipalityId)))
+                    && ((municipalityId == null) || (l.MunicipalityId == municipalityId)))
                 .Take(pageSize)
                 .Skip(skip)
+                .OrderBy(c =>c.Designation)
                 .ToList();
+        }
 
+        public IList<LocationModel> GetLocationList(IList<int> idList, PaginationFilter filter)
+        {
+            return _dbContext.Location
+                .Include(c => c.Category)
+                .Include(l => l.LocalSubcategories).ThenInclude(c => c.Subcategories)
+                .Include(m => m.City)
+                .Include(m => m.Municipality).ThenInclude(p =>p.Province).ThenInclude(c => c.Country)
+                .Include(s => s.Suburb)
+                .Include(m =>m.Images)
+                .Where(l => idList.Contains(l.Id))
+                .Take(filter.PageSize)
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .OrderBy(c =>c.Designation)
+                .ToList();
         }
     }
 }

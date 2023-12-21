@@ -8,7 +8,7 @@ namespace LarksWebApp.DTOs.DTO_Streets
         public int Id { get; set; }
         public string Designation { get; set; }
 
-        public IList<NeighbourhoodDTO> Neighbourhoods { get; set; }
+        public IList<SuburbDTO> Neighbourhoods { get; set; }
 
         public IList<BaseCoordinatesDTO> Coordinates { get; set; }
 

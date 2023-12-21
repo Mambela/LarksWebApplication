@@ -38,13 +38,14 @@ namespace LarksWebApp.Controllers.API
         private readonly IUriService uriService;
         private readonly IStreetRepository streetRepository;
         private readonly IAddressRepository addressRepository;
+        private readonly IConfiguration _configuration;
 
         public LocationController(ILocationRepository repository, ILoggerTrace _logger, IMapper mapper, 
             ICountryRepository countryRepo,
             ICategoryRepository categoryRepo,
             IFileManagement fileManagement,
             IUriService _uriService, ISuburbRepository _suburbRepository, IStreetRepository _streetRepository,
-            IAddressRepository _addressRepository)
+            IAddressRepository _addressRepository, IConfiguration configuration)
         {
 
             _countryRepo = countryRepo;
@@ -57,7 +58,10 @@ namespace LarksWebApp.Controllers.API
             suburbRepository = _suburbRepository;
             streetRepository = _streetRepository;
             addressRepository = _addressRepository;
+            _configuration = configuration;
         }
+
+
 
         ///Locations By Neighbourhood 
         [HttpGet("NeighbourhoodLocations")]
@@ -190,12 +194,17 @@ namespace LarksWebApp.Controllers.API
                     return Ok(locationObj);
                 }
 
+                //    District = (locationObj.Municipality.Province.Districts.Count > 0)? locationObj.Municipality.Province.Districts.First().Designation:"N/A",
+                
+
                 var locationDTO = new  ViewLocationDTO
                 { 
                     Id = locationObj.Id,
                     City = locationObj.City.Designation,
                     Category = locationObj.Category.Designation,
                     CategoryId = locationObj.Category.Id,
+                    Country = locationObj.Municipality.Province.Country.Designation,
+                    District = (locationObj.Suburb.District != null)? locationObj.Suburb.District.Designation:"N/A",
                     Designation = locationObj.Designation,
                     Municipality = locationObj.Municipality.Designation,
                     Suburb = locationObj.Suburb.Designation,
@@ -345,7 +354,7 @@ namespace LarksWebApp.Controllers.API
                     return BadRequest();
                 }
 
-                var savedImages = new List<string>();
+                var savedImages = new List<MediaResponse>();
 
                 var LocationImageList = new List<LocationImageModel>();
 
@@ -355,7 +364,7 @@ namespace LarksWebApp.Controllers.API
                     {
                         var _categoryObj = _categoryRepo.GetCategoryById((locationCollection.searchCategoryId_hidden != 0)? locationCollection.searchCategoryId_hidden:locationCollection.CategoryId);
 
-                        savedImages = await _fileManagement.MultipleFileUploads(locationCollection.Files, "Locations", _categoryObj.Designation);
+                        savedImages = await _fileManagement.SaveMedia(locationCollection.Files,"Locations");
                     }
                 }
 
@@ -395,12 +404,10 @@ namespace LarksWebApp.Controllers.API
 
                 foreach (var image in savedImages)
                 {
-
                     var locatinImageModel = new LocationImageModel
                     {
-                        ImagePath = image,
+                        ImagePath = image.imageMessage,
                         LocationId = locationObj.Id
-
                     };
 
                     LocationImageList.Add(locatinImageModel);
@@ -992,11 +999,11 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet] 
         [Route("searchlocationAll")]
-        public async Task<IActionResult> SearchlocationAll([FromQuery] string searchParameter,[FromQuery] string countryName,[FromQuery] int pageSize,[FromQuery] int skip, [FromQuery] int ? categoryId, [FromQuery] int ? suburbId, [FromQuery] int ? cityId, [FromQuery] int ? municipalityId)
+        public async Task<IActionResult> SearchlocationAll([FromQuery] string countryName,[FromQuery] int pageSize,[FromQuery] int skip, [FromQuery] string ? searchParameter, [FromQuery] int ? categoryId, [FromQuery] int ? suburbId, [FromQuery] int ? cityId, [FromQuery] int ? municipalityId)
         {
             try
             {
-                var locationList = locationRepo.GetLocationUsingStoreProc(searchParameter,countryName,categoryId,suburbId, cityId, municipalityId,pageSize,skip);
+                var locationList = locationRepo.GetLocationUsingStoreProc(countryName,searchParameter, categoryId,suburbId, cityId, municipalityId,pageSize,skip);
 
                 var locationsDTOList = new List<ViewLocationDTO>();
 
@@ -1031,6 +1038,49 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
+
+        [HttpGet]
+        [Route("locationsInList")]
+        public async Task<IActionResult> retrievalLocation([FromQuery] IList<int> locationListIds, [FromQuery] PaginationFilter filter)
+        {
+            try
+            {
+                var arrayEmptyImage = new List<string>();
+
+                var locationList = locationRepo.GetLocationList(locationListIds, filter);
+
+                var locationsDTOList = new List<ViewLocationDTO>();
+
+                foreach (var location in locationList)
+                {
+                    var locationObjDTO = _mapper.Map<ViewLocationDTO>(location);
+
+                    var locationSubCategories = new List<SubCategoryDTO>();
+
+                    locationObjDTO.Subcategories = location.LocalSubcategories.Select(s => new SubCategoryDTO
+                    { Id = s.Subcategories.Id, Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng }).ToList();
+                    locationObjDTO.CategoryId = (int)location.CategoryId;
+                    locationObjDTO.Lat = location.Lat;
+                    locationObjDTO.Lng = location.Lng;
+                    locationObjDTO.Category = location.Category.Designation;
+                    locationObjDTO.Suburb = location.Suburb.Designation;
+                    locationObjDTO.Distance = 0;
+                    locationObjDTO.City = location.City.Designation;
+                    locationObjDTO.Municipality = location.Municipality.Designation;
+                    locationObjDTO.Images = (location.Images.Count() > 0) ? location.Images.Select(s => s.ImagePath).ToList() : null;
+                    locationsDTOList.Add(locationObjDTO);
+
+                }
+
+                return Ok(locationsDTOList);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return BadRequest();
+            }
+        }
+        
         [HttpPatch]
         [Route("updateLocation")]
         public async Task<IActionResult> updateLocationAsync([FromForm] UpdateLocationDTO locationDTO) {
@@ -1206,5 +1256,7 @@ namespace LarksWebApp.Controllers.API
                 return BadRequest();
             }
         }
+
+       
     }
 }

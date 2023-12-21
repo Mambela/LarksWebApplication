@@ -13,7 +13,7 @@ namespace LarksWebApp.Repository.LocationRepository
         //object GetLocationUsingStoreProc(string searchParam, string countryName, string categoryId = null, string suburbId = null
         //    , string cityId = null, string municipalityId = null,int pageSize=10,int skip = 0);
 
-        IList<LocationModel> GetLocationUsingStoreProc(string searchParam, string countryName, int? categoryId, int? suburbId, int? cityId, int? municipalityId, int pageSize = 10, int skip = 0);
+        IList<LocationModel> GetLocationUsingStoreProc( string countryName, string? searchParam, int? categoryId, int? suburbId, int? cityId, int? municipalityId, int pageSize = 10, int skip = 0);
 
 
         IList<LocationModel> GetCategoryLocations(int CategoryId, PaginationFilter filter);
@@ -42,6 +42,9 @@ namespace LarksWebApp.Repository.LocationRepository
         Task<IList<LocationImageModel>> GetLocationImageModels(int locationId);
 
         IList<LocationModel>GetLocationByLocationName(string searchParameter, PaginationFilter filter);
+
+
+        IList<LocationModel> GetLocationList(IList<int> idList , PaginationFilter filter);
         
 
         bool RemoveLocationImage(LocationImageModel imageModel);

@@ -185,7 +185,7 @@ namespace LarksWebApp.Controllers.API
 
                 var streetDTO =new View_Street_DTO();
 
-                var neighbourhoods = new List<NeighbourhoodDTO>();
+                var neighbourhoods = new List<SuburbDTO>();
 
                 var streetCoordinatesList = new List<BaseCoordinatesDTO>();
 
@@ -194,7 +194,7 @@ namespace LarksWebApp.Controllers.API
                 foreach (var neighbourhoodStreet in streetObj.NeighbourhoodStreets)
                 {
 
-                    var neighbourhood = new NeighbourhoodDTO
+                    var neighbourhood = new SuburbDTO
                     {
                         Id = neighbourhoodStreet.Suburb.Id,
                         MunicipalityId = (int)neighbourhoodStreet.Suburb.MunicipalityId,

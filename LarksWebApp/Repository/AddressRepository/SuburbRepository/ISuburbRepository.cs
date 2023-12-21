@@ -16,7 +16,7 @@ namespace LarksWebApp.Repository.HoodRepository
 
         IList<SuburbModel> GetSuburbsByName(string designation);
 
-        IList<SuburbModel> GetNeighbourhoodInMunicipality(int provinceId);
+        IList<SuburbModel> GetNeighbourhoodInMunicipality(int municipalityId);
         
         
         IList<SuburbModel> GetNeighbourhoodModels();
@@ -24,10 +24,12 @@ namespace LarksWebApp.Repository.HoodRepository
         IList<SuburbModel> GetNeighbourhoodModels(string sector, int id);
         IList<SuburbModel> GetNeighbourhoodModels(int districtId, int municipalityId,int cityId);
 
+        IList<SuburbModel> GetSuburbsInProvince(int ProvinceId);
 
-        IList<SuburbModel> GetNeighbourhoodInDistricts(int districtiD);
+
+        IList<SuburbModel> GetSuburbInDistricts(int districtiD);
      
-        IList<SuburbModel> GetNeighbourhoodInCities(int cityID);
+        IList<SuburbModel> GetSuburbsInCities(int cityID);
 
         IList<SuburbModel> GetSuburbs(IList<int> suburbs);
 

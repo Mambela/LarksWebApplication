@@ -42,11 +42,11 @@ namespace LarksWebApp.Controllers.API
             {
                 var hoodListObj = suburbRepository.GetNeighbourhoodModels();
 
-                var hoodListDTO = new List<NeighbourhoodDTO>();
+                var hoodListDTO = new List<DTOs.DTO_Neighbourhoods.SuburbDTO>();
 
                 foreach(var hood in hoodListObj)
                 {
-                    hoodListDTO.Add(_mapper.Map<NeighbourhoodDTO>(hood));
+                    hoodListDTO.Add(_mapper.Map<DTOs.DTO_Neighbourhoods.SuburbDTO>(hood));
                 }
 
                 return Ok(hoodListDTO);
@@ -73,11 +73,11 @@ namespace LarksWebApp.Controllers.API
                 {
                     return Ok(hoodObjList);
                 }
-                var hoodDTOList = new List<NeighbourhoodDTO>();
+                var hoodDTOList = new List<DTOs.DTO_Neighbourhoods.SuburbDTO>();
 
                 foreach (var hood in hoodObjList)
                 {
-                    hoodDTOList.Add(_mapper.Map<NeighbourhoodDTO>(hood));
+                    hoodDTOList.Add(_mapper.Map<DTOs.DTO_Neighbourhoods.SuburbDTO>(hood));
                 }
 
                 
@@ -98,17 +98,17 @@ namespace LarksWebApp.Controllers.API
         {
             try
             {   
-                var hoodObjList = suburbRepository.GetNeighbourhoodModels(districtId,municipalityId,cityId);
+                var suburbObjList = suburbRepository.GetNeighbourhoodModels(districtId,municipalityId,cityId);
 
-                var hoodDTOList = new List<NeighbourhoodDTO>();
+                var suburbDTOList = new List<DTOs.DTO_Neighbourhoods.SuburbDTO>();
 
-                foreach (var hood in hoodObjList)
+                foreach (var hood in suburbObjList)
                 {
-                    hoodDTOList.Add(_mapper.Map<NeighbourhoodDTO>(hood));
+                    suburbDTOList.Add(_mapper.Map<DTOs.DTO_Neighbourhoods.SuburbDTO>(hood));
                 }
 
                 
-                return Ok(hoodDTOList);
+                return Ok(suburbDTOList);
 
             }
             catch (Exception ex)
@@ -250,7 +250,7 @@ namespace LarksWebApp.Controllers.API
                 var suburbObjList = suburbRepository.GetSuburbs(suburbList);
 
 
-                var suburbDTOList = _mapper.Map<IList<SuburbDTO>>(suburbObjList);
+                var suburbDTOList = _mapper.Map<IList<DTOs.DTO_Addresses.SuburbDTO>>(suburbObjList);
                 return Ok(suburbDTOList);
             }
             catch (Exception ex)
@@ -270,7 +270,7 @@ namespace LarksWebApp.Controllers.API
                 var suburbObjList = suburbRepository.GetSuburbs(suburbList);
 
 
-                var suburbDTOList = _mapper.Map<IList<SuburbDTO>>(suburbObjList);
+                var suburbDTOList = _mapper.Map<IList<DTOs.DTO_Addresses.SuburbDTO>>(suburbObjList);
                 return Ok(suburbDTOList);
             }
             catch (Exception ex)
@@ -293,7 +293,7 @@ namespace LarksWebApp.Controllers.API
             {
                 var hoodObj = suburbRepository.GetSuburb(id);
 
-                var hoodDTO = _mapper.Map<NeighbourhoodDTO>(hoodObj);
+                var hoodDTO = _mapper.Map<DTOs.DTO_Neighbourhoods.SuburbDTO>(hoodObj);
 
 
                 return Ok(hoodDTO);
@@ -305,6 +305,30 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
+
+        [HttpGet("SuburbInProvince")]
+        public IActionResult GetSuburbsInProvince([FromQuery] int provinceId)
+        {
+            try { 
+
+                var suburbObjList = suburbRepository.GetSuburbsInProvince(provinceId);
+
+                var suburbDTOList = new List<DTOs.DTO_Neighbourhoods.SuburbDTO>();
+
+                foreach (var hood in suburbObjList)
+                {
+                    suburbDTOList.Add(_mapper.Map<DTOs.DTO_Neighbourhoods.SuburbDTO>(hood));
+                }
+
+                return Ok(suburbDTOList);
+
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("error " + ex.Message);
+                return BadRequest();                
+            }
+        }
 
         [HttpGet("SuburbByName")]
         public IActionResult GetNeighbourhoodByName([FromQuery] string suburbname)
@@ -321,7 +345,7 @@ namespace LarksWebApp.Controllers.API
 
                 var hoodObj = suburbRepository.GetSuburbsByName(suburbname);
 
-                var hoodDTO = _mapper.Map<IList<NeighbourhoodDTO>>(hoodObj);
+                var hoodDTO = _mapper.Map<IList<DTOs.DTO_Neighbourhoods.SuburbDTO>>(hoodObj);
 
                 return Ok(hoodDTO);
             }

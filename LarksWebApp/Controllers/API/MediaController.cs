@@ -31,17 +31,28 @@ namespace LarksWebApp.Controllers.API
 
         // GET api/<MediaController>/5
         [HttpGet("LocationImages")]
-        public ActionResult GetLocationImages(string filename, string Category)
+        public ActionResult GetLocationImages(string filename)
         {
             try
             {
-                string imageRoot = "\\Files\\Images\\Locations\\" + Category + "\\" + filename;
+                string resourceRoot = "Files";
+                string types = "Images";
+                string locations = "Locations";
+                string _rootImage =Path.Combine(Directory.GetCurrentDirectory(),webHostEnvironment.WebRootPath,resourceRoot,types,locations,filename);
+                Console.WriteLine(_rootImage);
 
-                string _rootImage = webHostEnvironment.WebRootPath + imageRoot.ToLower();
 
-                Byte[] imageInByte = System.IO.File.ReadAllBytes(_rootImage);
 
-                return File(imageInByte,"image/jpeg");
+                if (System.IO.File.Exists(_rootImage))
+                {
+                    Byte[] imageInByte = System.IO.File.ReadAllBytes(_rootImage);
+                    return File(imageInByte, "image/jpeg");
+                }
+                else {
+                    serviceLogger.LogError($"Crime image file not found: {filename}");
+                    return NotFound();
+                }
+                
             }
             catch (Exception ex)
             {

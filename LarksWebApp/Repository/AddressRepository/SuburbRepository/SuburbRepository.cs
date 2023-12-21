@@ -1,4 +1,5 @@
 ﻿using LarksWebApp.DAL;
+using LarksWebApp.DTOs;
 using LarksWebApp.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,12 +39,12 @@ namespace LarksWebApp.Repository.HoodRepository
                 .ThenInclude(s =>s.Streets).Where(n =>n.Id == suburbId).FirstOrDefault();
         }
 
-        public IList<SuburbModel> GetNeighbourhoodInCities(int cityId)
+        public IList<SuburbModel> GetSuburbsInCities(int cityId)
         {
             return _dbContext.Suburb.Where(c => c.CityId == cityId).ToList();
         }
 
-        public IList<SuburbModel> GetNeighbourhoodInDistricts(int districtiD)
+        public IList<SuburbModel> GetSuburbInDistricts(int districtiD)
         {
             return _dbContext.Suburb.Where(c => c.DistrictId == districtiD).ToList();
         }
@@ -131,6 +132,11 @@ namespace LarksWebApp.Repository.HoodRepository
         public IList<SuburbModel> GetSuburbsByName(string designation)
         {
             return _dbContext.Suburb.Where(s => s.Designation.Contains(designation)).ToList();
+        }
+
+        public IList<SuburbModel> GetSuburbsInProvince(int ProvinceId)
+        {
+            return _dbContext.Suburb.Where(p =>p.Municipality.ProvinceId == ProvinceId).OrderBy(o =>o.Designation).ToList();   
         }
     }
 }

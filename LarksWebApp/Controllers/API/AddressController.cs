@@ -552,6 +552,7 @@ namespace LarksWebApp.Controllers.API
                     }
                 }
                 #endregion
+                //Check if the City exists. That is binded to this endpoint. 
 
                 #region City Manipulation
                 if (nominatimAddressDTO.Address.City != null)
@@ -621,7 +622,7 @@ namespace LarksWebApp.Controllers.API
 
                 if (currentMunicipality != null)
                 {
-                    var municipality = municipalityRepository.VerifyMunicipalityExist(currentMunicipality, country.Id);
+                    var municipality = municipalityRepository.VerifyMunicipalityExist(currentMunicipality, province.Id);
 
                     if (municipality == null)
                     {
@@ -680,7 +681,9 @@ namespace LarksWebApp.Controllers.API
                     id = addressGeolocationDTO.responseId,
                     suburbId = activeSuburb,
                     municipalityId = activeMunicipalityId,
-                    city = activeCityId
+                    city = activeCityId,
+                    SuburbName = nominatimAddressDTO.Address.Suburb
+
                 };
 
                 //Verify if there is any Id that has to be included. 
@@ -697,6 +700,8 @@ namespace LarksWebApp.Controllers.API
                     clientWebHook.EndPoint = (addressGeolocationDTO.OptionalId == 0) ? clientWebHook.EndPoint : clientWebHook.EndPoint +addressGeolocationDTO.OptionalId;
                 }
 
+
+                //Update the 
                 var result = await externalHttpService.ApiRequest(hookObj, clientWebHook.EndPoint, clientWebHook.Method);
 
 
@@ -704,9 +709,6 @@ namespace LarksWebApp.Controllers.API
 
                 #endregion
 
-
-
-                return Ok(nominatimAddressDTO);
             }
             catch (Exception ex)
             {

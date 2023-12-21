@@ -1,6 +1,6 @@
 ﻿namespace LarksWebApp.DTOs.DTO_Neighbourhoods
 {
-    public class NeighbourhoodDTO
+    public class SuburbDTO
     {
         public int Id { get; set; }
         public int MunicipalityId { get; set; }

@@ -11,6 +11,8 @@ namespace LarksWebApp.DTOs.DTO_Location
         public string AdditionalInformation { get; set; }
         public string Category { get; set; }
         public int CategoryId { get; set; }
+        public string Country { get; set; }
+        public string District { get; set; }
         public string Municipality { get; set; }
         public string Suburb { get; set; }
         public string City { get; set; }
