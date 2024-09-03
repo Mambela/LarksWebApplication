@@ -1062,7 +1062,7 @@ namespace LarksWebApp.Controllers.API
                     locationObjDTO.CategoryId = (int)location.CategoryId;
                     locationObjDTO.Lat = location.Lat;
                     locationObjDTO.Lng = location.Lng;
-                    locationObjDTO.Country = location.City.Province.Country.Designation;
+                    locationObjDTO.Country = (location.City.Province.Country.Designation == null)? "":location.City.Province.Country.Designation;
                     locationObjDTO.Category = location.Category.Designation;
                     locationObjDTO.Suburb = location.Suburb.Designation;
                     locationObjDTO.Distance = 0;
