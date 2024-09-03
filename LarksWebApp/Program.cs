@@ -36,6 +36,8 @@ using LarksWebApp.Services.UserManager;
 using LarksWebApp.Repository.TokenRepository;
 using LarksWebApp.Services.PaginationService;
 using Microsoft.AspNetCore.Mvc;
+using LarksWebApp.Services.InternalService;
+using System.Timers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,8 +57,8 @@ ConfigurationManager Configuration = builder.Configuration;
 
 
 //Prepare the Connection String
-var connectionString = builder.Configuration.GetConnectionString("DEV_ENV_DOCKER");
-//var connectionString = builder.Configuration.GetConnectionString("UAT_CONN");
+//var connectionString = builder.Configuration.GetConnectionString("DEV_ENV_DOCKER");
+var connectionString = builder.Configuration.GetConnectionString("UAT_CONN");
  
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 33));
  
@@ -175,9 +177,23 @@ app.UseAuthorization();
 
 
 
+#region Timer Code
+//System.Timers.Timer timer = new System.Timers.Timer(60000);
+//timer.Elapsed += ExecuteQueuedItems;
+//timer.Start();
+#endregion
+
+
+
 //app.MapControllerRoute(
 //    name: "default",
 //    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+//var timer = new Timer(20000);
+
+
+
+
 
 
 app.UseEndpoints(endpoints =>
@@ -188,8 +204,13 @@ app.UseEndpoints(endpoints =>
     endpoints.MapRazorPages();
 });
 
+
+//ExecuteQueuedItems();
 app.MapControllers();
 app.Run();
+
+
+
 
 
 
@@ -249,7 +270,6 @@ void ConfigureServices(IServiceCollection services)
      
 }
 
-
 async void ConfigureRolesServices(IServiceCollection services)
 {
 
@@ -277,4 +297,79 @@ async void ConfigureRolesServices(IServiceCollection services)
 
     }
 
+}
+
+
+ async void ExecuteQueuedItems(object? sender, ElapsedEventArgs e) {
+
+    try
+    {
+
+        using (var scope = app.Services.CreateScope()) { 
+
+
+        var _services = scope.ServiceProvider;
+            //instantite Object
+
+            try
+            {
+               var configService = _services.GetRequiredService<IConfiguration>();
+               var countryService = _services.GetRequiredService<ICountryRepository>();
+               var provinceService = _services.GetRequiredService<IProvinceRepository>();
+               var cityService = _services.GetRequiredService<ICityRepository>();
+               var municipalityService = _services.GetRequiredService<IMunicipalityRepository>();
+               var suburbService = _services.GetRequiredService<ISuburbRepository>();
+               var districtService = _services.GetRequiredService<IDistrictRepository>();
+
+                var suburbServiceForQueue = new SuburbServiceForQueue(
+                    configuration:configService,countryRepo:countryService,provinceService,cityService,suburbService,districtService,municipalityService);
+
+
+                var queueService = new QueueService();
+
+
+                //Collect the data from the Queue. 
+                //var payload = queueService.CollectFromStationQueue();
+                var payloadList = queueService.CollectFromStationQueue("q.createPoliceStations");
+
+
+                if (payloadList.Count > 0)
+                {
+                    //EXtrcatLocation
+                    await suburbServiceForQueue.ExtractLocationPayload(payloadList,queueService);
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            // var suburbService = new SuburbService();
+
+
+            //Setup the Queuing service
+
+
+            //Consume the Message from the Queue
+
+
+            //Provide the payload to the Suburb Service
+
+
+            //Get the Items that have been updated 
+
+
+            //Send the updated items to a new QUEUE TO be Consumed by the Consumer
+
+           // return true;
+
+        }
+
+    }
+    catch (Exception ex)
+    {
+
+        throw;
+    }
 }
