@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LarksWebApp.DAL;
 using LarksWebApp.DTOs;
 using LarksWebApp.DTOs.DTO_Addresses;
 using LarksWebApp.DTOs.DTO_Category;
@@ -39,13 +40,14 @@ namespace LarksWebApp.Controllers.API
         private readonly IStreetRepository streetRepository;
         private readonly IAddressRepository addressRepository;
         private readonly IConfiguration _configuration;
+        private readonly LarksContext _dbContext;
 
-        public LocationController(ILocationRepository repository, ILoggerTrace _logger, IMapper mapper, 
+        public LocationController(ILocationRepository repository, ILoggerTrace _logger, IMapper mapper,
             ICountryRepository countryRepo,
             ICategoryRepository categoryRepo,
             IFileManagement fileManagement,
             IUriService _uriService, ISuburbRepository _suburbRepository, IStreetRepository _streetRepository,
-            IAddressRepository _addressRepository, IConfiguration configuration)
+            IAddressRepository _addressRepository, IConfiguration configuration, LarksContext dbContext)
         {
 
             _countryRepo = countryRepo;
@@ -59,6 +61,7 @@ namespace LarksWebApp.Controllers.API
             streetRepository = _streetRepository;
             addressRepository = _addressRepository;
             _configuration = configuration;
+            _dbContext = dbContext;
         }
 
 
@@ -436,16 +439,18 @@ namespace LarksWebApp.Controllers.API
         [Route("newlocationwithaddress")]
         public async Task<IActionResult> CreateLocationWithSuggestions([FromForm] CreateLocation_w_address_DTO locationDTO)
         {
+            using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
             try
             {
-                Guid suburbId = (locationDTO.SuburbId == Guid.Empty || locationDTO.SuburbId == null) ? Guid.Empty : (Guid)locationDTO.SuburbId;
+                Guid suburbId = locationDTO.SuburbId.GetValueOrDefault();
                 Guid streetId = Guid.Empty;
-                Guid districtId = (locationDTO.DistrictId == null) ? Guid.Empty : (Guid)locationDTO.DistrictId;
+                Guid districtId = locationDTO.DistrictId.GetValueOrDefault();
                 Guid cityId = locationDTO.CityId;
                 Guid addressId = Guid.Empty;
 
-                //Check if Suburb Provided Exists if not then Create it 
-                if (locationDTO.SuburbId == Guid.Empty || locationDTO.SuburbId == null)
+                //Check if Suburb Provided Exists if not then Create it
+                if (suburbId == Guid.Empty)
                 {
                     if (locationDTO.Suburb != null)
                     {
@@ -453,30 +458,13 @@ namespace LarksWebApp.Controllers.API
 
                         if (suburb == null)
                         {
-                            if (districtId == Guid.Empty || districtId == null)
+                            suburb = new SuburbModel
                             {
-                                suburb = new SuburbModel
-                                {
-                                    CityId = cityId,
-                                    MunicipalityId = locationDTO.MunicipalityId,
-                                    Designation = locationDTO.Suburb, //Suburb designation is from the Client. 
-                                };
-                            }
-                            else {
-
-                                suburb = new SuburbModel
-                                {
-                                    CityId = cityId,
-                                    DistrictId = districtId,
-                                    MunicipalityId = locationDTO.MunicipalityId,
-                                    Designation = locationDTO.Suburb,
-                                };
-
-                            }
-                         
-
-                           
-
+                                CityId = cityId,
+                                DistrictId = (districtId == Guid.Empty) ? null : districtId,
+                                MunicipalityId = locationDTO.MunicipalityId,
+                                Designation = locationDTO.Suburb, //Suburb designation is from the Client.
+                            };
 
                             if (await suburbRepository.CreateSuburb(suburb) == null)
                             {
@@ -492,70 +480,55 @@ namespace LarksWebApp.Controllers.API
                     }
                 }
 
-                //Check if Street Exist if not then Create it 
-                if ((locationDTO.StreetId == Guid.Empty || locationDTO.StreetId == null) && locationDTO.Street != null)
+                //Check if Street Exists, if not then Create it; otherwise link the existing Street to the Suburb
+                if (locationDTO.StreetId == null && locationDTO.Street != null)
                 {
+                    var street = streetRepository.VerifyStreetExistance(locationDTO.Street);
 
-                    if (locationDTO.Street != null)
+                    if (street == null)
                     {
-                        var street = streetRepository.VerifyStreetExistance(locationDTO.Street);
-
-                        if (street == null)
+                        street = new StreetModel
                         {
-                            street = new StreetModel
-                            {
-                                Designation = locationDTO.Street
-                            };
+                            Designation = locationDTO.Street
+                        };
 
-                            if (await streetRepository.CreateStreetModel(street) != null)
-                            {
-                                
-                            }
+                        if (await streetRepository.CreateStreetModel(street) == null)
+                        {
+                            throw new Exception("Failed to create street.");
                         }
-
-                        streetId = street.Id;
-
                     }
 
+                    streetId = street.Id;
+                }
+                else if (locationDTO.StreetId != null)
+                {
+                    streetId = locationDTO.StreetId.Value;
                 }
                 else
                 {
+                    ModelState.AddModelError("error", "A street is required, either provide an Id or a street name");
+                    return BadRequest(ModelState);
+                }
 
-                    if (locationDTO.StreetId != Guid.Empty || locationDTO.StreetId != null)
+                if (!streetRepository.VerifyStreetSuburbLink(streetId, suburbId))
+                {
+                    //Suburb streets don't exist create it
+
+                    var streetSuburb = new SuburbStreets { StreetsID = streetId, SuburbId = suburbId };
+
+                    if (!await streetRepository.CreateSuburbStreetsLink(streetSuburb))
                     {
-                        /** 
-                         Link Street to Suburb. 
-                         Check if the street is created 
-                         * **/
-                        
-                        streetId = (locationDTO.StreetId == null || locationDTO.StreetId == Guid.Empty)? Guid.Empty:(Guid)locationDTO.StreetId;
-
-                        if (!streetRepository.VerifyStreetSuburbLink(streetId, suburbId))
-                        {
-                            //Suburb streets don't exist create it 
-
-                            var streetSuburb = new SuburbStreets { StreetsID = streetId, SuburbId = suburbId };
-
-                            if (!await streetRepository.CreateSuburbStreetsLink(streetSuburb))
-                            {
-                                throw new Exception("Failed to create a suburb and Street link");
-                            }
-
-                        }
+                        throw new Exception("Failed to create a suburb and Street link");
                     }
                 }
 
-
-         
-                                  
-
-                //Create address first 
+                //Create address first
                 if (locationDTO.IncludeAddress)
                 {
                     if (locationDTO.BuildingTypeId == Guid.Empty || locationDTO.BuildingTypeId == null)
                     {
                         ModelState.AddModelError("error", "If you are creating a new address then provide a building type.");
-                        return BadRequest(ModelState);  
+                        return BadRequest(ModelState);
                     }
 
                     var address = new AddressModel
@@ -564,15 +537,17 @@ namespace LarksWebApp.Controllers.API
                         CountryID = locationDTO.CountryId,
                         ProvinceID = locationDTO.ProvinceId,
                         SuburbId = suburbId,
-                        AdditionalInfo = (locationDTO.AdditionalInfo == null) ? "" : locationDTO.AdditionalInfo,
-                        StreetNumber = (locationDTO.StreetNumber == null) ? "" : locationDTO.StreetNumber,
+                        AdditionalInfo = locationDTO.AdditionalInfo ?? "",
+                        StreetNumber = locationDTO.StreetNumber ?? "",
                         BuildingTypeId = locationDTO.BuildingTypeId
                     };
 
-                    if (await addressRepository.CreateAddress(address) !=null)
+                    if (await addressRepository.CreateAddress(address) == null)
                     {
-                        addressId = address.Id;
+                        throw new Exception("Failed to create address.");
                     }
+
+                    addressId = address.Id;
                 }
 
                 //Now we can create a location
@@ -592,28 +567,35 @@ namespace LarksWebApp.Controllers.API
                 if (await locationRepo.CreateLocation(location) == null)
                 {
                     ModelState.AddModelError("error", "Failed to create a new Location ");
+                    return BadRequest(ModelState);
                 }
 
                 var savedImages = new List<string>();
 
                 var LocationImageList = new List<LocationImageModel>();
 
-                if (locationDTO.Files != null)
+                if (locationDTO.Files != null && locationDTO.Files.Count > 0)
                 {
-                    if (locationDTO.Files.Count > 0)
-                    {
-                        var _categoryObj = _categoryRepo.GetCategoryById((locationDTO.CategoryId != Guid.Empty) ? locationDTO.CategoryId  : locationDTO.CategoryId);
+                    var _categoryObj = _categoryRepo.GetCategoryById(locationDTO.CategoryId);
 
-                        savedImages = await _fileManagement.MultipleFileUploads(locationDTO.Files, "Locations", _categoryObj.Designation);
+                    if (_categoryObj == null)
+                    {
+                        ModelState.AddModelError("error", "The provided category does not exist.");
+                        return BadRequest(ModelState);
                     }
+
+                    savedImages = await _fileManagement.MultipleFileUploads(locationDTO.Files, "Locations", _categoryObj.Designation);
                 }
 
 
-                var LocationSubcategory = locationDTO.SubCategories.Select(id => new LocationModelSubcategoryModel { LocationId = location.Id, SubcategoriesId = id });
-
-                if (!await locationRepo.Createlocationsubcategory(LocationSubcategory))
+                if (locationDTO.SubCategories != null && locationDTO.SubCategories.Count > 0)
                 {
-                    return BadRequest();
+                    var LocationSubcategory = locationDTO.SubCategories.Select(id => new LocationModelSubcategoryModel { LocationId = location.Id, SubcategoriesId = id });
+
+                    if (!await locationRepo.Createlocationsubcategory(LocationSubcategory))
+                    {
+                        return BadRequest();
+                    }
                 }
 
 
@@ -633,14 +615,14 @@ namespace LarksWebApp.Controllers.API
                 }
 
 
-                if (await locationRepo.CreateLocationImage(LocationImageList) == null)
+                if (LocationImageList.Count > 0 && await locationRepo.CreateLocationImage(LocationImageList) == null)
                 {
                     return BadRequest();
                 }
 
 
 
-                var createdLocation = new Created_Location_DTO 
+                var createdLocation = new Created_Location_DTO
                 {
                     Id=location.Id,
                     AddressId = addressId,
@@ -654,10 +636,14 @@ namespace LarksWebApp.Controllers.API
                     SuburbId = suburbId
                 };
 
+                await transaction.CommitAsync();
+
                 return StatusCode(StatusCodes.Status201Created,createdLocation);
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync();
+
                 logger.LogError("Error creating location "+ex.Message);
 
                  ModelState.AddModelError("errors", "Failed to create a new location");
@@ -1218,8 +1204,8 @@ namespace LarksWebApp.Controllers.API
                         CountryID = locationDTO.CountryId,
                         ProvinceID = locationDTO.ProvinceId,
                         SuburbId = suburbId,
-                        AdditionalInfo = (locationDTO.AdditionalInfo == null) ? "" : locationDTO.AdditionalInfo,
-                        StreetNumber = (locationDTO.StreetNumber == null) ? "" : locationDTO.StreetNumber,
+                        AdditionalInfo = locationDTO.AdditionalInfo ?? "",
+                        StreetNumber = locationDTO.StreetNumber ?? "",
                         BuildingTypeId = locationDTO.BuildingTypeId
                     };
 

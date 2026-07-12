@@ -31,20 +31,13 @@ namespace LarksWebApp.Repository.LocationRepository
 
         public IList<LocationModel> GetCategoryLocations(Guid CategoryId, PaginationFilter filter)
         {
-
-            var sql = "SELECT * FROM (SELECT *, (((acos(sin(( 0 * pi() / 180)) * sin(( `Lat` * pi() / 180)) + cos(( 0 * pi() /180 )) * cos(( `Lat` * pi() / 180)) * cos((( 0 - `Lng`) * pi()/180))) ) * 180/pi()) * 60 * 1.1515 * 1.609344) as distance FROM `Location` ) Location WHERE distance >=0 ";
-
-
-
-            return _dbContext.Location.FromSqlRaw(sql)
+            return _dbContext.Location
                 .Where(s => s.CategoryId == CategoryId)
                 .Include(s => s.Category)
                 .Include(s => s.LocalSubcategories).ThenInclude(l =>l.Subcategories)
                 .Include(l =>l.Images)
                 .OrderBy(s=>s.Designation)
                 .ToList();
-
-            
         }
 
         public LocationModel GetLocation(Guid LocationId)
@@ -122,20 +115,16 @@ namespace LarksWebApp.Repository.LocationRepository
 
         public  IList<LocationModel> LocationToInDistanceAsync(decimal lat, decimal lng, double distance,PaginationFilter filter)
         {
-
-            string sqlLocation = string.Format("SELECT * FROM (" +
-                "SELECT *, " +
-                "(((" +
-                " acos(" +
-                " sin(( {0} * pi() / 180)) * sin(( `Lat` * pi() / 180)) + cos(( {0} * pi() /180 )) *" +
-                " cos(( `Lat` * pi() / 180)) * cos((( {1} - `Lng`) * pi()/180)))" +
-                " ) * 180/pi()) * 60 * 1.1515 * 1.609344) " +
-                "as distance FROM `Location` ) Location " +
-                "WHERE distance <= {2} ",lat,lng,distance);
-
-
             return  _dbContext.Location
-                .FromSqlRaw(sqlLocation)
+                .FromSqlInterpolated($@"SELECT * FROM (
+                    SELECT *,
+                        (acos(
+                            sin({lat} * pi() / 180) * sin(""Lat"" * pi() / 180)
+                            + cos({lat} * pi() / 180) * cos(""Lat"" * pi() / 180) * cos(({lng} - ""Lng"") * pi() / 180)
+                        ) * 180 / pi()) * 60 * 1.1515 * 1.609344 AS distance
+                    FROM ""Location""
+                ) AS loc
+                WHERE distance <= {distance}")
                 .Include(c => c.Category)
                 .Include(l => l.Images)
                 .Include(c => c.City)
@@ -167,59 +156,45 @@ namespace LarksWebApp.Repository.LocationRepository
 
         public int CountLocations(decimal lat, decimal lng, double distance, Guid? categoryId = null)
         {
-            string sqlLocation = string.Format("SELECT * FROM (" +
-                "SELECT *, " +
-                "(((" +
-                " acos(" +
-                " sin(( {0} * pi() / 180)) * sin(( `Lat` * pi() / 180)) + cos(( {0} * pi() /180 )) *" +
-                " cos(( `Lat` * pi() / 180)) * cos((( {1} - `Lng`) * pi()/180)))" +
-                " ) * 180/pi()) * 60 * 1.1515 * 1.609344) " +
-                "as distance FROM `Location` ) Location " +
-                "WHERE distance <= {2} ", lat, lng, distance);
-
-
-            if (categoryId != null)
-            {
-
-                return _dbContext.Location
-                .FromSqlRaw(sqlLocation)
+            var query = _dbContext.Location
+                .FromSqlInterpolated($@"SELECT * FROM (
+                    SELECT *,
+                        (acos(
+                            sin({lat} * pi() / 180) * sin(""Lat"" * pi() / 180)
+                            + cos({lat} * pi() / 180) * cos(""Lat"" * pi() / 180) * cos(({lng} - ""Lng"") * pi() / 180)
+                        ) * 180 / pi()) * 60 * 1.1515 * 1.609344 AS distance
+                    FROM ""Location""
+                ) AS loc
+                WHERE distance <= {distance}")
                 .Include(c => c.Category)
                 .Include(l => l.Images)
                 .Include(c => c.City)
                 .Include(s => s.Suburb)
                 .Include(m => m.Municipality)
-                .Where(c =>c.CategoryId == categoryId)
-                .Include(l => l.LocalSubcategories).ThenInclude(s => s.Subcategories).Count();
+                .Include(l => l.LocalSubcategories).ThenInclude(s => s.Subcategories);
+
+            if (categoryId != null)
+            {
+                return query.Where(c => c.CategoryId == categoryId).Count();
             }
 
-            return _dbContext.Location
-            .FromSqlRaw(sqlLocation)
-            .Include(c => c.Category)
-            .Include(l => l.Images)
-            .Include(c => c.City)
-            .Include(s => s.Suburb)
-            .Include(m => m.Municipality)
-            .Include(l => l.LocalSubcategories).ThenInclude(s => s.Subcategories).Count();
-
+            return query.Count();
         }
 
         
 
         public IList<LocationModel> LocationCategoryByDistance(decimal lat, decimal lng, double distance, PaginationFilter pagination, Guid categoryId)
         {
-            string sqlLocation = string.Format("SELECT * FROM (" +
-              "SELECT *, " +
-              "(((" +
-              " acos(" +
-              " sin(( {0} * pi() / 180)) * sin(( `Lat` * pi() / 180)) + cos(( {0} * pi() /180 )) *" +
-              " cos(( `Lat` * pi() / 180)) * cos((( {1} - `Lng`) * pi()/180)))" +
-              " ) * 180/pi()) * 60 * 1.1515 * 1.609344) " +
-              "as distance FROM `Location` ) Location " +
-              "WHERE distance <= {2} ", lat, lng, distance);
-
-
             return  _dbContext.Location
-                .FromSqlRaw(sqlLocation)
+                .FromSqlInterpolated($@"SELECT * FROM (
+                    SELECT *,
+                        (acos(
+                            sin({lat} * pi() / 180) * sin(""Lat"" * pi() / 180)
+                            + cos({lat} * pi() / 180) * cos(""Lat"" * pi() / 180) * cos(({lng} - ""Lng"") * pi() / 180)
+                        ) * 180 / pi()) * 60 * 1.1515 * 1.609344 AS distance
+                    FROM ""Location""
+                ) AS loc
+                WHERE distance <= {distance}")
                 .Include(c => c.Category)
                 .Include(l => l.Images)
                 .Include(c => c.City)
@@ -238,9 +213,7 @@ namespace LarksWebApp.Repository.LocationRepository
 
             //GetLocationsInCity
 
-            var sqlRaw = string.Format("SELECT * FROM (SELECT *, (((acos(sin(( 0 * pi() / 180)) * sin(( `Lat` * pi() / 180)) + cos(( 0 * pi() /180 )) * cos(( `Lat` * pi() / 180)) * cos((( 0 - `Lng`) * pi()/180))) ) * 180/pi()) * 60 * 1.1515 * 1.609344) as distance FROM `Location` ) Location WHERE distance >=0 ");
-
-            return _dbContext.Location.FromSqlRaw(sqlRaw)
+            return _dbContext.Location
                       .Include(c => c.Category)
                       .Include(l =>l.LocalSubcategories).ThenInclude(c => c.Subcategories)
                       .Include(l => l.Images)
@@ -256,9 +229,7 @@ namespace LarksWebApp.Repository.LocationRepository
 
         public IList<LocationModel> GetLocationsInMunicipality(Guid municipalityId, PaginationFilter filter)
         {
-            var sqlRaw = string.Format("SELECT * FROM (SELECT *, (((acos(sin(( 0 * pi() / 180)) * sin(( `Lat` * pi() / 180)) + cos(( 0 * pi() /180 )) * cos(( `Lat` * pi() / 180)) * cos((( 0 - `Lng`) * pi()/180))) ) * 180/pi()) * 60 * 1.1515 * 1.609344) as distance FROM `Location` ) Location WHERE distance >=0 ");
-
-            return _dbContext.Location.FromSqlRaw(sqlRaw)
+            return _dbContext.Location
                        .Include(c => c.Category)
                        .Include(l =>l.LocalSubcategories).ThenInclude(c => c.Subcategories)
                        .Include(l => l.Images)
@@ -298,10 +269,7 @@ namespace LarksWebApp.Repository.LocationRepository
 
         public IList<LocationModel> GetLocationByLocationName(string searchParameter, PaginationFilter filter)
         {
-            var sqlRaw = string.Format("SELECT * FROM (SELECT *, (((acos(sin(( 0 * pi() / 180)) * sin(( `Lat` * pi() / 180)) + cos(( 0 * pi() /180 )) * cos(( `Lat` * pi() / 180)) * cos((( 0 - `Lng`) * pi()/180))) ) * 180/pi()) * 60 * 1.1515 * 1.609344) as distance FROM `Location` ) Location WHERE distance >=0 ");
-
-
-            return _dbContext.Location.FromSqlRaw(sqlRaw)
+            return _dbContext.Location
                         .Include(c => c.Category)
                        .Include(l => l.LocalSubcategories).ThenInclude(c => c.Subcategories)
                        .Include(l => l.Images)

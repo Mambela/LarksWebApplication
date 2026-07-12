@@ -4,10 +4,7 @@
 // Write your JavaScript code.
 
 
-//const BASEURL = "https://larks.azurewebsites.net/";
-//const BASEURL = "https://localhost:7119/";
-//const BASEURL = "https://localhost:44339/";
-const BASEURL = "https://uat.larks.africa/";
+const BASEURL = window.location.origin + "/";
 
 //Address
 

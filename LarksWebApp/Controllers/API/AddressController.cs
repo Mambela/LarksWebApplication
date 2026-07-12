@@ -676,6 +676,12 @@ namespace LarksWebApp.Controllers.API
                 //Update the client webhook
                 var clientWebHook = hookRepository.GetHookByDesignation(addressGeolocationDTO.HookName);
 
+                if (clientWebHook == null)
+                {
+                    serviceLogger.LogError($"No webhook registered under the name '{addressGeolocationDTO.HookName}'");
+                    return BadRequest($"No webhook registered under the name '{addressGeolocationDTO.HookName}'");
+                }
+
                 var hookObj = new
                 {
                     id = addressGeolocationDTO.responseId,
@@ -686,22 +692,14 @@ namespace LarksWebApp.Controllers.API
 
                 };
 
-                //Verify if there is any Id that has to be included. 
-                //clientWebHook.EndPoint = clientWebHook.EndPoint + ((addressGeolocationDTO.responseId != 0) ? addressGeolocationDTO.responseId.ToString() : "");
-
-
-                int verifyParameter = clientWebHook.EndPoint.LastIndexOf('=');
-
-
-
-                if(verifyParameter != -1)
+                // If the registered endpoint ends with a dangling '=' (e.g. "...&id="), it's expecting an id appended to complete the URL.
+                if (clientWebHook.EndPoint.EndsWith('=') && addressGeolocationDTO.OptionalId != null)
                 {
-                    var item = clientWebHook.EndPoint.Substring(verifyParameter, 1);
-                    clientWebHook.EndPoint = (addressGeolocationDTO.OptionalId == null) ? clientWebHook.EndPoint : clientWebHook.EndPoint +addressGeolocationDTO.OptionalId;
+                    clientWebHook.EndPoint += addressGeolocationDTO.OptionalId;
                 }
 
 
-                //Update the 
+                //Update the
                 var result = await externalHttpService.ApiRequest(hookObj, clientWebHook.EndPoint, clientWebHook.Method);
 
 
@@ -712,7 +710,8 @@ namespace LarksWebApp.Controllers.API
             }
             catch (Exception ex)
             {
-                return BadRequest();
+                serviceLogger.LogError("Error creating divisions by geolocation " + ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 

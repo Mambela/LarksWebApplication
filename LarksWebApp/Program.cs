@@ -206,8 +206,6 @@ app.Run();
 
 
 
-
-
 void ConfigureServices(IServiceCollection services)
 {
 
@@ -260,7 +258,6 @@ void ConfigureServices(IServiceCollection services)
     {
         options.HtmlHelperOptions.ClientValidationEnabled = true;
     });
-
      
 }
 

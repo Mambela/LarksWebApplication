@@ -6,6 +6,7 @@
 
   <div class="text-start">
             <h5 class="display-4">Details for  @Html.DisplayFor(ViewBag =>ViewBag.Designation) </h5>
+            @Html.ActionLink("Add Location Details","AddLocationDetails","Province",new{provinceId=Model.Id}, new { @class = "btn btn-primary" })
     </div>
     <hr class="text-center col-md-10" />
 <div class="row">

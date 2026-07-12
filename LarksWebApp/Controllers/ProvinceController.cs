@@ -5,6 +5,9 @@ using LarksWebApp.DTOs.DTO_Municipalities;
 using LarksWebApp.DTOs.DTO_Provinces;
 using LarksWebApp.Models;
 using LarksWebApp.Repository.CountryRepository;
+using LarksWebApp.Repository.DistrictRepository;
+using LarksWebApp.Repository.HoodRepository;
+using LarksWebApp.Repository.MunicipalityRepository;
 using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Authorization;
@@ -18,14 +21,22 @@ namespace LarksWebApp.Controllers
     {
         private readonly IProvinceRepository _provinceRepository;
         private readonly ICountryRepository countryRepository;
+        private readonly IMunicipalityRepository _municipalityRepository;
+        private readonly IDistrictRepository _districtRepository;
+        private readonly ISuburbRepository _suburbRepository;
         private readonly IMapper _mapper;
         private readonly ILoggerTrace serviceLogger;
 
         // GET: ProvinceController
-        public ProvinceController(IProvinceRepository provinceRepository, IMapper mapper, ILoggerTrace logger,ICountryRepository _countryRepo)
+        public ProvinceController(IProvinceRepository provinceRepository, IMapper mapper, ILoggerTrace logger,
+            ICountryRepository _countryRepo, IMunicipalityRepository municipalityRepository,
+            IDistrictRepository districtRepository, ISuburbRepository suburbRepository)
         {
             countryRepository = _countryRepo;
             _provinceRepository = provinceRepository;
+            _municipalityRepository = municipalityRepository;
+            _districtRepository = districtRepository;
+            _suburbRepository = suburbRepository;
             _mapper = mapper;
             serviceLogger = logger;
         }
@@ -69,6 +80,100 @@ namespace LarksWebApp.Controllers
         }
 
 
+
+        // GET: ProvinceController/AddLocationDetails/5
+        public ActionResult AddLocationDetails(Guid provinceId)
+        {
+            try
+            {
+                var provinceObj = _provinceRepository.GetProvinceModel(provinceId);
+
+                if (provinceObj == null)
+                {
+                    return RedirectToAction(nameof(Details), new { id = provinceId });
+                }
+
+                var provinceDTO = _mapper.Map<ProvinceDTO>(provinceObj);
+
+                return View(provinceDTO);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Add location details " + ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        // POST: ProvinceController/CreateMunicipality
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateMunicipality(Guid provinceId, string designation)
+        {
+            try
+            {
+                var municipality = new MunicipalityModel()
+                {
+                    ProvinceId = provinceId,
+                    Designation = designation
+                };
+
+                await _municipalityRepository.CreateMunicipalityModel(municipality);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Create municipality " + ex.Message);
+            }
+
+            return RedirectToAction(nameof(AddLocationDetails), new { provinceId });
+        }
+
+        // POST: ProvinceController/CreateDistrict
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateDistrict(Guid provinceId, string designation)
+        {
+            try
+            {
+                var district = new DistrictModel()
+                {
+                    ProvinceId = provinceId,
+                    Designation = designation
+                };
+
+                await _districtRepository.CreateDistrictModel(district);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Create district " + ex.Message);
+            }
+
+            return RedirectToAction(nameof(AddLocationDetails), new { provinceId });
+        }
+
+        // POST: ProvinceController/CreateNeighbourhood
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateNeighbourhood(Guid provinceId, Guid cityId, Guid districtId, Guid municipalityId, string designation)
+        {
+            try
+            {
+                var neighbourhood = new SuburbModel()
+                {
+                    CityId = cityId,
+                    DistrictId = districtId,
+                    MunicipalityId = municipalityId,
+                    Designation = designation
+                };
+
+                await _suburbRepository.CreateSuburb(neighbourhood);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Create neighbourhood " + ex.Message);
+            }
+
+            return RedirectToAction(nameof(AddLocationDetails), new { provinceId });
+        }
 
         public ActionResult CountryProvinces(Guid CountryId)
         {
