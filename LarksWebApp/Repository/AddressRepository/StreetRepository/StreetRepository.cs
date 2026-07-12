@@ -39,20 +39,20 @@ namespace LarksWebApp.Repository.StreetRepository
             return Save();
         }
 
-        public List<SuburbStreets> GetStreetInNeighBourhood(int neighbourhoodId)
+        public List<SuburbStreets> GetStreetInNeighBourhood(Guid neighbourhoodId)
         {
             return _dbContext.SuburbStreets.Where(n => n.SuburbId == neighbourhoodId).Include(s => s.Streets).ThenInclude(s =>s.StreetCoordinates).ToList();
         }
 
-        public List<SuburbStreets> GetStreetInNeighBourhoodByValue(int neighbourhoodId, string hood)
+        public List<SuburbStreets> GetStreetInNeighBourhoodByValue(Guid neighbourhoodId, string hood)
         {
-            
+
             return _dbContext.SuburbStreets.Where(n => n.Streets.Designation.Contains(hood) && n.SuburbId == neighbourhoodId)
                 .Include(s => s.Streets).ThenInclude(s => s.StreetCoordinates).ToList();
             throw new NotImplementedException();
         }
 
-        public StreetModel GetStreetModel(int StreetId)
+        public StreetModel GetStreetModel(Guid StreetId)
         {
 
             return _dbContext.Streets.Include(m => m.StreetCoordinates)
@@ -79,7 +79,7 @@ namespace LarksWebApp.Repository.StreetRepository
             return _dbContext.Streets.Any(s => s.Designation.Trim().ToLower() == designation.Trim().ToLower());
         }
 
-        public bool VerifyStreetExist(int Id)
+        public bool VerifyStreetExist(Guid Id)
         {
             return _dbContext.Streets.Any(s => s.Id == Id);
         }
@@ -89,7 +89,7 @@ namespace LarksWebApp.Repository.StreetRepository
             return _dbContext.Streets.FirstOrDefault(s => s.Designation.ToLower() == designation.ToLower());
         }
 
-        public bool VerifyStreetSuburbLink(int streetsId, int suburbId)
+        public bool VerifyStreetSuburbLink(Guid streetsId, Guid suburbId)
         {
             return _dbContext.SuburbStreets.Any(s => s.StreetsID == streetsId && s.SuburbId == suburbId);
         }

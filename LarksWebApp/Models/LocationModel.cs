@@ -17,22 +17,22 @@ namespace LarksWebApp.Models
          * 
          * ***/
         public CategoryModel? Category { get; set; }
-        public int? CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
 
- 
-        public int? AddressId { get; set; }
+
+        public Guid? AddressId { get; set; }
 
         public MunicipalityModel? Municipality { get; set; }
-        public int? MunicipalityId { get; set; }
+        public Guid? MunicipalityId { get; set; }
 
         public SuburbModel? Suburb { get; set; }
-        public int? SuburbId { get; set; }
+        public Guid? SuburbId { get; set; }
 
         [NotMapped]
         public decimal? Distance { get; set; } = 0;
 
         public CityModel? City { get; set; }
-        public int? CityId { get; set; }
+        public Guid? CityId { get; set; }
 
         public IList<LocationImageModel> Images { get; set; }
 

@@ -2,8 +2,8 @@
 {
     public class SuburbDTO
     {
-        public int Id { get; set; }
-        public int MunicipalityId { get; set; }
+        public Guid Id { get; set; }
+        public Guid MunicipalityId { get; set; }
         public string Designation { get; set; }
 
 

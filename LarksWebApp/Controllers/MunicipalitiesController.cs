@@ -27,7 +27,7 @@ namespace LarksWebApp.Controllers
 
 
         // GET: MunicipalitiesController
-        public ActionResult Index(int provinceId)
+        public ActionResult Index(Guid provinceId)
         {
 
             try
@@ -62,7 +62,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: MunicipalitiesController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
 
             
@@ -71,7 +71,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: MunicipalitiesController/Create
-        public ActionResult Create(int provinceId)
+        public ActionResult Create(Guid provinceId)
         {
             //Try Retrieving the Province ID FROM HERE. 
 
@@ -98,15 +98,15 @@ namespace LarksWebApp.Controllers
 
                 var municipality = new MunicipalityModel()
                 {
-                    ProvinceId = int.Parse(collection["provinceId"]),
+                    ProvinceId = Guid.Parse(collection["provinceId"]),
                     Designation = collection["Designation"]
                 };
 
                 if (_municipalityRepo.CreateMunicipalityModel(municipality) != null)
                 {
 
-                    return RedirectToAction(nameof(Index), "Municipalities", new {provinceId= int.Parse(collection["provinceId"])});
-                    //return RedirectToRoute("Municipalities?provinceId=" + int.Parse(collection["provinceId"]));
+                    return RedirectToAction(nameof(Index), "Municipalities", new {provinceId= Guid.Parse(collection["provinceId"])});
+                    //return RedirectToRoute("Municipalities?provinceId=" + Guid.Parse(collection["provinceId"]));
                 }
 
 
@@ -121,7 +121,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: MunicipalitiesController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
             return View();
         }
@@ -129,7 +129,7 @@ namespace LarksWebApp.Controllers
         // POST: MunicipalitiesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
@@ -142,7 +142,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: MunicipalitiesController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
             return View();
         }
@@ -150,7 +150,7 @@ namespace LarksWebApp.Controllers
         // POST: MunicipalitiesController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {

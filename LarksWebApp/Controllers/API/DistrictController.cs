@@ -28,7 +28,7 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet]
-        public IActionResult GetDistrict(int districtID)
+        public IActionResult GetDistrict(Guid districtID)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("districtsinprovice")]
-        public IActionResult GetDistrictsInProvince(int provinceID) {
+        public IActionResult GetDistrictsInProvince(Guid provinceID) {
 
             try
             {
@@ -125,7 +125,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpPatch]
-        public IActionResult UpdateDistrict([FromBody] Create_Districts_DTO updateDTO, int districtId)
+        public IActionResult UpdateDistrict([FromBody] Create_Districts_DTO updateDTO, Guid districtId)
         {
             try
             {

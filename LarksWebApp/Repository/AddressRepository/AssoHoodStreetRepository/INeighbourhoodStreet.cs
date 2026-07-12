@@ -9,10 +9,10 @@ namespace LarksWebApp.Repository.AssoHoodStreetRepository
         Task<bool> AssociateStreetToNeighBourhoods(IList<SuburbStreets> neighbourhoodStreets);
 
 
-        SuburbStreets GetNeighbourhoodStreet(int hoodId, int StreetId);
+        SuburbStreets GetNeighbourhoodStreet(Guid hoodId, Guid StreetId);
 
 
-        IList<SuburbStreets> GetStreetsInNeighbourhood(int hoodId);
+        IList<SuburbStreets> GetStreetsInNeighbourhood(Guid hoodId);
 
         bool RemoveNeighbourHoodStreetsAssociation(SuburbStreets neighbourhood);
 

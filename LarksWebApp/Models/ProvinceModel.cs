@@ -7,7 +7,7 @@ namespace LarksWebApp.Models
 
         public CountryModel Country { get; set; }
 
-        public int CountryId { get; set; }
+        public Guid CountryId { get; set; }
 
         public IList<MunicipalityModel> Municipalities { get; set; }
 

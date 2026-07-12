@@ -22,7 +22,7 @@ namespace LarksWebApp.Repository.Coordinates.ProviceCoordinateRepository
             return Save();
         }
 
-        public IList<ProvinceCoordinates> GetProvinceCoordinates(int ProvinceId)
+        public IList<ProvinceCoordinates> GetProvinceCoordinates(Guid ProvinceId)
         {
             return _dbContext.ProvinceCoordinates.Where(p => p.ProvinceId == ProvinceId).ToList();
         }

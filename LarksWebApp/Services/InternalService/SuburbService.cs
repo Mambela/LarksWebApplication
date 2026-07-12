@@ -170,7 +170,7 @@ namespace LarksWebApp.Services.InternalService
 
 		}
         
-        async Task<MappedLocation> MapCoordinates(Decimal Lat, Decimal Lng,int Id) {
+        async Task<MappedLocation> MapCoordinates(Decimal Lat, Decimal Lng,Guid Id) {
             try
 			{
 
@@ -183,7 +183,7 @@ namespace LarksWebApp.Services.InternalService
                 externalHttpService = new ExternalHttpService(config);
                 var nominatimAddressDTO = await externalHttpService.RetrieveLocationByGeoLocationAsync(Lat, Lng);
 
-                int activeCountryId = 0, activeProvinceId = 0, activeMunicipalityId = 0, activeCityId = 0, activeDisctrictId = 0, activeSuburb = 0;
+                Guid activeCountryId = Guid.Empty, activeProvinceId = Guid.Empty, activeMunicipalityId = Guid.Empty, activeCityId = Guid.Empty, activeDisctrictId = Guid.Empty, activeSuburb = Guid.Empty;
 
                 if (nominatimAddressDTO.Address == null) {
                     
@@ -353,9 +353,9 @@ namespace LarksWebApp.Services.InternalService
                 {
                     suburb = new SuburbModel
                     {
-                        CityId = (activeCityId == 0) ? null : activeCityId,
-                        DistrictId = (activeDisctrictId == 0) ? null : activeDisctrictId,
-                        MunicipalityId = (activeMunicipalityId == 0) ? null : activeMunicipalityId,
+                        CityId = (activeCityId == Guid.Empty) ? null : activeCityId,
+                        DistrictId = (activeDisctrictId == Guid.Empty) ? null : activeDisctrictId,
+                        MunicipalityId = (activeMunicipalityId == Guid.Empty) ? null : activeMunicipalityId,
                         Designation = nominatimSuburb
 
                     };
@@ -372,7 +372,7 @@ namespace LarksWebApp.Services.InternalService
 
                 var mappedLocation = new MappedLocation
                 {
-                    Id = 0,
+                    Id = Guid.Empty,
                     CityId =activeCityId,
                     SuburbId = activeSuburb,
                     MunicipalityId = activeMunicipalityId

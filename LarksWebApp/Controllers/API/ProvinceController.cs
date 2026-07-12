@@ -30,7 +30,7 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet("CountryProvinces")]
 
-        public IActionResult GetCountryProvince(int CountryId)
+        public IActionResult GetCountryProvince(Guid CountryId)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("Province")]
-        public IActionResult GetProvince(int provinceID)
+        public IActionResult GetProvince(Guid provinceID)
         {
             var provinceObj = _provinceRepository.GetProvinceModel(provinceID);
 
@@ -175,7 +175,7 @@ namespace LarksWebApp.Controllers.API
         [Authorize(Roles = "Admin")]
         [HttpDelete]
 
-        public IActionResult DeleteProvince(int ProvinceID)
+        public IActionResult DeleteProvince(Guid ProvinceID)
         {
 
             if (!_provinceRepository.VerifyProvinceExist(ProvinceID))
@@ -199,7 +199,7 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPatch]
-        public async Task<IActionResult> UpdateProvince(Create_Province_DTO provinceDTO, int ProvinceId)
+        public async Task<IActionResult> UpdateProvince(Create_Province_DTO provinceDTO, Guid ProvinceId)
         {
             try
             {

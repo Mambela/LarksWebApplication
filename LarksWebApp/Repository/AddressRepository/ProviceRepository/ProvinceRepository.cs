@@ -33,7 +33,7 @@ namespace LarksWebApp.Repository.ProviceRepository
             return Save();
         }
 
-        public ProvinceModel GetProvinceModel(int ProvinceId)
+        public ProvinceModel GetProvinceModel(Guid ProvinceId)
         {
             return _dbContext.Provinces.Include(n => n.Cities)
                 .Include(d =>d.Districts)
@@ -41,7 +41,7 @@ namespace LarksWebApp.Repository.ProviceRepository
                 .Where(p => p.Id == ProvinceId).FirstOrDefault(p => p.Id == ProvinceId);
         }
 
-        public List<ProvinceModel> GetProvincesInCountry(int countryId)
+        public List<ProvinceModel> GetProvincesInCountry(Guid countryId)
         {
             return _dbContext.Provinces.Where(p => p.CountryId == countryId)
                 .Include(m =>m.Municipalities)
@@ -68,12 +68,12 @@ namespace LarksWebApp.Repository.ProviceRepository
         }
  
 
-        public bool VerifyProvinceExist(int Id)
+        public bool VerifyProvinceExist(Guid Id)
         {
             return _dbContext.Provinces.Any(p => p.Id == Id);
         }
 
-        public ProvinceModel VerifyProvinceExist(string designation, int countryID)
+        public ProvinceModel VerifyProvinceExist(string designation, Guid countryID)
         {
             return _dbContext.Provinces.FirstOrDefault(p => p.CountryId == countryID && p.Designation.ToLower().Trim() == designation.ToLower().Trim());
         }

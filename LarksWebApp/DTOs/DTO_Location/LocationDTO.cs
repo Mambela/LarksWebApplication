@@ -6,19 +6,19 @@ namespace LarksWebApp.DTOs.DTO_Location
 {
     public class LocationDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Designation { get; set; }
         public string AdditionalInformation { get; set; }
         /*
          * Locations may have multiple categories
-         * 
+         *
          * ***/
 
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
         public string Category { get; set; }
 
-        public int SubcategoryId { get; set; }
+        public Guid SubcategoryId { get; set; }
         public  IEnumerable<SubCategoryDTO> Subcategory { get; set; }
 
         public string StreetName { get; set; }
@@ -26,7 +26,7 @@ namespace LarksWebApp.DTOs.DTO_Location
         public decimal? Distance { get; set; }
         public ViewAddressDTO  Address { get; set; }
 
-        public int AddressId { get; set; }
+        public Guid AddressId { get; set; }
 
         public IList<string> Images { get; set; }
 

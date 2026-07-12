@@ -9,12 +9,12 @@ namespace LarksWebApp.DTOs.DTO_Streets
     public class Create_Street_DTO 
     {
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Designation { get; set; }
 
-        public IList<int> NeighbourhoodID { get; set; }
+        public IList<Guid> NeighbourhoodID { get; set; }
 
-        public int ? CountryId  { get; set; }
+        public Guid ? CountryId  { get; set; }
 
         public IList<CountryDTO> ? ListofCountryDTO { get; set; }
         public IList<ProvinceDTO> ? ListofProvinceDTO { get; set; }

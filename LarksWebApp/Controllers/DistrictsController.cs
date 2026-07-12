@@ -22,7 +22,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: DisctrictController
-        public ActionResult Index(int provinceId)
+        public ActionResult Index(Guid provinceId)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: DisctrictController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
             return View();
         }
@@ -75,7 +75,7 @@ namespace LarksWebApp.Controllers
 
                 var districtModel = new DistrictModel()
                 {
-                    ProvinceId = Convert.ToInt32(TempData["provinceID"].ToString()),
+                    ProvinceId = Guid.Parse(TempData["provinceID"].ToString()),
                     Designation = collection["Designation"]
                 };
 
@@ -96,7 +96,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: DisctrictController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
             return View();
         }
@@ -104,7 +104,7 @@ namespace LarksWebApp.Controllers
         // POST: DisctrictController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: DisctrictController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
             return View();
         }
@@ -125,7 +125,7 @@ namespace LarksWebApp.Controllers
         // POST: DisctrictController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {

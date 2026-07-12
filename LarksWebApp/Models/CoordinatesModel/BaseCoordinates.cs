@@ -5,7 +5,7 @@ namespace LarksWebApp.Models.CoordinatesModel
     public class BaseCoordinates : TimeStampsEntity
     {
 
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public decimal lat { get; set; }
 

@@ -7,9 +7,9 @@ namespace LarksWebApp.Repository.AddressRepository.HooksRepository
 
         Task<bool> CreateHookAsync(HooksModel model);
 
-        HooksModel GetHook(int id);
+        HooksModel GetHook(Guid id);
 
-        bool DeleteWebHook(int id);
+        bool DeleteWebHook(Guid id);
 
         bool UpdateWebHook(HooksModel model);
 

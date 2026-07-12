@@ -30,7 +30,7 @@ namespace LarksWebApp.Repository.AddressRepository.BuildingTypeRepository
             return _dbContext.BuildingType.Where(l =>l.Lang == lng).ToList();
         }
 
-        public BuildingTypeModel GetBuildingType(int id)
+        public BuildingTypeModel GetBuildingType(Guid id)
         {
             return _dbContext.BuildingType.FirstOrDefault(c => c.Id == id);
         }

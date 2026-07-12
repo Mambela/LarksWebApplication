@@ -7,7 +7,7 @@ namespace LarksWebApp.Repository.Coordinates.ProviceCoordinateRepository
 
         Task<bool> CreateProvinceCoordinates(IList<ProvinceCoordinates> listStreetCoordinates);
 
-        IList<ProvinceCoordinates> GetProvinceCoordinates(int provinceId);
+        IList<ProvinceCoordinates> GetProvinceCoordinates(Guid provinceId);
 
         bool UpdateCoordiantes(ProvinceCoordinates province);
 

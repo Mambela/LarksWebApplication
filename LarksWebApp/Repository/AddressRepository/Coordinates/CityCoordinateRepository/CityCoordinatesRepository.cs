@@ -21,7 +21,7 @@ namespace LarksWebApp.Repository.Coordinates.CityCoordinateRepository
             
         }
 
-        public IList<CityCoordinates> GetCityCoordinates(int cityId)
+        public IList<CityCoordinates> GetCityCoordinates(Guid cityId)
         {
            return _dbContext.CitiesCoordinates.Where(s => s.CityID == cityId).ToList();   
         }

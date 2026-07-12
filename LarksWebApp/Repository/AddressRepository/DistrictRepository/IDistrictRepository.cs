@@ -5,15 +5,15 @@ namespace LarksWebApp.Repository.DistrictRepository
     public interface IDistrictRepository
     {
 
-        DistrictModel VerifyDistrictExist(string designation, int countryID);
+        DistrictModel VerifyDistrictExist(string designation, Guid countryID);
 
-        bool VerifyDistrictExist(int Id);
+        bool VerifyDistrictExist(Guid Id);
 
         Task<DistrictModel> CreateDistrictModel(DistrictModel District);
 
-        DistrictModel GetDistrictModel(int DistrictId);
+        DistrictModel GetDistrictModel(Guid DistrictId);
 
-        List<DistrictModel> GetDistrictModels(int provinceId);
+        List<DistrictModel> GetDistrictModels(Guid provinceId);
 
         public bool DeleteDistrict(DistrictModel District);
 

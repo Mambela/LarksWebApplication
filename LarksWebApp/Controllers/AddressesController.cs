@@ -61,7 +61,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: AddressesController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
             return View();
         }
@@ -112,7 +112,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: AddressesController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
             return View();
         }
@@ -120,7 +120,7 @@ namespace LarksWebApp.Controllers
         // POST: AddressesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
@@ -133,7 +133,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: AddressesController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
             return View();
         }
@@ -141,7 +141,7 @@ namespace LarksWebApp.Controllers
         // POST: AddressesController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {

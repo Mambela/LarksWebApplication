@@ -8,19 +8,19 @@ namespace LarksWebApp.Repository.StreetRepository
         bool VerifyStreetExist(string designation);
         StreetModel VerifyStreetExistance(string designation);
 
-        bool VerifyStreetExist(int Id);
+        bool VerifyStreetExist(Guid Id);
 
-        bool VerifyStreetSuburbLink(int streetsId, int suburbId);
+        bool VerifyStreetSuburbLink(Guid streetsId, Guid suburbId);
 
         Task<StreetModel> CreateStreetModel(StreetModel Street);
 
         Task<bool> CreateSuburbStreetsLink(SuburbStreets suburbStreets);
 
-        List<SuburbStreets> GetStreetInNeighBourhood(int neighbourhoodId);
+        List<SuburbStreets> GetStreetInNeighBourhood(Guid neighbourhoodId);
 
-        List<SuburbStreets> GetStreetInNeighBourhoodByValue(int neighbourhoodId,string hood);
+        List<SuburbStreets> GetStreetInNeighBourhoodByValue(Guid neighbourhoodId,string hood);
 
-        StreetModel GetStreetModel(int StreetId);
+        StreetModel GetStreetModel(Guid StreetId);
 
         public bool DeleteStreet(StreetModel street);
 

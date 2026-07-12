@@ -3,10 +3,10 @@
     public class SubCategoryDTO
     {
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Designation { get; set; }
-     
-        public int CategoryId { get; set; }
+
+        public Guid CategoryId { get; set; }
 
         //Language related
         public string Lng { get; set; }

@@ -3,9 +3,9 @@
     public class Create_Districts_DTO
     {
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Designation { get; set; }
 
-        public int ProvinceId { get; set; }
+        public Guid ProvinceId { get; set; }
     }
 }

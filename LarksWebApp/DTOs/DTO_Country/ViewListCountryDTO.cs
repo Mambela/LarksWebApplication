@@ -2,9 +2,9 @@
 {
     public class ViewListCountryDTO
     {
-        public int CountryId { get; set; }
+        public Guid CountryId { get; set; }
         public IList<CountryDTO>? ListofCountryDTO { get; set; }
 
-        public int? searchAddress_hidden { get; set; }
+        public Guid? searchAddress_hidden { get; set; }
     }
 }

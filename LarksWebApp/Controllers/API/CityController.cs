@@ -67,7 +67,7 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("city")]
-        public IActionResult RetrieveCity(int cityId)
+        public IActionResult RetrieveCity(Guid cityId)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("citiesinprovince")]
-        public IActionResult RetrieveCitiesInProvince(int provinceId)
+        public IActionResult RetrieveCitiesInProvince(Guid provinceId)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace LarksWebApp.Controllers.API
         
         [HttpGet]
         [Route("citiesincountry")]
-        public IActionResult RetrieveCitiesInCountry(int countryId)
+        public IActionResult RetrieveCitiesInCountry(Guid countryId)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpPatch]
-        public IActionResult Update(Create_City_DTO create_City_DTO, int  cityId)
+        public IActionResult Update(Create_City_DTO create_City_DTO, Guid  cityId)
         {
             try
             {
@@ -160,7 +160,7 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpDelete]
-        public IActionResult DeleteCity(int cityId)
+        public IActionResult DeleteCity(Guid cityId)
         {
             try
             {

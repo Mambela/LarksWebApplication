@@ -61,7 +61,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("sectorNeighbourhood")]
-        public IActionResult sectorNeighbourhood(string sector, int id)
+        public IActionResult sectorNeighbourhood(string sector, Guid id)
         {
             
             try
@@ -94,7 +94,7 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("suburbInAnySector")]
-        public IActionResult suburbInAnySector(int districtId,int municipalityId, int cityId)
+        public IActionResult suburbInAnySector(Guid districtId,Guid municipalityId, Guid cityId)
         {
             try
             {   
@@ -170,7 +170,7 @@ namespace LarksWebApp.Controllers.API
 
         [Route("[action]")]
         [HttpPost]
-        public IActionResult AddressesInSuburb(int suburbId)
+        public IActionResult AddressesInSuburb(Guid suburbId)
         {
             try
             {
@@ -245,7 +245,7 @@ namespace LarksWebApp.Controllers.API
             try
             {
 
-                var suburbList = suburbsQuery.Split(',')?.Select(Int32.Parse)?.ToList();
+                var suburbList = suburbsQuery.Split(',')?.Select(Guid.Parse)?.ToList();
 
                 var suburbObjList = suburbRepository.GetSuburbs(suburbList);
 
@@ -263,7 +263,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("SuburbList")]
-        public IActionResult GetSuburbList([FromQuery] int []suburbList)
+        public IActionResult GetSuburbList([FromQuery] Guid []suburbList)
         {
             try
             {
@@ -286,7 +286,7 @@ namespace LarksWebApp.Controllers.API
          * **/
 
         [HttpGet("Suburb")]
-        public IActionResult GetNeighbourhood([FromQuery] int id)
+        public IActionResult GetNeighbourhood([FromQuery] Guid id)
         {
 
             try
@@ -307,7 +307,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("SuburbInProvince")]
-        public IActionResult GetSuburbsInProvince([FromQuery] int provinceId)
+        public IActionResult GetSuburbsInProvince([FromQuery] Guid provinceId)
         {
             try { 
 
@@ -358,7 +358,7 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPut]
-        public IActionResult UpdateNeighbourhood([FromBody] Create_suburb_DTO hoodDTO, int hoodId)
+        public IActionResult UpdateNeighbourhood([FromBody] Create_suburb_DTO hoodDTO, Guid hoodId)
         {
 
             try

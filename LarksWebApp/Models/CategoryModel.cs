@@ -4,7 +4,7 @@ namespace LarksWebApp.Models
 {
     public class CategoryModel :TimeStampsEntity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Designation { get; set; }
         public IList<SubcategoryModel> Subcategories { get; set; }
 

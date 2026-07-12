@@ -90,7 +90,7 @@ namespace LarksWebApp.Controllers.API
         }
         
         [HttpGet("SubcategoriesInCategory")]
-        public IActionResult GetSubcategoriesInCategory(int categoryId)
+        public IActionResult GetSubcategoriesInCategory(Guid categoryId)
         {
 
             var listofSubcategoriesObj = _subcategoryRepository.GetSubcategoriesInCategory(categoryId);
@@ -101,7 +101,7 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("Subcategory")]
-        public IActionResult GetSubcategory(int Id)
+        public IActionResult GetSubcategory(Guid Id)
         {
             try
             {
@@ -137,7 +137,7 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPatch]
-        public IActionResult UpdateSubcategory(Create_subcategoryDTO create_SubcateogryDTO,int subcategoryId)
+        public IActionResult UpdateSubcategory(Create_subcategoryDTO create_SubcateogryDTO,Guid subcategoryId)
         {
             try
             {

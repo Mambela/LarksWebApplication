@@ -3,12 +3,12 @@
     public class LocationImageModel
     {
 
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string ImagePath { get; set; }
 
 
         public LocationModel Location { get; set; }
-        public int LocationId { get; set; }
+        public Guid LocationId { get; set; }
 
 
     }

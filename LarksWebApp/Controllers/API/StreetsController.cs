@@ -39,7 +39,7 @@ namespace LarksWebApp.Controllers.API
 
         [HttpPut]
 
-        public IActionResult UpdateStreet([FromBody] Create_Street_DTO street_DTO, int streetId)
+        public IActionResult UpdateStreet([FromBody] Create_Street_DTO street_DTO, Guid streetId)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpDelete]
-        public IActionResult DeleteStreet(int streetID)
+        public IActionResult DeleteStreet(Guid streetID)
         {
             try
             {
@@ -105,7 +105,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("StreetsInNeighbourhood")]
-        public IActionResult GetstreetsInNeighbourhood(int neighbourhoodId) 
+        public IActionResult GetstreetsInNeighbourhood(Guid neighbourhoodId)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("StreetsInNeighbourhoodByName")]
-        public IActionResult GetStreetsInNeighbourhoodByValue(int neighbourhoodId, string streetValue)
+        public IActionResult GetStreetsInNeighbourhoodByValue(Guid neighbourhoodId, string streetValue)
         {
             try
             {
@@ -177,7 +177,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("Streets")]
-        public IActionResult Getstreet(int id)
+        public IActionResult Getstreet(Guid id)
         {
             try
             {
@@ -197,7 +197,7 @@ namespace LarksWebApp.Controllers.API
                     var neighbourhood = new SuburbDTO
                     {
                         Id = neighbourhoodStreet.Suburb.Id,
-                        MunicipalityId = (int)neighbourhoodStreet.Suburb.MunicipalityId,
+                        MunicipalityId = (Guid)neighbourhoodStreet.Suburb.MunicipalityId,
                         Designation = neighbourhoodStreet.Suburb.Designation
                     };
 
@@ -331,7 +331,7 @@ namespace LarksWebApp.Controllers.API
         // end point for DataTable API
         [Route("[action]")]
         [HttpPost]
-        public IActionResult StreetsInNeighbourhood(int neighbourhoodId)
+        public IActionResult StreetsInNeighbourhood(Guid neighbourhoodId)
         {
             try
             {

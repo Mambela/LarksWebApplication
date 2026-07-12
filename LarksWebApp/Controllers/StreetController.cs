@@ -72,12 +72,12 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: StreetController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
             return View();
         }
 
-        public ActionResult StreetsInNeighbourhood(int neighbourhoodId)
+        public ActionResult StreetsInNeighbourhood(Guid neighbourhoodId)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace LarksWebApp.Controllers
 
 
 
-        public ActionResult CountryProvinces(int CountryId)
+        public ActionResult CountryProvinces(Guid CountryId)
         {
             try
             {
@@ -269,7 +269,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: StreetController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
             return View();
         }
@@ -277,7 +277,7 @@ namespace LarksWebApp.Controllers
         // POST: StreetController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
@@ -290,7 +290,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: StreetController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
             return View();
         }
@@ -298,7 +298,7 @@ namespace LarksWebApp.Controllers
         // POST: StreetController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {

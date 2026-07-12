@@ -3,15 +3,15 @@
     public class Create_Addresses_DTO
     {
 
-        public int Id { get; set; }
-        public int CountryId { get; set; }
+        public Guid Id { get; set; }
+        public Guid CountryId { get; set; }
 
-        public int ProvinceID { get; set; }
+        public Guid ProvinceID { get; set; }
 
-        public int MunicipalityID { get; set; }
+        public Guid MunicipalityID { get; set; }
 
-        public int NeighbourhoodId { get; set; }
-        public int StreetID { get; set; }
+        public Guid NeighbourhoodId { get; set; }
+        public Guid StreetID { get; set; }
 
         public string StreetNumber { get; set; }
 
@@ -25,7 +25,7 @@
 
         public IList<CountryDTO>? ListofCountryDTO { get; set; }
 
-        public int BuildingTypeId { get; set; }
+        public Guid BuildingTypeId { get; set; }
 
         public IList<Create_BuildingType_DTO> ? ListOfBuildingType_DTO  { get; set; }
         //add Address Reference.

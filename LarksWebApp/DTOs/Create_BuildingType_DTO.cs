@@ -3,7 +3,7 @@
     public class Create_BuildingType_DTO
     {
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Designation { get; set; }
 

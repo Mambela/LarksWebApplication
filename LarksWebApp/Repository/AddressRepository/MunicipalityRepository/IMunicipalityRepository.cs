@@ -5,16 +5,16 @@ namespace LarksWebApp.Repository.MunicipalityRepository
     public interface IMunicipalityRepository
     {
 
-        MunicipalityModel VerifyMunicipalityExist(string designation,int provinceId);
+        MunicipalityModel VerifyMunicipalityExist(string designation,Guid provinceId);
 
-        bool VerifyMunicipalityExist(int Id);
+        bool VerifyMunicipalityExist(Guid Id);
 
         Task<MunicipalityModel> CreateMunicipalityModel(MunicipalityModel municipality);
 
-        MunicipalityModel GetMuncipality(int MunicipalityId);
-        MunicipalityModel GetMuncipalityInCity(int cityId,string MunicipalityDesigantion);
+        MunicipalityModel GetMuncipality(Guid MunicipalityId);
+        MunicipalityModel GetMuncipalityInCity(Guid cityId,string MunicipalityDesigantion);
 
-        IList<MunicipalityModel> GetMunicipalityModels(int ProvinceId);
+        IList<MunicipalityModel> GetMunicipalityModels(Guid ProvinceId);
 
         public bool DeleteMunicipality(MunicipalityModel municipality);
 

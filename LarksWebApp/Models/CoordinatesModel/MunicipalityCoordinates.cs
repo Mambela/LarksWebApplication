@@ -7,7 +7,7 @@ namespace LarksWebApp.Models.CoordinatesModel
         public MunicipalityModel Municipality { get; set; }
 
         [Column(Order=1)]
-        public int MunicipalityID { get; set; }
+        public Guid MunicipalityID { get; set; }
 
 
     }

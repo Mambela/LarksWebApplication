@@ -2,7 +2,7 @@
 {
     public class ViewAddressDataTableDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
 
         public string Province { get; set; }

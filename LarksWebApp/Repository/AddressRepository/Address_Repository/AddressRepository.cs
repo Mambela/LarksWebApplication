@@ -18,7 +18,7 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
             return _dbContext.Addresses.Any(n => n.StreetNumber.Trim() == designation.Trim());
         }
 
-        public bool AddressExists(int AddressID)
+        public bool AddressExists(Guid AddressID)
         {
             return _dbContext.Addresses.Any(n => n.Id == AddressID);
         }
@@ -48,7 +48,7 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
             return Save();
         }
 
-        public AddressModel GetAddress(int AddressId)
+        public AddressModel GetAddress(Guid AddressId)
         {
             return _dbContext.Addresses
                 .Include(n => n.Suburb)
@@ -59,7 +59,7 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
 
         }
 
-        public List<AddressModel> GetAddressesInStreets(int streetsId)
+        public List<AddressModel> GetAddressesInStreets(Guid streetsId)
         {
             return _dbContext.Addresses.Where(a => a.StreetID == streetsId)
                 .Include(n =>n.Suburb)
@@ -88,7 +88,7 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
             return Save();
         }
 
-        public List<AddressModel> GetAddressesInSuburb(int neighbourhoodId)
+        public List<AddressModel> GetAddressesInSuburb(Guid neighbourhoodId)
         {
             return _dbContext.Addresses.Where(a => a.SuburbId == neighbourhoodId)
               .Include(n => n.Suburb)

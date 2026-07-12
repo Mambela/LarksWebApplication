@@ -27,7 +27,7 @@ namespace LarksWebApp.Controllers
 
     
         // GET: CityController
-        public ActionResult Index(int provinceId)
+        public ActionResult Index(Guid provinceId)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: CityController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
 
 
@@ -82,7 +82,7 @@ namespace LarksWebApp.Controllers
 
                 var cityModel = new CityModel()
                 {
-                    ProvinceId = Convert.ToInt32(TempData["provinceID"].ToString()),
+                    ProvinceId = Guid.Parse(TempData["provinceID"].ToString()),
                     Designation = collection["Designation"]
                 };
 
@@ -104,7 +104,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: CityController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
             return View();
         }
@@ -112,7 +112,7 @@ namespace LarksWebApp.Controllers
         // POST: CityController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: CityController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
             return View();
         }
@@ -133,7 +133,7 @@ namespace LarksWebApp.Controllers
         // POST: CityController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {

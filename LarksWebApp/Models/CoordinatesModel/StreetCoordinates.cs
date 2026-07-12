@@ -6,7 +6,7 @@ namespace LarksWebApp.Models.CoordinatesModel
     {
 
         [Column(Order=1)]
-        public int StreetId { get; set; }
+        public Guid StreetId { get; set; }
 
         public StreetModel Street { get; set; }
     }

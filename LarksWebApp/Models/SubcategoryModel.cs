@@ -4,10 +4,10 @@ namespace LarksWebApp.Models
 {
     public class SubcategoryModel : TimeStampsEntity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Designation { get; set; }
         public CategoryModel Category { get; set; }
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
 
         //Language related
         public string Lng { get; set; }

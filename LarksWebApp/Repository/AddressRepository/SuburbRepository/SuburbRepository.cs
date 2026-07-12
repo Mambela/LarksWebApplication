@@ -33,24 +33,24 @@ namespace LarksWebApp.Repository.HoodRepository
             return Save();
         }
 
-        public SuburbModel GetSuburb(int suburbId)
+        public SuburbModel GetSuburb(Guid suburbId)
         {
             return _dbContext.Suburb.Include(s =>s.NeighbourhoodStreets)
                 .ThenInclude(s =>s.Streets).Where(n =>n.Id == suburbId).FirstOrDefault();
         }
 
-        public IList<SuburbModel> GetSuburbsInCities(int cityId)
+        public IList<SuburbModel> GetSuburbsInCities(Guid cityId)
         {
             return _dbContext.Suburb.Where(c => c.CityId == cityId).ToList();
         }
 
-        public IList<SuburbModel> GetSuburbInDistricts(int districtiD)
+        public IList<SuburbModel> GetSuburbInDistricts(Guid districtiD)
         {
             return _dbContext.Suburb.Where(c => c.DistrictId == districtiD).ToList();
         }
- 
 
-        public IList<SuburbModel> GetNeighbourhoodInMunicipality(int municipalityId)
+
+        public IList<SuburbModel> GetNeighbourhoodInMunicipality(Guid municipalityId)
         {
             return _dbContext.Suburb.Where(p =>p.MunicipalityId == municipalityId).ToList();
         }
@@ -61,7 +61,7 @@ namespace LarksWebApp.Repository.HoodRepository
 
         }
 
-        public IList<SuburbModel> GetNeighbourhoodModels(string sector, int id)
+        public IList<SuburbModel> GetNeighbourhoodModels(string sector, Guid id)
         {
 
 
@@ -93,7 +93,7 @@ namespace LarksWebApp.Repository.HoodRepository
             return Save();
         }
 
-        public SuburbModel VerifySuburbExist(string designation, int municipalityId, int cityId, int districtId)
+        public SuburbModel VerifySuburbExist(string designation, Guid? municipalityId, Guid? cityId, Guid? districtId)
         {
             var suburb =_dbContext.Suburb.FirstOrDefault(n =>n.Designation.Trim() == designation.Trim() && n.MunicipalityId == municipalityId);
 
@@ -108,7 +108,7 @@ namespace LarksWebApp.Repository.HoodRepository
            return _dbContext.Suburb.FirstOrDefault(n => n.Designation.Trim() == designation.Trim() && n.CityId == cityId);          
         }
 
-        public bool VerifyNeighbourhoodExist(int Id)
+        public bool VerifyNeighbourhoodExist(Guid Id)
         {
             return _dbContext.Suburb.Any(n => n.Id == Id);
         }
@@ -118,13 +118,13 @@ namespace LarksWebApp.Repository.HoodRepository
             throw new NotImplementedException();
         }
 
-        public IList<SuburbModel> GetNeighbourhoodModels(int districtId, int municipalityId, int cityId)
+        public IList<SuburbModel> GetNeighbourhoodModels(Guid districtId, Guid municipalityId, Guid cityId)
         {
 
             return _dbContext.Suburb.Where(s => s.DistrictId == districtId || s.MunicipalityId == municipalityId || s.CityId == cityId).ToList();
         }
 
-        public IList<SuburbModel> GetSuburbs(IList<int> suburbs)
+        public IList<SuburbModel> GetSuburbs(IList<Guid> suburbs)
         {
             return _dbContext.Suburb.Where(c => suburbs.Contains(c.Id)).OrderBy(s =>s.Designation).ToList();
         }
@@ -134,7 +134,7 @@ namespace LarksWebApp.Repository.HoodRepository
             return _dbContext.Suburb.Where(s => s.Designation.Contains(designation)).ToList();
         }
 
-        public IList<SuburbModel> GetSuburbsInProvince(int ProvinceId)
+        public IList<SuburbModel> GetSuburbsInProvince(Guid ProvinceId)
         {
             return _dbContext.Suburb.Where(p =>p.Municipality.ProvinceId == ProvinceId).OrderBy(o =>o.Designation).ToList();   
         }

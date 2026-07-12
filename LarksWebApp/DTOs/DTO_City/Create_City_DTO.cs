@@ -3,12 +3,12 @@
     public class Create_City_DTO
     {
 
-        public int Id { get; set; }
-        public int ProvinceId { get; set; }
+        public Guid Id { get; set; }
+        public Guid ProvinceId { get; set; }
 
         public string Designation { get; set; }
 
-        public int CountryId { get; set; }
+        public Guid CountryId { get; set; }
 
         public IList<CountryDTO>? ListofCountryDTO { get; set; }
 

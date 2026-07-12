@@ -44,7 +44,7 @@ namespace LarksWebApp.Repository.SubcategoryRepository
             return _dbContext.Subcategories.Where(c=>c.Lng.ToLower().Trim() == lang.ToLower().Trim()).ToList();
         }
 
-        public SubcategoryModel GetSubcateogryById(int id)
+        public SubcategoryModel GetSubcateogryById(Guid id)
         {
             return _dbContext.Subcategories.FirstOrDefault(s => s.Id == id);
         }
@@ -61,19 +61,19 @@ namespace LarksWebApp.Repository.SubcategoryRepository
             return Save();
         }
 
-        public bool SubCategoryExists(int subcategoryId)
+        public bool SubCategoryExists(Guid subcategoryId)
         {
             return _dbContext.Subcategories.Any(s => s.Id == subcategoryId);
         }
 
-        public IList<SubcategoryModel> GetSubcategories(List<int> listCategoryIds)
+        public IList<SubcategoryModel> GetSubcategories(List<Guid> listCategoryIds)
         {
             var subcategories = _dbContext.Subcategories.Where(l => listCategoryIds.Where(c =>c == l.Id).Any()).ToList();
 
             return subcategories;
         }
 
-        public IList<SubcategoryModel> GetSubcategoriesInCategory(int categoryId)
+        public IList<SubcategoryModel> GetSubcategoriesInCategory(Guid categoryId)
         {
             return _dbContext.Subcategories.Where(l => l.CategoryId == categoryId).ToList();
         }

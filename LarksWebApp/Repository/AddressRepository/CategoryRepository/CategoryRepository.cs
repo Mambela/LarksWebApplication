@@ -16,7 +16,7 @@ namespace LarksWebApp.Repository.CategoryRepository
             return _dbContext.Categories.Any(c => c.Designation.ToLower().Trim() == categoryDesignation.ToLower().Trim());
         }
 
-        public bool CategoryExists(int categoryId)
+        public bool CategoryExists(Guid categoryId)
         {
             return _dbContext.Categories.Any(c => c.Id == categoryId);   
         }
@@ -59,7 +59,7 @@ namespace LarksWebApp.Repository.CategoryRepository
 
         }
 
-        public CategoryModel GetCategoryById(int id)
+        public CategoryModel GetCategoryById(Guid id)
         {
             return _dbContext.Categories.FirstOrDefault(c => c.Id == id);
         }

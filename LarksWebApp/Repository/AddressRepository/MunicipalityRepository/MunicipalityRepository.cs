@@ -30,18 +30,18 @@ namespace LarksWebApp.Repository.MunicipalityRepository
             return Save();
         }
 
-        public MunicipalityModel GetMuncipality(int MunicipalityId)
+        public MunicipalityModel GetMuncipality(Guid MunicipalityId)
         {
 
             return _dbContext.Municipalities.FirstOrDefault(m => m.Id == MunicipalityId);
         }
 
-        public MunicipalityModel GetMuncipalityInCity(int provinceId, string MunicipalityDesigantion)
+        public MunicipalityModel GetMuncipalityInCity(Guid provinceId, string MunicipalityDesigantion)
         {
             return _dbContext.Municipalities.FirstOrDefault(m => m.ProvinceId == provinceId && m.Designation.ToLower() == MunicipalityDesigantion );
         }
 
-        public IList<MunicipalityModel> GetMunicipalityModels(int ProvinceId)
+        public IList<MunicipalityModel> GetMunicipalityModels(Guid ProvinceId)
         {
             return _dbContext.Municipalities.Where(p => p.ProvinceId == ProvinceId).ToList();
         }
@@ -58,12 +58,12 @@ namespace LarksWebApp.Repository.MunicipalityRepository
             return Save();
         }
 
-        public MunicipalityModel VerifyMunicipalityExist(string designation,int provinceID)
+        public MunicipalityModel VerifyMunicipalityExist(string designation,Guid provinceID)
         {
             return _dbContext.Municipalities.FirstOrDefault(m => m.Designation.Trim().ToLower() == designation.Trim().ToLower() && m.ProvinceId == provinceID);
         }
 
-        public bool VerifyMunicipalityExist(int Id)
+        public bool VerifyMunicipalityExist(Guid Id)
         {
             return _dbContext.Municipalities.Any(m => m.Id == Id);
         }

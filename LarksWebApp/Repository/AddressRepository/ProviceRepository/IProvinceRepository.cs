@@ -5,15 +5,15 @@ namespace LarksWebApp.Repository.ProviceRepository
     public interface IProvinceRepository
     {
         
-        ProvinceModel VerifyProvinceExist(string designation,int countryID);
+        ProvinceModel VerifyProvinceExist(string designation,Guid countryID);
 
-        bool VerifyProvinceExist(int Id);
+        bool VerifyProvinceExist(Guid Id);
 
         Task<ProvinceModel> CreateProvinceModel(ProvinceModel Province);
 
-        ProvinceModel GetProvinceModel(int ProvinceId);
+        ProvinceModel GetProvinceModel(Guid ProvinceId);
 
-        List<ProvinceModel> GetProvincesInCountry(int countryId);
+        List<ProvinceModel> GetProvincesInCountry(Guid countryId);
         List<ProvinceModel> GetProvincesInCountry(string countryName);
 
         public bool DeleteProvince(ProvinceModel Province);

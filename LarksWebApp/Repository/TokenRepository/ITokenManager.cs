@@ -11,10 +11,10 @@ namespace LarksWebApp.Repository.TokenRepository
 
         int TokenCount(string UserId);
 
-        AuthToken GetUserToken(int id);
+        AuthToken GetUserToken(Guid id);
 
         bool Save();
 
-        bool DeleteToken(int Id);
+        bool DeleteToken(Guid Id);
     }
 }

@@ -31,7 +31,7 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet]
-        public IActionResult GetMunicipality(int MuncipalityId)
+        public IActionResult GetMunicipality(Guid MuncipalityId)
         {
             try
             {         
@@ -51,7 +51,7 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("MunicipalitiesInProvince")]
-        public IActionResult GetProvinceMunicipalities(int provinceId)
+        public IActionResult GetProvinceMunicipalities(Guid provinceId)
         {
             try
             {
@@ -162,7 +162,7 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPatch]
-        public async Task<IActionResult> UpdateMunicipality([FromBody] Create_Municipality_DTO municipality_DTO, int municipalityID)
+        public async Task<IActionResult> UpdateMunicipality([FromBody] Create_Municipality_DTO municipality_DTO, Guid municipalityID)
         {
 
             try
@@ -230,7 +230,7 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpDelete]
-        public IActionResult DeleteMunicipality(int MunicipalityID)
+        public IActionResult DeleteMunicipality(Guid MunicipalityID)
         {
             try
             {

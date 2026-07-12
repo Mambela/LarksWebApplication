@@ -8,7 +8,7 @@ namespace LarksWebApp.Models
     {
 
         [Column(Order = 3)]
-        public int ProvinceId { get; set; }
+        public Guid ProvinceId { get; set; }
 
         public ProvinceModel Province { get; set; }
 

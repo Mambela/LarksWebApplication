@@ -5,7 +5,7 @@ namespace LarksWebApp.DTOs.DTO_Tokens
 {
     public class AuthTokenDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [MaxLength(50)]
         public string Name { get; set; }

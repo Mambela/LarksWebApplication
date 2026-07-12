@@ -11,11 +11,11 @@ namespace LarksWebApp.DTOs.DTO_Provinces
     public class ProvinceOverallViewModelDTO
     {
 
-        public int ProvinceId { get; set; }
+        public Guid ProvinceId { get; set; }
 
         public string Designation { get; set; }
 
-        public int CityId { get; set; }
+        public Guid CityId { get; set; }
 
         public List<DistrictDTO> Districts { get; set; }
         public List<CitiesDTO> Cities { get; set; }

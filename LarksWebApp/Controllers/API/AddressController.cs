@@ -66,7 +66,7 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("GetAddress")]
-        public IActionResult GetAddress(int addressId)
+        public IActionResult GetAddress(Guid addressId)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("StreetAddress")]
-        public IActionResult GetStreetAddress(int streetId)
+        public IActionResult GetStreetAddress(Guid streetId)
         {
 
             try
@@ -129,7 +129,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("NeighbourhoodAddress")]
-        public IActionResult GetNeighbourhoodAddress(int suburbId)
+        public IActionResult GetNeighbourhoodAddress(Guid suburbId)
         {
 
             try
@@ -286,7 +286,7 @@ namespace LarksWebApp.Controllers.API
 
             try
             {
-                int activeCountryId = 0, activeProvinceId = 0, activeMunicipalityId = 0, activeCityId = 0, activeDisctrictId = 0, activeSuburb = 0;
+                Guid activeCountryId = Guid.Empty, activeProvinceId = Guid.Empty, activeMunicipalityId = Guid.Empty, activeCityId = Guid.Empty, activeDisctrictId = Guid.Empty, activeSuburb = Guid.Empty;
 
                 var country = countryRepository.CountryExistis(nominatimAddressDTO.Address.Country);
 
@@ -430,9 +430,9 @@ namespace LarksWebApp.Controllers.API
 
                 var suburb = new SuburbModel
                 {
-                    CityId = (activeCityId == 0) ? null : activeCityId,
-                    DistrictId = (activeDisctrictId == 0) ? null : activeDisctrictId,
-                    MunicipalityId = (activeMunicipalityId == 0) ? null : activeMunicipalityId,
+                    CityId = (activeCityId == Guid.Empty) ? null : activeCityId,
+                    DistrictId = (activeDisctrictId == Guid.Empty) ? null : activeDisctrictId,
+                    MunicipalityId = (activeMunicipalityId == Guid.Empty) ? null : activeMunicipalityId,
                     Designation = (nominatimAddressDTO.Address.Suburb == null) ? nominatimAddressDTO.Address.Suburb : (nominatimAddressDTO.Address.City_District != null) ? nominatimAddressDTO.Address.City_District : (nominatimAddressDTO.Address.Town == null) ? nominatimAddressDTO.Address.City : nominatimAddressDTO.Address.Town
 
                 };
@@ -488,7 +488,7 @@ namespace LarksWebApp.Controllers.API
                 externalHttpService = new ExternalHttpService(config);
                 var nominatimAddressDTO = await externalHttpService.RetrieveLocationByGeoLocationAsync(addressGeolocationDTO.Lat, addressGeolocationDTO.Lng);
 
-                int activeCountryId = 0, activeProvinceId = 0, activeMunicipalityId = 0, activeCityId = 0, activeDisctrictId = 0, activeSuburb = 0;
+                Guid activeCountryId = Guid.Empty, activeProvinceId = Guid.Empty, activeMunicipalityId = Guid.Empty, activeCityId = Guid.Empty, activeDisctrictId = Guid.Empty, activeSuburb = Guid.Empty;
 
 
                 var country = countryRepository.CountryExistis(nominatimAddressDTO.Address.Country);
@@ -651,9 +651,9 @@ namespace LarksWebApp.Controllers.API
                 {
                     suburb = new SuburbModel
                     {
-                        CityId = (activeCityId == 0) ? null : activeCityId,
-                        DistrictId = (activeDisctrictId == 0) ? null : activeDisctrictId,
-                        MunicipalityId = (activeMunicipalityId == 0) ? null : activeMunicipalityId,
+                        CityId = (activeCityId == Guid.Empty) ? null : activeCityId,
+                        DistrictId = (activeDisctrictId == Guid.Empty) ? null : activeDisctrictId,
+                        MunicipalityId = (activeMunicipalityId == Guid.Empty) ? null : activeMunicipalityId,
                         Designation = (nominatimAddressDTO.Address.Suburb != null) ? nominatimAddressDTO.Address.Suburb : (nominatimAddressDTO.Address.City_District != null) ? nominatimAddressDTO.Address.City_District : (nominatimAddressDTO.Address.Town == null) ? nominatimAddressDTO.Address.City : nominatimAddressDTO.Address.Town
 
                     };
@@ -697,7 +697,7 @@ namespace LarksWebApp.Controllers.API
                 if(verifyParameter != -1)
                 {
                     var item = clientWebHook.EndPoint.Substring(verifyParameter, 1);
-                    clientWebHook.EndPoint = (addressGeolocationDTO.OptionalId == 0) ? clientWebHook.EndPoint : clientWebHook.EndPoint +addressGeolocationDTO.OptionalId;
+                    clientWebHook.EndPoint = (addressGeolocationDTO.OptionalId == null) ? clientWebHook.EndPoint : clientWebHook.EndPoint +addressGeolocationDTO.OptionalId;
                 }
 
 
@@ -725,7 +725,7 @@ namespace LarksWebApp.Controllers.API
                 externalHttpService = new ExternalHttpService(config);
                 var nominatimAddressDTO = await externalHttpService.RetrieveLocationByGeoLocationAsync(baseCordinates.lat, baseCordinates.lng);
 
-                int activeCountryId = 0, activeProvinceId = 0, activeMunicipalityId = 0, activeCityId = 0, activeDisctrictId = 0, activeSuburb = 0;
+                Guid activeCountryId = Guid.Empty, activeProvinceId = Guid.Empty, activeMunicipalityId = Guid.Empty, activeCityId = Guid.Empty, activeDisctrictId = Guid.Empty, activeSuburb = Guid.Empty;
 
 
                 var country = countryRepository.CountryExistis(nominatimAddressDTO.Address.Country);
@@ -930,9 +930,9 @@ namespace LarksWebApp.Controllers.API
                 {
                     suburb = new SuburbModel
                     {
-                        CityId = (activeCityId == 0) ? null : activeCityId,
-                        DistrictId = (activeDisctrictId == 0) ? null : activeDisctrictId,
-                        MunicipalityId = (activeMunicipalityId == 0) ? null : activeMunicipalityId,
+                        CityId = (activeCityId == Guid.Empty) ? null : activeCityId,
+                        DistrictId = (activeDisctrictId == Guid.Empty) ? null : activeDisctrictId,
+                        MunicipalityId = (activeMunicipalityId == Guid.Empty) ? null : activeMunicipalityId,
                         Designation = extractSuburb,
                         ReviewName = true
 

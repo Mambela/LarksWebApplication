@@ -6,16 +6,16 @@ namespace LarksWebApp.Repository.CountryRepository
     public interface ICountryRepository
     {
         bool CountryExists(string designation);
-        bool CountryExists(int countryID);
+        bool CountryExists(Guid countryID);
 
         CountryModel CountryExistis(string designation);
         CountryModel CountryandDivisions(string designation);
 
         Task<CountryModel> CreateCountry(CountryModel Country);
 
-        CountryModel GetCountry(int countryId);
+        CountryModel GetCountry(Guid countryId);
 
-        IList<CountryModel> GetCountries(int countryID);
+        IList<CountryModel> GetCountries(Guid countryID);
 
         IList<CountryModel> GetAll();
 

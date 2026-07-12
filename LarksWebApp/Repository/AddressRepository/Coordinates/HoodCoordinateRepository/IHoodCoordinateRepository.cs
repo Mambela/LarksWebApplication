@@ -7,7 +7,7 @@ namespace LarksWebApp.Repository.Coordinates.HoodCoordinateRepository
 
         Task<bool> CreateNeighbourhoodCoordinates(IList<SuburbCoordinates> listStreetCoordinates);
 
-        IList<SuburbCoordinates> GetNeighbourhoodCoordinates(int streetId);
+        IList<SuburbCoordinates> GetNeighbourhoodCoordinates(Guid streetId);
 
         bool UpdateCoordiantes(SuburbCoordinates street);
 

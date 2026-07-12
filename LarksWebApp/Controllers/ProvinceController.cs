@@ -35,7 +35,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: ProvinceController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
 
             try
@@ -70,7 +70,7 @@ namespace LarksWebApp.Controllers
 
 
 
-        public ActionResult CountryProvinces(int CountryId)
+        public ActionResult CountryProvinces(Guid CountryId)
         {
             try
             {
@@ -114,14 +114,14 @@ namespace LarksWebApp.Controllers
 
                 var provinceModel = new ProvinceModel
                 {
-                    CountryId = Convert.ToInt32(TempData["countryID"].ToString()),
+                    CountryId = Guid.Parse(TempData["countryID"].ToString()),
                     Designation = collection["Designation"]
                 };
 
                 if (_provinceRepository.CreateProvinceModel(provinceModel) != null)
                 {
 
-                    var provinceObj = _provinceRepository.GetProvinceModel(Convert.ToInt32(TempData["countryID"].ToString()));
+                    var provinceObj = _provinceRepository.GetProvinceModel(Guid.Parse(TempData["countryID"].ToString()));
                     var provinceDTO = _mapper.Map<ProvinceDTO>(provinceObj);
 
                     //return RedirectToAction(nameof(Index), new { msg = $"Province {provinceModel.Designation} saved successfully! " });
@@ -141,7 +141,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: ProvinceController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
 
             try
@@ -162,7 +162,7 @@ namespace LarksWebApp.Controllers
         // POST: ProvinceController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection provinceCollection)
+        public ActionResult Edit(Guid id, IFormCollection provinceCollection)
         {
             try
             {
@@ -176,7 +176,7 @@ namespace LarksWebApp.Controllers
                 {
                     Designation = provinceCollection["designation"],
                     Id = id,
-                    CountryId = Convert.ToInt32(provinceCollection["countryID"])
+                    CountryId = Guid.Parse(provinceCollection["countryID"])
                 };
 
 
@@ -197,7 +197,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: ProvinceController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
             return View();
         }
@@ -205,7 +205,7 @@ namespace LarksWebApp.Controllers
         // POST: ProvinceController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {

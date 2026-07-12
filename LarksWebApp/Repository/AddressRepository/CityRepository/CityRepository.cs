@@ -12,12 +12,12 @@ namespace LarksWebApp.Repository.CityRepository
             _dbContext = dbContext;
         }
 
-        public CityModel CityExists(int ProvinceId, string designation)
+        public CityModel CityExists(Guid ProvinceId, string designation)
         {
-            return _dbContext.Cities.FirstOrDefault(p => p.ProvinceId == ProvinceId && p.Designation.Trim().ToLower() == designation.Trim().ToLower()); 
+            return _dbContext.Cities.FirstOrDefault(p => p.ProvinceId == ProvinceId && p.Designation.Trim().ToLower() == designation.Trim().ToLower());
         }
 
-        public bool CityExists(int cityId)
+        public bool CityExists(Guid cityId)
         {
             return _dbContext.Cities.Any(c => c.Id == cityId);
         }
@@ -42,22 +42,22 @@ namespace LarksWebApp.Repository.CityRepository
             return Save();
         }
 
-        public IList<CityModel> GetAllCitiesInCountry(int countryId)
+        public IList<CityModel> GetAllCitiesInCountry(Guid countryId)
         {
-            return _dbContext.Cities.Where(c =>c.Province.CountryId == countryId).ToList(); 
+            return _dbContext.Cities.Where(c =>c.Province.CountryId == countryId).ToList();
         }
 
-        public IList<CityModel> GetAllCitiesInProvince(int provinceId)
+        public IList<CityModel> GetAllCitiesInProvince(Guid provinceId)
         {
             return _dbContext.Cities.Where(p => p.ProvinceId == provinceId).ToList();
         }
 
-        public CityModel GetCity(int id)
+        public CityModel GetCity(Guid id)
         {
-            return _dbContext.Cities.Include(c => c.Neighbourhoods.Where(n => n.Id == id)).FirstOrDefault();   
+            return _dbContext.Cities.Include(c => c.Neighbourhoods.Where(n => n.Id == id)).FirstOrDefault();
         }
 
-        public CityModel RetrieveCity(int id)
+        public CityModel RetrieveCity(Guid id)
         {
             return _dbContext.Cities.FirstOrDefault(c => c.Id == id);
         }

@@ -65,7 +65,7 @@ namespace LarksWebApp.Controllers.API
 
         ///Locations By Neighbourhood 
         [HttpGet("NeighbourhoodLocations")]
-        public IActionResult GetNeighBourhoodLocations(int suburbId) {
+        public IActionResult GetNeighBourhoodLocations(Guid suburbId) {
 
             try
             {
@@ -87,7 +87,7 @@ namespace LarksWebApp.Controllers.API
 
                     var addressDTO = new ViewAddressDTO
                     {
-                        Id = (int)location.AddressId,
+                        Id = (Guid)location.AddressId,
                         Municipality = location.Municipality.Designation,
                         Neighbourhood = location.Suburb.Designation,
                         Coordinates = new DTOs.BaseCoordinatesDTO 
@@ -105,7 +105,7 @@ namespace LarksWebApp.Controllers.API
                         AdditionalInformation = location.AdditionalInformation,
                         //AddressId = location.AddressId,
                         Address = addressDTO,
-                        CategoryId = (int)location.CategoryId,
+                        CategoryId = (Guid)location.CategoryId,
                         //StreetName = location.Address.Street.Designation,
                         Category = location.Category.Designation,
                         //SubcategoryId = location.SubcategoryId,
@@ -133,7 +133,7 @@ namespace LarksWebApp.Controllers.API
  
         ///Location by Category 
         [HttpGet("categorylocations")]
-        public IActionResult GetlocationinCategory([FromQuery] int categoryId,PaginationFilter filter)
+        public IActionResult GetlocationinCategory([FromQuery] Guid categoryId,PaginationFilter filter)
         {
             try
             {
@@ -152,7 +152,7 @@ namespace LarksWebApp.Controllers.API
                             AdditionalInformation = location.AdditionalInformation,
                             Category = location.Category.Designation,
                             Designation = location.Designation,
-                            CategoryId = (int)location.CategoryId,
+                            CategoryId = (Guid)location.CategoryId,
                             Subcategory = location.LocalSubcategories.Select(x =>
                                 new SubCategoryDTO 
                                     { CategoryId = x.Subcategories.CategoryId,
@@ -182,7 +182,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("locationbyId")]
-        public IActionResult GetLocationById([FromQuery] int locationId)
+        public IActionResult GetLocationById([FromQuery] Guid locationId)
         {
             try
             {
@@ -222,7 +222,7 @@ namespace LarksWebApp.Controllers.API
                     subCategoriesList.Add( new SubCategoryDTO 
                     {
                         Id = subCategories.SubcategoriesId,
-                        CategoryId = (int)locationObj.CategoryId,
+                        CategoryId = (Guid)locationObj.CategoryId,
                         Designation = subCategories.Subcategories.Designation,
                         Lng = subCategories.Subcategories.Lng
                     });                   
@@ -241,7 +241,7 @@ namespace LarksWebApp.Controllers.API
 
         ///Location by subCategory 
         [HttpGet("SubcategoryLocations")]
-        public IActionResult GetlocationInSubCategory(int subcategoryId) {
+        public IActionResult GetlocationInSubCategory(Guid subcategoryId) {
 
             try
             {
@@ -268,7 +268,7 @@ namespace LarksWebApp.Controllers.API
 
         [Route("[action]")]
         [HttpPost]
-        public IActionResult LocationsInNeighbourhoodDT(int neighbourhoodId)
+        public IActionResult LocationsInNeighbourhoodDT(Guid neighbourhoodId)
         {
             try
             {
@@ -285,7 +285,7 @@ namespace LarksWebApp.Controllers.API
                         Designation = location.Designation,
                         AdditionalInformation = location.AdditionalInformation,
                         //AddressId = location.AddressId,
-                        CategoryId = (int)location.CategoryId,
+                        CategoryId = (Guid)location.CategoryId,
                         Category = location.Category.Designation,
                         //SubcategoryId = location.SubcategoryId,
                         Subcategory = location.Category.Subcategories.Select(s => new SubCategoryDTO { Designation = s.Designation, Id = s.Id })                        
@@ -362,7 +362,7 @@ namespace LarksWebApp.Controllers.API
                 { 
                     if (locationCollection.Files.Count > 0)
                     {
-                        var _categoryObj = _categoryRepo.GetCategoryById((locationCollection.searchCategoryId_hidden != 0)? locationCollection.searchCategoryId_hidden:locationCollection.CategoryId);
+                        var _categoryObj = _categoryRepo.GetCategoryById((locationCollection.searchCategoryId_hidden != Guid.Empty)? locationCollection.searchCategoryId_hidden:locationCollection.CategoryId);
 
                         savedImages = await _fileManagement.SaveMedia(locationCollection.Files,"Locations");
                     }
@@ -373,8 +373,8 @@ namespace LarksWebApp.Controllers.API
 
                 var locationObj = new LocationModel
                 {
-                    AddressId = (locationCollection.searchAddress_hidden != 0)? locationCollection.searchAddress_hidden :0,
-                    CategoryId = (locationCollection.searchCategoryId_hidden != 0) ? locationCollection.searchCategoryId_hidden : locationCollection.CategoryId,
+                    AddressId = (locationCollection.searchAddress_hidden != Guid.Empty)? locationCollection.searchAddress_hidden :Guid.Empty,
+                    CategoryId = (locationCollection.searchCategoryId_hidden != Guid.Empty) ? locationCollection.searchCategoryId_hidden : locationCollection.CategoryId,
                     MunicipalityId = locationCollection.MunicipalityID,
                     CityId = locationCollection.CityId,
                     SuburbId = locationCollection.SuburbId,
@@ -438,14 +438,14 @@ namespace LarksWebApp.Controllers.API
         {
             try
             {
-                int suburbId = (int)((locationDTO.SuburbId ==0 || locationDTO.SuburbId ==null) ? 0:locationDTO.SuburbId);
-                int streetId = 0;
-                int districtId = (int)((locationDTO.DistrictId == null) ? 0 : locationDTO.DistrictId);
-                int cityId = locationDTO.CityId;
-                int addressId = 0;
+                Guid suburbId = (locationDTO.SuburbId == Guid.Empty || locationDTO.SuburbId == null) ? Guid.Empty : (Guid)locationDTO.SuburbId;
+                Guid streetId = Guid.Empty;
+                Guid districtId = (locationDTO.DistrictId == null) ? Guid.Empty : (Guid)locationDTO.DistrictId;
+                Guid cityId = locationDTO.CityId;
+                Guid addressId = Guid.Empty;
 
                 //Check if Suburb Provided Exists if not then Create it 
-                if (locationDTO.SuburbId == 0 || locationDTO.SuburbId == null)
+                if (locationDTO.SuburbId == Guid.Empty || locationDTO.SuburbId == null)
                 {
                     if (locationDTO.Suburb != null)
                     {
@@ -453,7 +453,7 @@ namespace LarksWebApp.Controllers.API
 
                         if (suburb == null)
                         {
-                            if (districtId == 0 || districtId == null)
+                            if (districtId == Guid.Empty || districtId == null)
                             {
                                 suburb = new SuburbModel
                                 {
@@ -493,7 +493,7 @@ namespace LarksWebApp.Controllers.API
                 }
 
                 //Check if Street Exist if not then Create it 
-                if ((locationDTO.StreetId == 0 || locationDTO.StreetId == null) && locationDTO.Street != null)
+                if ((locationDTO.StreetId == Guid.Empty || locationDTO.StreetId == null) && locationDTO.Street != null)
                 {
 
                     if (locationDTO.Street != null)
@@ -521,14 +521,14 @@ namespace LarksWebApp.Controllers.API
                 else
                 {
 
-                    if (locationDTO.StreetId > 0 || locationDTO.StreetId != null)
+                    if (locationDTO.StreetId != Guid.Empty || locationDTO.StreetId != null)
                     {
                         /** 
                          Link Street to Suburb. 
                          Check if the street is created 
                          * **/
                         
-                        streetId = (locationDTO.StreetId == null || locationDTO.StreetId == 0)? 0:(int)locationDTO.StreetId;
+                        streetId = (locationDTO.StreetId == null || locationDTO.StreetId == Guid.Empty)? Guid.Empty:(Guid)locationDTO.StreetId;
 
                         if (!streetRepository.VerifyStreetSuburbLink(streetId, suburbId))
                         {
@@ -552,7 +552,7 @@ namespace LarksWebApp.Controllers.API
                 //Create address first 
                 if (locationDTO.IncludeAddress)
                 {
-                    if (locationDTO.BuildingTypeId == 0 || locationDTO.BuildingTypeId == null)
+                    if (locationDTO.BuildingTypeId == Guid.Empty || locationDTO.BuildingTypeId == null)
                     {
                         ModelState.AddModelError("error", "If you are creating a new address then provide a building type.");
                         return BadRequest(ModelState);  
@@ -602,7 +602,7 @@ namespace LarksWebApp.Controllers.API
                 {
                     if (locationDTO.Files.Count > 0)
                     {
-                        var _categoryObj = _categoryRepo.GetCategoryById((locationDTO.CategoryId != 0) ? locationDTO.CategoryId  : locationDTO.CategoryId);
+                        var _categoryObj = _categoryRepo.GetCategoryById((locationDTO.CategoryId != Guid.Empty) ? locationDTO.CategoryId  : locationDTO.CategoryId);
 
                         savedImages = await _fileManagement.MultipleFileUploads(locationDTO.Files, "Locations", _categoryObj.Designation);
                     }
@@ -690,7 +690,7 @@ namespace LarksWebApp.Controllers.API
 
                     locationObjDTO.Subcategories = location.LocalSubcategories.Select(s =>new SubCategoryDTO 
                     { Id = s.Subcategories.Id,Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng}).ToList();
-                    locationObjDTO.CategoryId = (int)location.CategoryId;
+                    locationObjDTO.CategoryId = (Guid)location.CategoryId;
                     locationObjDTO.Lat = location.Lat;
                     locationObjDTO.Lng = location.Lng;
                     locationObjDTO.Category = location.Category.Designation;
@@ -722,7 +722,7 @@ namespace LarksWebApp.Controllers.API
         ///Location by Proximity 
         [HttpGet]
         [Route("locationbydistanceandcategory")]
-        public async Task<IActionResult> GetLocationByCategory([FromQuery] decimal lat, decimal lng, double distance,int category, [FromQuery] PaginationFilter paginationFilter)
+        public async Task<IActionResult> GetLocationByCategory([FromQuery] decimal lat, decimal lng, double distance,Guid category, [FromQuery] PaginationFilter paginationFilter)
         {
             try
             {
@@ -743,7 +743,7 @@ namespace LarksWebApp.Controllers.API
 
                     locationObjDTO.Subcategories = location.LocalSubcategories.Select(s => new SubCategoryDTO
                     { Id = s.Subcategories.Id, Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng }).ToList();
-                    locationObjDTO.CategoryId = (int)location.CategoryId;
+                    locationObjDTO.CategoryId = (Guid)location.CategoryId;
                     locationObjDTO.Lat = location.Lat;
                     locationObjDTO.Lng = location.Lng;
                     locationObjDTO.Category = location.Category.Designation;
@@ -772,7 +772,7 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("locationsinsuburb")]
-        public async Task<IActionResult> GetLocationInSuburb([FromQuery] decimal lat, decimal lng, double distance, int category, [FromQuery] PaginationFilter paginationFilter)
+        public async Task<IActionResult> GetLocationInSuburb([FromQuery] decimal lat, decimal lng, double distance, Guid category, [FromQuery] PaginationFilter paginationFilter)
         {
             try
             {
@@ -793,7 +793,7 @@ namespace LarksWebApp.Controllers.API
 
                     locationObjDTO.Subcategories = location.LocalSubcategories.Select(s => new SubCategoryDTO
                     { Id = s.Subcategories.Id, Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng }).ToList();
-                    locationObjDTO.CategoryId = (int)location.CategoryId;
+                    locationObjDTO.CategoryId = (Guid)location.CategoryId;
                     locationObjDTO.Lat = location.Lat;
                     locationObjDTO.Lng = location.Lng;
                     locationObjDTO.Category = location.Category.Designation;
@@ -823,7 +823,7 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("locationsincity")]
-        public async Task<IActionResult> GetLocationInCity([FromQuery] PaginationFilter filter, int cityId)
+        public async Task<IActionResult> GetLocationInCity([FromQuery] PaginationFilter filter, Guid cityId)
         {
             
                 try
@@ -848,7 +848,7 @@ namespace LarksWebApp.Controllers.API
 
                         locationObjDTO.Subcategories = location.LocalSubcategories.Select(s => new SubCategoryDTO
                         { Id = s.Subcategories.Id, Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng }).ToList();
-                        locationObjDTO.CategoryId = (int)location.CategoryId;
+                        locationObjDTO.CategoryId = (Guid)location.CategoryId;
                         locationObjDTO.Lat = location.Lat;
                         locationObjDTO.Lng = location.Lng;
                         locationObjDTO.Category = location.Category.Designation;
@@ -879,7 +879,7 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("locationsinmunicipality")]
-        public async Task<IActionResult> GetLocationInmunicipality([FromQuery] int municipalityId,[FromQuery] PaginationFilter filter)
+        public async Task<IActionResult> GetLocationInmunicipality([FromQuery] Guid municipalityId,[FromQuery] PaginationFilter filter)
         {
             try
             {
@@ -905,7 +905,7 @@ namespace LarksWebApp.Controllers.API
 
                     locationObjDTO.Subcategories = location.LocalSubcategories.Select(s => new SubCategoryDTO
                     { Id = s.Subcategories.Id, Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng }).ToList();
-                    locationObjDTO.CategoryId = (int)location.CategoryId;
+                    locationObjDTO.CategoryId = (Guid)location.CategoryId;
                     locationObjDTO.Lat = location.Lat;
                     locationObjDTO.Lng = location.Lng;
                     locationObjDTO.Category = location.Category.Designation;
@@ -948,7 +948,7 @@ namespace LarksWebApp.Controllers.API
                 }
 
                 var locationsInMunicipalityList = locationRepo.GetLocationByLocationName(searchParameter, filter);
-                int totalRecords = locationRepo.CountLocationByAttribute("LOCATION_NAME", 0, searchParameter);
+                int totalRecords = locationRepo.CountLocationByAttribute("LOCATION_NAME", Guid.Empty, searchParameter);
 
 
 
@@ -969,7 +969,7 @@ namespace LarksWebApp.Controllers.API
 
                     locationObjDTO.Subcategories = location.LocalSubcategories.Select(s => new SubCategoryDTO
                     { Id = s.Subcategories.Id, Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng }).ToList();
-                    locationObjDTO.CategoryId = (int)location.CategoryId;
+                    locationObjDTO.CategoryId = (Guid)location.CategoryId;
                     locationObjDTO.Lat = location.Lat;
                     locationObjDTO.Lng = location.Lng;
                     locationObjDTO.Category = location.Category.Designation;
@@ -999,7 +999,7 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet] 
         [Route("searchlocationAll")]
-        public async Task<IActionResult> SearchlocationAll([FromQuery] string countryName,[FromQuery] int pageSize,[FromQuery] int skip, [FromQuery] string ? searchParameter, [FromQuery] int ? categoryId, [FromQuery] int ? suburbId, [FromQuery] int ? cityId, [FromQuery] int ? municipalityId)
+        public async Task<IActionResult> SearchlocationAll([FromQuery] string countryName,[FromQuery] int pageSize,[FromQuery] int skip, [FromQuery] string ? searchParameter, [FromQuery] Guid ? categoryId, [FromQuery] Guid ? suburbId, [FromQuery] Guid ? cityId, [FromQuery] Guid ? municipalityId)
         {
             try
             {
@@ -1016,7 +1016,7 @@ namespace LarksWebApp.Controllers.API
 
                     locationObjDTO.Subcategories = location.LocalSubcategories.Select(s => new SubCategoryDTO
                     { Id = s.Subcategories.Id, Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng }).ToList();
-                    locationObjDTO.CategoryId = (int)location.CategoryId;
+                    locationObjDTO.CategoryId = (Guid)location.CategoryId;
                     locationObjDTO.Lat = location.Lat;
                     locationObjDTO.Lng = location.Lng;
                     locationObjDTO.Category = location.Category.Designation;
@@ -1041,7 +1041,7 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("locationsInList")]
-        public async Task<IActionResult> retrievalLocation([FromQuery] IList<int> locationListIds, [FromQuery] PaginationFilter filter)
+        public async Task<IActionResult> retrievalLocation([FromQuery] IList<Guid> locationListIds, [FromQuery] PaginationFilter filter)
         {
             try
             {
@@ -1059,7 +1059,7 @@ namespace LarksWebApp.Controllers.API
 
                     locationObjDTO.Subcategories = location.LocalSubcategories.Select(s => new SubCategoryDTO
                     { Id = s.Subcategories.Id, Designation = s.Subcategories.Designation, Lng = s.Subcategories.Lng }).ToList();
-                    locationObjDTO.CategoryId = (int)location.CategoryId;
+                    locationObjDTO.CategoryId = (Guid)location.CategoryId;
                     locationObjDTO.Lat = location.Lat;
                     locationObjDTO.Lng = location.Lng;
                     locationObjDTO.Country = (location.City.Province.Country.Designation == null)? "":location.City.Province.Country.Designation;
@@ -1091,14 +1091,14 @@ namespace LarksWebApp.Controllers.API
 
 
 
-                int suburbId = (int)((locationDTO.SuburbId == 0 || locationDTO.SuburbId == null) ? 0 : locationDTO.SuburbId);
-                int streetId = 0;
-                int districtId = (int)((locationDTO.DistrictId == null) ? 0 : locationDTO.DistrictId);
-                int cityId = locationDTO.CityId;
-                int addressId = 0;
+                Guid suburbId = (locationDTO.SuburbId == Guid.Empty || locationDTO.SuburbId == null) ? Guid.Empty : (Guid)locationDTO.SuburbId;
+                Guid streetId = Guid.Empty;
+                Guid districtId = (locationDTO.DistrictId == null) ? Guid.Empty : (Guid)locationDTO.DistrictId;
+                Guid cityId = locationDTO.CityId;
+                Guid addressId = Guid.Empty;
 
                 //Check if Suburb Provided Exists if not then Create it 
-                if (locationDTO.SuburbId == 0 || locationDTO.SuburbId == null)
+                if (locationDTO.SuburbId == Guid.Empty || locationDTO.SuburbId == null)
                 {
                     if (locationDTO.Suburb != null)
                     {
@@ -1106,7 +1106,7 @@ namespace LarksWebApp.Controllers.API
 
                         if (suburb == null)
                         {
-                            if (districtId == 0 || districtId == null)
+                            if (districtId == Guid.Empty || districtId == null)
                             {
                                 suburb = new SuburbModel
                                 {
@@ -1147,7 +1147,7 @@ namespace LarksWebApp.Controllers.API
                 }
 
                 //Check if Street Exist if not then Create it 
-                if ((locationDTO.StreetId == 0 || locationDTO.StreetId == null) && locationDTO.Street != null)
+                if ((locationDTO.StreetId == Guid.Empty || locationDTO.StreetId == null) && locationDTO.Street != null)
                 {
 
                     if (locationDTO.Street != null)
@@ -1175,14 +1175,14 @@ namespace LarksWebApp.Controllers.API
                 else
                 {
 
-                    if (locationDTO.StreetId > 0 || locationDTO.StreetId != null)
+                    if (locationDTO.StreetId != Guid.Empty || locationDTO.StreetId != null)
                     {
                         /** 
                          Link Street to Suburb. 
                          Check if the street is created 
                          * **/
 
-                        streetId = (locationDTO.StreetId == null || locationDTO.StreetId == 0) ? 0 : (int)locationDTO.StreetId;
+                        streetId = (locationDTO.StreetId == null || locationDTO.StreetId == Guid.Empty) ? Guid.Empty : (Guid)locationDTO.StreetId;
 
                         if (!streetRepository.VerifyStreetSuburbLink(streetId, suburbId))
                         {
@@ -1206,7 +1206,7 @@ namespace LarksWebApp.Controllers.API
                 //Create address first 
                 if (locationDTO.IncludeAddress)
                 {
-                    if (locationDTO.BuildingTypeId == 0 || locationDTO.BuildingTypeId == null)
+                    if (locationDTO.BuildingTypeId == Guid.Empty || locationDTO.BuildingTypeId == null)
                     {
                         ModelState.AddModelError("error", "If you are creating a new address then provide a building type.");
                         return BadRequest(ModelState);

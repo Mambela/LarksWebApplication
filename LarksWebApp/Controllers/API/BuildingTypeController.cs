@@ -70,7 +70,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet]
-        public IActionResult GetBuildingType(int id)
+        public IActionResult GetBuildingType(Guid id)
         {
             try
             {

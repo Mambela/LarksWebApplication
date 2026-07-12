@@ -21,7 +21,7 @@ namespace LarksWebApp.Repository.TokenRepository
             return Save();
         }
 
-        public bool DeleteToken(int Id)
+        public bool DeleteToken(Guid Id)
         {
             dbContext.Tokens.Remove(GetUserToken(Id));
 
@@ -33,7 +33,7 @@ namespace LarksWebApp.Repository.TokenRepository
             return dbContext.Tokens.Where(u =>u.UserId.ToLower().Trim() == userId.ToLower().Trim()).ToList();
         }
 
-        public AuthToken GetUserToken(int Id)
+        public AuthToken GetUserToken(Guid Id)
         {
             return dbContext.Tokens.FirstOrDefault(t => t.Id == Id);
         }

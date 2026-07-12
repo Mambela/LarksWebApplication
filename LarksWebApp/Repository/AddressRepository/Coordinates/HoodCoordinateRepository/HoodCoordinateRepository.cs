@@ -20,7 +20,7 @@ namespace LarksWebApp.Repository.Coordinates.HoodCoordinateRepository
             return Save();
         }
 
-        public IList<SuburbCoordinates> GetNeighbourhoodCoordinates(int neighbourhoodCoordinatestreetId)
+        public IList<SuburbCoordinates> GetNeighbourhoodCoordinates(Guid neighbourhoodCoordinatestreetId)
         {
            return _dbContext.SuburbCoordinates.Where(n => n.SuburbID == neighbourhoodCoordinatestreetId).ToList();    
         }

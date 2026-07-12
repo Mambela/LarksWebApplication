@@ -145,7 +145,7 @@ namespace LarksWebApp.Controllers.API.V1
         /// <param name="hookId"></param>
         /// <returns></returns>
         [HttpPut]
-        public IActionResult UpdateWebHook(HooksDTO webHook,int  hookId)
+        public IActionResult UpdateWebHook(HooksDTO webHook,Guid  hookId)
         {
             try
             {

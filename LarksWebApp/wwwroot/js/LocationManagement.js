@@ -396,7 +396,7 @@ $(document).ready(function () {
     function PredefineProvince(provinceId)
     {
        var singleProvince = $.grep(currentProvinceList, function (n, i) {
-            return n.id == provinceId;
+            return n.id === provinceId;
        });
 
         console.log(singleProvince);

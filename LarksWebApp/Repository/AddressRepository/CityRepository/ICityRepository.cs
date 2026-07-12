@@ -7,19 +7,19 @@ namespace LarksWebApp.Repository.CityRepository
 
         Task<CityModel> CreateCity(CityModel city);
 
-        CityModel GetCity(int id);
+        CityModel GetCity(Guid id);
 
-        CityModel RetrieveCity(int id); 
+        CityModel RetrieveCity(Guid id);
 
 
 
-        IList<CityModel> GetAllCitiesInProvince(int provinceId);  
+        IList<CityModel> GetAllCitiesInProvince(Guid provinceId);
 
-        IList<CityModel> GetAllCitiesInCountry(int countryId);
+        IList<CityModel> GetAllCitiesInCountry(Guid countryId);
 
-        CityModel CityExists(int ProvinceId, string designation);
+        CityModel CityExists(Guid ProvinceId, string designation);
 
-        bool CityExists(int cityId);
+        bool CityExists(Guid cityId);
 
         bool Save();
 

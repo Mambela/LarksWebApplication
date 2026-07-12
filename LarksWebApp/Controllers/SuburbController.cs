@@ -33,7 +33,7 @@ namespace LarksWebApp.Controllers
 
 
         // GET: NeighbourhoodController
-        public ActionResult Index(int provinId)
+        public ActionResult Index(Guid provinId)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: NeighbourhoodController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
             return View();
         }
@@ -70,13 +70,13 @@ namespace LarksWebApp.Controllers
 
             try
             {
-                int provinceId = 0;
+                Guid provinceId = Guid.Empty;
                 if (TempData["provinceID"] == null)
                 {
                     throw new Exception("There is a provice missing to query this neighbourhood");
                 }
                 else {
-                    provinceId = Convert.ToInt32(TempData["provinceID"].ToString());
+                    provinceId = Guid.Parse(TempData["provinceID"].ToString());
                 }
 
                 var provinceObj = _provinceRepository.GetProvinceModel(provinceId);
@@ -121,9 +121,9 @@ namespace LarksWebApp.Controllers
 
                 var neighbourhoodObj = new SuburbModel()
                 {
-                    CityId = Convert.ToInt32(neighbourhood["newCityId"]),
-                    MunicipalityId = Convert.ToInt32(neighbourhood["newMunicipalityId"]),
-                    DistrictId = Convert.ToInt32(neighbourhood["newDistrictId"]),
+                    CityId = Guid.Parse(neighbourhood["newCityId"]),
+                    MunicipalityId = Guid.Parse(neighbourhood["newMunicipalityId"]),
+                    DistrictId = Guid.Parse(neighbourhood["newDistrictId"]),
                     Designation =neighbourhood["Designation"]
                 };
 
@@ -148,12 +148,12 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: NeighbourhoodController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
             return View();
         }
 
-        public ActionResult sectorNeighbourhood(string sector, int id)
+        public ActionResult sectorNeighbourhood(string sector, Guid id)
         {
 
             try
@@ -185,7 +185,7 @@ namespace LarksWebApp.Controllers
         // POST: NeighbourhoodController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
@@ -198,7 +198,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: NeighbourhoodController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
             return View();
         }
@@ -206,7 +206,7 @@ namespace LarksWebApp.Controllers
         // POST: NeighbourhoodController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {

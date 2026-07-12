@@ -7,17 +7,17 @@ namespace LarksWebApp.Models
     {
 
 
-        public int? MunicipalityId { get; set; }
+        public Guid? MunicipalityId { get; set; }
 
         public MunicipalityModel Municipality { get; set; }
 
-        public int? CityId { get; set; }
+        public Guid? CityId { get; set; }
 
         public CityModel City { get; set; }
 
         public bool ReviewName { get; set; } = false;
 
-        public int? DistrictId { get; set; }
+        public Guid? DistrictId { get; set; }
         public DistrictModel District { get; set; }
 
         public IList<SuburbStreets> NeighbourhoodStreets { get; set; }

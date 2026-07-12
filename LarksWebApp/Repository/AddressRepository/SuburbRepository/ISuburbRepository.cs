@@ -4,34 +4,34 @@ namespace LarksWebApp.Repository.HoodRepository
 {
     public interface ISuburbRepository
     {
-        SuburbModel VerifySuburbExist(string designation, int municipalityId,int cityId=0, int districtId=0);
+        SuburbModel VerifySuburbExist(string designation, Guid? municipalityId,Guid? cityId=null, Guid? districtId=null);
 
         SuburbModel GetSuburbInMunicipality(string designation, string municipalityId);
 
-        bool VerifyNeighbourhoodExist(int Id);
+        bool VerifyNeighbourhoodExist(Guid Id);
 
         Task<SuburbModel> CreateSuburb(SuburbModel neighbourhood);
 
-        SuburbModel GetSuburb(int neighbourhoodId);
+        SuburbModel GetSuburb(Guid neighbourhoodId);
 
         IList<SuburbModel> GetSuburbsByName(string designation);
 
-        IList<SuburbModel> GetNeighbourhoodInMunicipality(int municipalityId);
-        
-        
+        IList<SuburbModel> GetNeighbourhoodInMunicipality(Guid municipalityId);
+
+
         IList<SuburbModel> GetNeighbourhoodModels();
 
-        IList<SuburbModel> GetNeighbourhoodModels(string sector, int id);
-        IList<SuburbModel> GetNeighbourhoodModels(int districtId, int municipalityId,int cityId);
+        IList<SuburbModel> GetNeighbourhoodModels(string sector, Guid id);
+        IList<SuburbModel> GetNeighbourhoodModels(Guid districtId, Guid municipalityId,Guid cityId);
 
-        IList<SuburbModel> GetSuburbsInProvince(int ProvinceId);
+        IList<SuburbModel> GetSuburbsInProvince(Guid ProvinceId);
 
 
-        IList<SuburbModel> GetSuburbInDistricts(int districtiD);
-     
-        IList<SuburbModel> GetSuburbsInCities(int cityID);
+        IList<SuburbModel> GetSuburbInDistricts(Guid districtiD);
 
-        IList<SuburbModel> GetSuburbs(IList<int> suburbs);
+        IList<SuburbModel> GetSuburbsInCities(Guid cityID);
+
+        IList<SuburbModel> GetSuburbs(IList<Guid> suburbs);
 
 
         public bool DeleteNeighbourhood(SuburbModel neighbourhood);

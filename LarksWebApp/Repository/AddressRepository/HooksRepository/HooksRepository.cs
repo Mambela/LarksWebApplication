@@ -34,7 +34,7 @@ namespace LarksWebApp.Repository.AddressRepository.HooksRepository
             return dbContext.HooksModel.Where(u => u.ApplicationUserId.Trim() == userId.Trim()).ToList();  
         }
 
-        public HooksModel GetHook(int id)
+        public HooksModel GetHook(Guid id)
         {
             return dbContext.HooksModel.FirstOrDefault(h => h.Id == id);
         }
@@ -52,7 +52,7 @@ namespace LarksWebApp.Repository.AddressRepository.HooksRepository
             return Save();
         }
 
-        public bool DeleteWebHook(int id)
+        public bool DeleteWebHook(Guid id)
         {
              dbContext.HooksModel.Remove(GetHook(id));
 

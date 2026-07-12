@@ -6,7 +6,7 @@ namespace LarksWebApp.Repository.AddressRepository.StreetRepository
     {
         Task  <bool> StoreStreetCoordinates(IList<StreetCoordinates> streetCoordinates);
 
-        IList<StreetCoordinates> GetStreetCoordinates(int streetId);
+        IList<StreetCoordinates> GetStreetCoordinates(Guid streetId);
 
 
 

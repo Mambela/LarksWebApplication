@@ -6,17 +6,17 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
     public interface IAddressRepository
     {
         bool AddressExists(string designation);
-        bool AddressExists(int AddressID);
+        bool AddressExists(Guid AddressID);
 
         Task<AddressModel> CreateAddress(AddressModel Address);
 
-        AddressModel GetAddress(int AddressId);
+        AddressModel GetAddress(Guid AddressId);
 
-        List<AddressModel> GetAddressesInStreets(int streetsId);
+        List<AddressModel> GetAddressesInStreets(Guid streetsId);
 
         List<AddressModel> GetAddressesNearLocation(double latitude, double longitude);
 
-        List<AddressModel> GetAddressesInSuburb(int neighbourhoodId);
+        List<AddressModel> GetAddressesInSuburb(Guid neighbourhoodId);
 
         
 

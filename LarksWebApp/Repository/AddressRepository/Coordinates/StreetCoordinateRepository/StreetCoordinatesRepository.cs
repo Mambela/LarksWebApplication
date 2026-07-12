@@ -20,7 +20,7 @@ namespace LarksWebApp.Repository.Coordinates.StreetCoordinateRepository
             return Save();
         }
 
-        public IList<StreetCoordinates> GetStreetCoordinates(int streetId)
+        public IList<StreetCoordinates> GetStreetCoordinates(Guid streetId)
         {
             return _dbContext.StreetCoordinates.Where(s => s.StreetId == streetId).ToList();
         }

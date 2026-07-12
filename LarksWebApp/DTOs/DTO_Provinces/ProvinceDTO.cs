@@ -6,10 +6,10 @@ namespace LarksWebApp.DTOs.DTO_Provinces
 {
     public class ProvinceDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Designation { get; set; }
 
-        public int CountryId { get; set; }
+        public Guid CountryId { get; set; }
 
         
 
@@ -21,12 +21,12 @@ namespace LarksWebApp.DTOs.DTO_Provinces
     }
 
 
-    public class ViewProvinceDTO 
+    public class ViewProvinceDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Designation { get; set; }
 
-        public int CountryId { get; set; }
+        public Guid CountryId { get; set; }
         public IList<MunicipalityDTO> Municipalities { get; set; }
         public IList<DistrictDTO> Districts { get; set; }
 

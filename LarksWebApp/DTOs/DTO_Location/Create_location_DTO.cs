@@ -7,21 +7,21 @@ namespace LarksWebApp.DTOs.DTO_Location
     public class Create_Location_DTO
     {
 
-        public int? Id { get; set; }
+        public Guid? Id { get; set; }
         [Required(ErrorMessage = "Please enter a designation for this location")]
         public string Designation { get; set; }
 
         public  List<CountryDTO>? Country { get; set; }
-        public int CountryId { get; set; }
+        public Guid CountryId { get; set; }
 
         public IList<CountryDTO>? ListofCountryDTO { get; set; }
 
-        public int MunicipalityID { get; set; }
+        public Guid MunicipalityID { get; set; }
 
-        public int SuburbId { get; set; }
-        public int CityId { get; set; }
+        public Guid SuburbId { get; set; }
+        public Guid CityId { get; set; }
 
-        public IList<int> SubCategories { get; set; }
+        public IList<Guid> SubCategories { get; set; }
 
         
         public List<IFormFile>? Files { get; set; }
@@ -31,28 +31,28 @@ namespace LarksWebApp.DTOs.DTO_Location
 
         
 
-        public int CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
 
         public IList<CategoryDTO>? ListOfCategories { get; set; }
 
         #region Hidden Values
-        public int searchCountryId_hidden { get; set; }
-        public int searchProvince_hidden { get; set; }
-        public int searchMunicipality_hidden { get; set; }
-        public int searchDistrict_hidden { get; set; }
-        public int searchNeighbourhood_hidden { get; set; }
-        public int searchStreet_hidden { get; set; }
+        public Guid searchCountryId_hidden { get; set; }
+        public Guid searchProvince_hidden { get; set; }
+        public Guid searchMunicipality_hidden { get; set; }
+        public Guid searchDistrict_hidden { get; set; }
+        public Guid searchNeighbourhood_hidden { get; set; }
+        public Guid searchStreet_hidden { get; set; }
 
 
-        
+
         [Required(ErrorMessage = "Please select an address for this location")]
-        public int searchAddress_hidden { get; set; }
+        public Guid searchAddress_hidden { get; set; }
 
         [Required(ErrorMessage = "Please add category for this location")]
-        public int searchCategoryId_hidden { get; set; }
+        public Guid searchCategoryId_hidden { get; set; }
 
         [Required(ErrorMessage = "Please select a subcategory")]
-        public int searchSubcategoryId_hidden { get; set; }
+        public Guid searchSubcategoryId_hidden { get; set; }
         #endregion
         public decimal Lat { get; set; }
 

@@ -27,7 +27,7 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet]
-        public IActionResult GetCountry(int id)
+        public IActionResult GetCountry(Guid id)
         {
 
             try

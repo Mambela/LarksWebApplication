@@ -34,7 +34,7 @@ namespace LarksWebApp.Repository.CountryRepository
             return result;
         }
 
-        public bool CountryExists(int countryID)
+        public bool CountryExists(Guid countryID)
         {
             return _dbContext.Countries.Any(c => c.Id == countryID);
         }
@@ -68,12 +68,12 @@ namespace LarksWebApp.Repository.CountryRepository
             return _dbContext.Countries.OrderBy(c =>c.Designation).ToList();
         }
 
-        public IList<CountryModel> GetCountries(int countryID)
+        public IList<CountryModel> GetCountries(Guid countryID)
         {
             return _dbContext.Countries.Include(p => p.Provinces).Where(c => c.Id == countryID).ToList();
         }
 
-        public CountryModel GetCountry(int countryId)
+        public CountryModel GetCountry(Guid countryId)
         {
            return _dbContext.Countries
                 .Include(p => p.Provinces).ThenInclude(c =>c.Cities)

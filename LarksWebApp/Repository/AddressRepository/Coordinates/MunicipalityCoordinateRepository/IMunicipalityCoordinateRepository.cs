@@ -7,7 +7,7 @@ namespace LarksWebApp.Repository.Coordinates.MunicipalityCoordinateRepository
 
         Task<bool> CreateMunicipalityCoordinates(IList<MunicipalityCoordinates> listMunicipalityCoordinates);
 
-        IList<MunicipalityCoordinates> GetMunicipalityCoordinates(int municipalityId);
+        IList<MunicipalityCoordinates> GetMunicipalityCoordinates(Guid municipalityId);
 
         bool UpdateCoordiantes(MunicipalityCoordinates municipalityList);
 

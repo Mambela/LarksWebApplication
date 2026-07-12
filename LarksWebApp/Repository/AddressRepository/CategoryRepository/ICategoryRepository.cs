@@ -8,9 +8,9 @@ namespace LarksWebApp.Repository.CategoryRepository
         public Task<CategoryModel> CreateCategory(CategoryModel category);
 
         public bool CategoryExists(string designation);
-        public bool CategoryExists(int categoryId);
+        public bool CategoryExists(Guid categoryId);
 
-        public CategoryModel GetCategoryById(int id);
+        public CategoryModel GetCategoryById(Guid id);
 
         public IList<CategoryModel> GetAllCategories(string lang=null);
 

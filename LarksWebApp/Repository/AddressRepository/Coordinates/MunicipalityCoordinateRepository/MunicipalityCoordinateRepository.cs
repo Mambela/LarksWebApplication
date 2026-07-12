@@ -19,7 +19,7 @@ namespace LarksWebApp.Repository.Coordinates.MunicipalityCoordinateRepository
             return Save();
         }
 
-        public IList<MunicipalityCoordinates> GetMunicipalityCoordinates(int municipalityId)
+        public IList<MunicipalityCoordinates> GetMunicipalityCoordinates(Guid municipalityId)
         {
             return _dbContext.MunicipalityCoordinates.Where(M => M.MunicipalityID == municipalityId).ToList();
         }

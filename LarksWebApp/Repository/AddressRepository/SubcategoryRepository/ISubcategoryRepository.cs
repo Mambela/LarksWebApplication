@@ -11,13 +11,13 @@ namespace LarksWebApp.Repository.SubcategoryRepository
         public Task<SubcategoryModel> CreateSubCategory(SubcategoryModel subcategory);
 
         public bool SubCategoryExists(string subcategory);
-        public bool SubCategoryExists(int subcategoryId);
+        public bool SubCategoryExists(Guid subcategoryId);
 
-        public IList<SubcategoryModel> GetSubcategories(List<int> listCategoryIds);
+        public IList<SubcategoryModel> GetSubcategories(List<Guid> listCategoryIds);
 
-        public IList<SubcategoryModel> GetSubcategoriesInCategory(int categoryId);
+        public IList<SubcategoryModel> GetSubcategoriesInCategory(Guid categoryId);
 
-        public SubcategoryModel GetSubcateogryById(int id);
+        public SubcategoryModel GetSubcateogryById(Guid id);
 
         public IList<SubcategoryModel> GetAllSubCategories(string lang);
 

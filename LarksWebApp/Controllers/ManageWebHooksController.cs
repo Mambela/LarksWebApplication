@@ -58,7 +58,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: ManageWebHooksController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(Guid id)
         {
             try
             {
@@ -145,7 +145,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: ManageWebHooksController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(Guid id)
         {
             try
             {
@@ -170,7 +170,7 @@ namespace LarksWebApp.Controllers
         // POST: ManageWebHooksController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
@@ -227,7 +227,7 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: ManageWebHooksController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(Guid id)
         {
             try
             {
@@ -252,7 +252,7 @@ namespace LarksWebApp.Controllers
         // POST: ManageWebHooksController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {

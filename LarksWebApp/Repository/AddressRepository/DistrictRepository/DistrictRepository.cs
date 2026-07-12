@@ -29,12 +29,12 @@ namespace LarksWebApp.Repository.DistrictRepository
             return Save();
         }
 
-        public DistrictModel GetDistrictModel(int DistrictId)
+        public DistrictModel GetDistrictModel(Guid DistrictId)
         {
             return _dbContext.Districts.FirstOrDefault(d => d.Id == DistrictId);
         }
 
-        public List<DistrictModel> GetDistrictModels(int provinceId)
+        public List<DistrictModel> GetDistrictModels(Guid provinceId)
         {
 
             return _dbContext.Districts.Where(d => d.ProvinceId == provinceId).ToList();
@@ -53,12 +53,12 @@ namespace LarksWebApp.Repository.DistrictRepository
             return Save();
         }
 
-        public DistrictModel VerifyDistrictExist(string designation, int provinceID)
+        public DistrictModel VerifyDistrictExist(string designation, Guid provinceID)
         {
             return _dbContext.Districts.FirstOrDefault(d => d.Designation.Trim().ToLower() == designation.Trim().ToLower() && d.ProvinceId == provinceID);
         }
 
-        public bool VerifyDistrictExist(int Id)
+        public bool VerifyDistrictExist(Guid Id)
         {
             return _dbContext.Districts.Any(d => d.Id == Id);
         }

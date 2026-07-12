@@ -107,7 +107,7 @@ namespace LarksWebApp.Controllers.API
 
         
         [HttpPatch]
-        public IActionResult UpdateCategory([FromBody] CreateCategoryDTO categoryDTO, int categoryId)
+        public IActionResult UpdateCategory([FromBody] CreateCategoryDTO categoryDTO, Guid categoryId)
         {
 
             try
@@ -142,7 +142,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpDelete]
-        public IActionResult DeleteCountry(int categoryId)
+        public IActionResult DeleteCountry(Guid categoryId)
         {
 
             try

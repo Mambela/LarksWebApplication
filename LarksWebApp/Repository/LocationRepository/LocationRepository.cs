@@ -2,9 +2,7 @@
 using LarksWebApp.DAL;
 using LarksWebApp.DTOs.PaginationDTO;
 using LarksWebApp.Models;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using MySqlConnector;
 using NuGet.Protocol;
 
 namespace LarksWebApp.Repository.LocationRepository
@@ -31,7 +29,7 @@ namespace LarksWebApp.Repository.LocationRepository
             return null;
         }
 
-        public IList<LocationModel> GetCategoryLocations(int CategoryId, PaginationFilter filter)
+        public IList<LocationModel> GetCategoryLocations(Guid CategoryId, PaginationFilter filter)
         {
 
             var sql = "SELECT * FROM (SELECT *, (((acos(sin(( 0 * pi() / 180)) * sin(( `Lat` * pi() / 180)) + cos(( 0 * pi() /180 )) * cos(( `Lat` * pi() / 180)) * cos((( 0 - `Lng`) * pi()/180))) ) * 180/pi()) * 60 * 1.1515 * 1.609344) as distance FROM `Location` ) Location WHERE distance >=0 ";
@@ -49,7 +47,7 @@ namespace LarksWebApp.Repository.LocationRepository
             
         }
 
-        public LocationModel GetLocation(int LocationId)
+        public LocationModel GetLocation(Guid LocationId)
         {
             return _dbContext.Location
                 .Include(c =>c.Category)
@@ -63,7 +61,7 @@ namespace LarksWebApp.Repository.LocationRepository
                 .FirstOrDefault(c => c.Id == LocationId);
         }
 
-        public IList<LocationModel> GetSuburbLocations(int suburbId, PaginationFilter filter)
+        public IList<LocationModel> GetSuburbLocations(Guid suburbId, PaginationFilter filter)
         {
             return _dbContext.Location
                         .Include(c =>c.Category)
@@ -78,7 +76,7 @@ namespace LarksWebApp.Repository.LocationRepository
                         .ToList();
         }
 
-        public IList<LocationModel> GetSubcategoryLocations(int SubcategoryId)
+        public IList<LocationModel> GetSubcategoryLocations(Guid SubcategoryId)
         {
             //return _dbContext.Location.Where(s => s.SubcategoryId == SubcategoryId)
             //    .Include(s => s.Subcategory)
@@ -97,7 +95,7 @@ namespace LarksWebApp.Repository.LocationRepository
             return null;
         }
 
-        public async Task<IList<LocationImageModel>> GetLocationImageModels(int locationId)
+        public async Task<IList<LocationImageModel>> GetLocationImageModels(Guid locationId)
         {
             return await _dbContext.LocationImage.Where(l => l.LocationId == locationId).ToListAsync();
         }
@@ -151,7 +149,7 @@ namespace LarksWebApp.Repository.LocationRepository
                        
         }
 
-        public int LocationCount(decimal lat, decimal lng, double distance, PaginationFilter filter, string searchType,int categoryId =0)
+        public int LocationCount(decimal lat, decimal lng, double distance, PaginationFilter filter, string searchType,Guid? categoryId =null)
         {
             switch (searchType.ToUpper())
             {
@@ -167,7 +165,7 @@ namespace LarksWebApp.Repository.LocationRepository
 
         }
 
-        public int CountLocations(decimal lat, decimal lng, double distance, int categoryId = 0)
+        public int CountLocations(decimal lat, decimal lng, double distance, Guid? categoryId = null)
         {
             string sqlLocation = string.Format("SELECT * FROM (" +
                 "SELECT *, " +
@@ -180,7 +178,7 @@ namespace LarksWebApp.Repository.LocationRepository
                 "WHERE distance <= {2} ", lat, lng, distance);
 
 
-            if (categoryId != 0)
+            if (categoryId != null)
             {
 
                 return _dbContext.Location
@@ -207,7 +205,7 @@ namespace LarksWebApp.Repository.LocationRepository
 
         
 
-        public IList<LocationModel> LocationCategoryByDistance(decimal lat, decimal lng, double distance, PaginationFilter pagination, int categoryId)
+        public IList<LocationModel> LocationCategoryByDistance(decimal lat, decimal lng, double distance, PaginationFilter pagination, Guid categoryId)
         {
             string sqlLocation = string.Format("SELECT * FROM (" +
               "SELECT *, " +
@@ -235,7 +233,7 @@ namespace LarksWebApp.Repository.LocationRepository
                 .ToList();
         }
 
-        public IList<LocationModel> GetLocationsInCity(int CityId, PaginationFilter filter)
+        public IList<LocationModel> GetLocationsInCity(Guid CityId, PaginationFilter filter)
         {
 
             //GetLocationsInCity
@@ -256,7 +254,7 @@ namespace LarksWebApp.Repository.LocationRepository
                       .ToList();
         }
 
-        public IList<LocationModel> GetLocationsInMunicipality(int municipalityId, PaginationFilter filter)
+        public IList<LocationModel> GetLocationsInMunicipality(Guid municipalityId, PaginationFilter filter)
         {
             var sqlRaw = string.Format("SELECT * FROM (SELECT *, (((acos(sin(( 0 * pi() / 180)) * sin(( `Lat` * pi() / 180)) + cos(( 0 * pi() /180 )) * cos(( `Lat` * pi() / 180)) * cos((( 0 - `Lng`) * pi()/180))) ) * 180/pi()) * 60 * 1.1515 * 1.609344) as distance FROM `Location` ) Location WHERE distance >=0 ");
 
@@ -275,7 +273,7 @@ namespace LarksWebApp.Repository.LocationRepository
                        .ToList();
         }
 
-        public int CountLocationByAttribute(string attribute, int attributeId=0,string searchParam=null)
+        public int CountLocationByAttribute(string attribute, Guid? attributeId=null,string searchParam=null)
         {
 
             var filter = new PaginationFilter();
@@ -326,7 +324,7 @@ namespace LarksWebApp.Repository.LocationRepository
 
  
 
-        public IList<LocationModel> GetLocationUsingStoreProc(string countryName, string? searchParam, int? categoryId, int? suburbId, int? cityId, int? municipalityId, int pageSize = 10, int skip = 0)
+        public IList<LocationModel> GetLocationUsingStoreProc(string countryName, string? searchParam, Guid? categoryId, Guid? suburbId, Guid? cityId, Guid? municipalityId, int pageSize = 10, int skip = 0)
         {
             return _dbContext.Location
                 .Include(c => c.City)
@@ -346,7 +344,7 @@ namespace LarksWebApp.Repository.LocationRepository
                 .ToList();
         }
 
-        public IList<LocationModel> GetLocationList(IList<int> idList, PaginationFilter filter)
+        public IList<LocationModel> GetLocationList(IList<Guid> idList, PaginationFilter filter)
         {
             return _dbContext.Location
                 .Include(c => c.Category)

@@ -5,7 +5,7 @@ namespace LarksWebApp.DTOs.DTO_Addresses
 {
     public class HooksDTO :IdentityBaseEntity
     {
-        public int? Id { get; set; }
+        public Guid? Id { get; set; }
 
         public string Designation { get; set; }
 

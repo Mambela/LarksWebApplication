@@ -51,24 +51,18 @@ builder.Services.AddAutoMapper(typeof(EntityMapping));
 
 ConfigureServices(builder.Services);
 ConfigurationManager Configuration = builder.Configuration;
- 
+
 //trying to setup email 
  
-
-
 //Prepare the Connection String
-//var connectionString = builder.Configuration.GetConnectionString("DEV_ENV_DOCKER");
-var connectionString = builder.Configuration.GetConnectionString("UAT_CONN");
- 
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 33));
- 
+var connectionString = builder.Configuration.GetConnectionString("DEV_ENV_DOCKER");
+
 
 builder.Services.AddDbContext<LarksContext>(options =>
 {
     //options.UseSqlServer(connectionString);
-    options.UseMySql(connectionString, serverVersion).LogTo(Console.WriteLine, LogLevel.Information)
-        .EnableSensitiveDataLogging()
-        .EnableDetailedErrors();
+    options.UseNpgsql(connectionString);
+    
 });
 
 //builder.Services.AddDefaultIdentity<ApplicationIdentity>(options => options.SignIn.RequireConfirmedAccount = true)

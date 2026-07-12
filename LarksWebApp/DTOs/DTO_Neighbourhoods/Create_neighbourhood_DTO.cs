@@ -8,10 +8,10 @@ namespace LarksWebApp.DTOs.DTO_Neighbourhoods
     public class Create_suburb_DTO
     {
 
-        public int Id { get; set; }
-        public int MunicipalityId { get; set; }
-        public int? CityId { get; set; }
-        public int? DistrictId { get; set; }
+        public Guid Id { get; set; }
+        public Guid MunicipalityId { get; set; }
+        public Guid? CityId { get; set; }
+        public Guid? DistrictId { get; set; }
         public string Designation { get; set; }
 
         public List<DistrictDTO> Districts { get; set; }

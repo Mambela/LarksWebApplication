@@ -2,10 +2,10 @@
 {
     public class Create_Province_DTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Designation { get; set; }
 
-        public int CountryId { get; set; }
+        public Guid CountryId { get; set; }
 
         public IList<BaseCoordinatesDTO>? Points { get; set; }
 

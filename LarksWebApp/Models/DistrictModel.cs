@@ -6,7 +6,7 @@ namespace LarksWebApp.Models
     {
         public ProvinceModel Province { get; set; }
 
-        public int ProvinceId { get; set; }
+        public Guid ProvinceId { get; set; }
 
     }
 }
