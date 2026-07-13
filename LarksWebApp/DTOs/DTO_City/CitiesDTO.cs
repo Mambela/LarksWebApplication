@@ -4,9 +4,10 @@
     {
         public Guid ProvinceId { get; set; }
         public Guid Id { get; set; }
-       
+
         public string Designation { get; set; }
 
+        public string ProvinceName { get; set; }
 
     }
 }

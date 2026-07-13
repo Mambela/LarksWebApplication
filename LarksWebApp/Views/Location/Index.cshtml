@@ -1,77 +1,89 @@
-﻿
+
 @*@model IList<LarksWebApp.DTOs.CountryDTO>*@
 @model LarksWebApp.DTOs.DTO_Location.Create_Location_DTO
 
 
 @{
     ViewData["Title"] = "Location Page";
+    var countryCount = Model.ListofCountryDTO?.Count ?? 0;
+    var categoryCount = Model.ListOfCategories?.Count ?? 0;
 }
 
+<div class="app-breadcrumb">Larks &gt; <span class="current">Location</span></div>
+<h3 class="mb-4">Location</h3>
 
-<h3>Create a new Location</h3>
-<div class="col-md-8">
-
-    <div class="row">
-        <div class="col-xs-6 col-md-4 align-self-end">
-            @Html.ActionLink("Create New Location","Create")
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+    <div class="row g-3 flex-grow-1">
+        <div class="col-6 col-md-3">
+            <div class="stat-tile">
+                <div class="stat-tile__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+                </div>
+                <div>
+                    <div class="stat-tile__value">@countryCount</div>
+                    <div class="stat-tile__label">Countries</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-tile">
+                <div class="stat-tile__icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                </div>
+                <div>
+                    <div class="stat-tile__value">@categoryCount</div>
+                    <div class="stat-tile__label">Categories</div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <a class="btn btn-primary" href="@Url.Action("Create","Location")">+ Create New Location</a>
 </div>
 
-
-<div class="row mb-3">
-
-    <div class="col-md-3">
-        <div class="col-md-12">
-            @Html.Label("Country","Country ", new { htmlAttributes = new { @class = "form-control" } })
-            @Html.DropDownListFor(m=>m.CountryId,new SelectList(Model.ListofCountryDTO,"Id","Designation"),"Select Country",new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="col-md-12">
-            @Html.Label("Province","Province ", new { htmlAttributes = new { @class = "form-control" } })
-            @Html.DropDownList("street_ProvinceId",Enumerable.Empty<SelectListItem>(),"Select Province",new { @class = "form-control" })
-
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="col-md-12">
-            @Html.Label("Municipality","Municipality ", new { htmlAttributes = new { @class = "form-control" } })
-            @Html.DropDownList("street_MunicipalityId",Enumerable.Empty<SelectListItem>(),"Select Municipality",new { @class = "form-control" })
-
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="col-md-12">
-            @Html.Label("Neighbourhood","Neighbourhood", new { htmlAttributes = new { @class = "form-control" } })
-            @Html.DropDownList("street_hoodId",Enumerable.Empty<SelectListItem>(),"Select Neighbourhood",new { @class = "form-control" })
-
+<div class="app-card mb-4">
+    <div class="app-card__body">
+        <div class="row g-3">
+            <div class="col-md-3">
+                @Html.Label("Country","Country ", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownListFor(m=>m.CountryId,new SelectList(Model.ListofCountryDTO,"Id","Designation"),"Select Country",new { @class = "form-control" })
+            </div>
+            <div class="col-md-3">
+                @Html.Label("Province","Province ", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownList("street_ProvinceId",Enumerable.Empty<SelectListItem>(),"Select Province",new { @class = "form-control" })
+            </div>
+            <div class="col-md-3">
+                @Html.Label("Municipality","Municipality ", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownList("street_MunicipalityId",Enumerable.Empty<SelectListItem>(),"Select Municipality",new { @class = "form-control" })
+            </div>
+            <div class="col-md-3">
+                @Html.Label("Neighbourhood","Neighbourhood", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.DropDownList("street_hoodId",Enumerable.Empty<SelectListItem>(),"Select Neighbourhood",new { @class = "form-control" })
+            </div>
         </div>
     </div>
 </div>
 
-
-
-<div class="col-md-12 mt-5">
-    <table id="locationTable" class="table table-striped table-bordered dt-responsive nowrap">
-        <thead>
-            <tr>
-                
-                <th>ID</th>
-                <th>Designation</th>
-                <th>Category</th>
-                <th>Subcategory</th>
-                <th>Street</th>
-                <th>Additional Information</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-    </table>
+<div class="app-card">
+    <div class="app-card__header">
+        <strong>Location List</strong>
+    </div>
+    <div class="app-card__body">
+        <table id="locationTable" class="table table-modern dt-responsive nowrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Designation</th>
+                    <th>Category</th>
+                    <th>Subcategory</th>
+                    <th>Street</th>
+                    <th>Additional Information</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
 </div>
-
-
 
 
 @section Scripts
@@ -81,4 +93,3 @@
     <script src="~/js/Locations.js" asp-append-version="true"></script>
 
 }
-

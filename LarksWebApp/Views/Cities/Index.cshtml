@@ -1,35 +1,43 @@
-﻿@model List<LarksWebApp.DTOs.DTO_City.CitiesDTO>
+@model List<LarksWebApp.DTOs.DTO_City.CitiesDTO>
 @{
-    ViewData["Title"] = "Cities Page";
+    ViewData["Title"] = "Cities";
+    var provinceId = (Guid)ViewData["provinceId"];
+    var isScoped = provinceId != Guid.Empty;
 }
 
-<div class="text-center">
-    <h4 class="display-4">List of Cities</h4>
+<div class="app-breadcrumb">Larks &gt; <span class="current">Cities</span></div>
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <h3 class="mb-0">Cities</h3>
+    <a class="btn btn-primary" href="@Url.Action("Create","Cities",new{provinceId})">+ Create New City</a>
 </div>
 
-<div class="row">
-    <div class="col-xs-6 col-md-4 align-self-end">
-        @Html.ActionLink("Create New","Create")
+<div class="app-card">
+    <div class="app-card__body">
+        <table class="table table-modern">
+            <thead>
+                <tr>
+                    <th scope="col">City</th>
+                    @if (!isScoped)
+                    {
+                        <th scope="col">Province</th>
+                    }
+                    <th scope="col">Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var city in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => city.Designation)</td>
+                        @if (!isScoped)
+                        {
+                            <td>@city.ProvinceName</td>
+                        }
+                        <td>@Html.ActionLink("Details", "Details", new { id = city.Id })</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-</div>
-
-
-<div class="col-md-8">
-
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Name of City</th>
-          <th scope="col">View More</th>
-        </tr>
-      </thead>
-      <tbody>
-         @foreach(var city in Model){
-            <tr>
-              <td>@Html.DisplayFor(modelItem => city.Designation)</td>
-              <td>@Html.ActionLink("Details","Details",new {id=city.Id})</td>
-            </tr>
-        }         
-      </tbody>
-    </table>
 </div>

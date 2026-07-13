@@ -1,0 +1,7 @@
+2026-07-13 17:43:34.625 +02:00 [ERR] Create neighbourhood Invalid Model State
+2026-07-13 17:53:02.374 +02:00 [ERR] Create a new Neighbourhood Unrecognized Guid format.
+2026-07-13 17:54:35.991 +02:00 [ERR] Create a new Neighbourhood Unrecognized Guid format.
+2026-07-13 18:16:56.198 +02:00 [ERR] Create a new Neighbourhood Unrecognized Guid format.
+2026-07-13 18:21:02.052 +02:00 [ERR] Create a new Neighbourhood Value cannot be null. (Parameter 'input')
+2026-07-13 18:21:13.284 +02:00 [ERR] Create a new Neighbourhood Value cannot be null. (Parameter 'input')
+2026-07-13 18:25:10.479 +02:00 [ERR] Create a new Neighbourhood Unrecognized Guid format.

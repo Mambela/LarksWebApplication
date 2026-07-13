@@ -1,5 +1,6 @@
 ﻿using LarksWebApp.DAL;
 using LarksWebApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LarksWebApp.Repository.MunicipalityRepository
 {
@@ -44,6 +45,11 @@ namespace LarksWebApp.Repository.MunicipalityRepository
         public IList<MunicipalityModel> GetMunicipalityModels(Guid ProvinceId)
         {
             return _dbContext.Municipalities.Where(p => p.ProvinceId == ProvinceId).ToList();
+        }
+
+        public IList<MunicipalityModel> GetAllMunicipalities()
+        {
+            return _dbContext.Municipalities.Include(m => m.Province).ToList();
         }
 
         public bool Save()

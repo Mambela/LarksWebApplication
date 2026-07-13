@@ -1,30 +1,34 @@
-﻿@using LarksWebApp.DTOs.DTO_City
+@using LarksWebApp.DTOs.DTO_City
 
 @model Create_City_DTO
 
 @{
-       ViewData["Title"] = "Create City";
+    ViewData["Title"] = "Create City";
 }
 
-<h3>Create a new province</h3>
+<div class="app-breadcrumb">Larks &gt; <span class="current">Create City</span></div>
+<h3 class="mb-4">Create a new city</h3>
 
+<div class="col-md-6">
+    <div class="app-card">
+        <div class="app-card__body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label>Province</label>
+                    @Html.DropDownList("provinceId", (SelectList)ViewData["provinces"], "Select Province", new { @class = "form-control" })
+                </div>
 
-<div class="col-md-8">
-@using(Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    <div class="form-group">
-       @Html.LabelFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
-       <div class="col-md-10">
-            @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
-       </div>
+                <div class="form-group mt-2">
+                    @Html.LabelFor(model => model.Designation)
+                    @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+
+                <div class="form-group mt-3">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            }
+        </div>
     </div>
-
-    <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-    </div>
-        
-}
 </div>

@@ -16,6 +16,8 @@ namespace LarksWebApp.Repository.ProviceRepository
         List<ProvinceModel> GetProvincesInCountry(Guid countryId);
         List<ProvinceModel> GetProvincesInCountry(string countryName);
 
+        List<ProvinceModel> GetAllProvinces();
+
         public bool DeleteProvince(ProvinceModel Province);
 
 

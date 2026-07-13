@@ -17,6 +17,8 @@ namespace LarksWebApp.Repository.CityRepository
 
         IList<CityModel> GetAllCitiesInCountry(Guid countryId);
 
+        IList<CityModel> GetAllCities();
+
         CityModel CityExists(Guid ProvinceId, string designation);
 
         bool CityExists(Guid cityId);

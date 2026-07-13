@@ -52,12 +52,20 @@ namespace LarksWebApp.Repository.HoodRepository
 
         public IList<SuburbModel> GetNeighbourhoodInMunicipality(Guid municipalityId)
         {
-            return _dbContext.Suburb.Where(p =>p.MunicipalityId == municipalityId).ToList();
+            return _dbContext.Suburb
+                .Include(s => s.City)
+                .Include(s => s.District)
+                .Include(s => s.Municipality).ThenInclude(m => m.Province)
+                .Where(p =>p.MunicipalityId == municipalityId).ToList();
         }
 
         public IList<SuburbModel> GetNeighbourhoodModels()
         {
-            return _dbContext.Suburb.ToList();
+            return _dbContext.Suburb
+                .Include(s => s.City)
+                .Include(s => s.District)
+                .Include(s => s.Municipality).ThenInclude(m => m.Province)
+                .ToList();
 
         }
 

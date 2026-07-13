@@ -1,12 +1,16 @@
 ﻿ using AutoMapper;
 using LarksWebApp.DTOs.DTO_Municipalities;
+using LarksWebApp.DTOs.DTO_Provinces;
 using LarksWebApp.Models;
 using LarksWebApp.Repository.CityRepository;
+using LarksWebApp.Repository.HoodRepository;
 using LarksWebApp.Repository.MunicipalityRepository;
+using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LarksWebApp.Controllers
 {
@@ -15,11 +19,16 @@ namespace LarksWebApp.Controllers
     public class MunicipalitiesController : Controller
     {
         private readonly IMunicipalityRepository _municipalityRepo;
+        private readonly IProvinceRepository _provinceRepository;
+        private readonly ISuburbRepository _suburbRepository;
         private readonly IMapper _mapper;
         private readonly ILoggerTrace serviceLogger;
-        public MunicipalitiesController(IMunicipalityRepository municipalityRepo, IMapper mapper, ILoggerTrace serviceLogger)
+        public MunicipalitiesController(IMunicipalityRepository municipalityRepo, IMapper mapper, ILoggerTrace serviceLogger,
+            IProvinceRepository provinceRepository, ISuburbRepository suburbRepository)
         {
             _municipalityRepo = municipalityRepo;
+            _provinceRepository = provinceRepository;
+            _suburbRepository = suburbRepository;
             _mapper = mapper;
             this.serviceLogger = serviceLogger;
         }
@@ -27,27 +36,40 @@ namespace LarksWebApp.Controllers
 
 
         // GET: MunicipalitiesController
-        public ActionResult Index(Guid provinceId)
+        public ActionResult Index(Guid? provinceId)
         {
 
             try
             {
-                var municitypalitiesListObj = _municipalityRepo.GetMunicipalityModels(provinceId);
-
                 var municipalityListDTO = new List<MunicipalityDTO>();
 
-                for (int i = 0; i < municitypalitiesListObj.Count; i++)
+                if (provinceId.HasValue && provinceId.Value != Guid.Empty)
                 {
-                    municipalityListDTO.Add(_mapper.Map<MunicipalityDTO>(municitypalitiesListObj[i]));
+                    var municitypalitiesListObj = _municipalityRepo.GetMunicipalityModels(provinceId.Value);
+
+                    for (int i = 0; i < municitypalitiesListObj.Count; i++)
+                    {
+                        municipalityListDTO.Add(_mapper.Map<MunicipalityDTO>(municitypalitiesListObj[i]));
+                    }
+
+                    TempData["provinceID"] = provinceId.Value;
+                }
+                else
+                {
+                    var allMunicipalities = _municipalityRepo.GetAllMunicipalities();
+
+                    foreach (var municipality in allMunicipalities)
+                    {
+                        var dto = _mapper.Map<MunicipalityDTO>(municipality);
+                        dto.ProvinceName = municipality.Province?.Designation;
+                        municipalityListDTO.Add(dto);
+                    }
                 }
 
                 var municipalityObj = new ViewMunicipalityCreateDTO();
-                
-                municipalityObj.ProviceId = provinceId;
+
+                municipalityObj.ProviceId = provinceId ?? Guid.Empty;
                 municipalityObj.MunicipalityDTO = municipalityListDTO;
-
-
-                TempData["provinceID"] = provinceId;
 
                 return View(municipalityObj);
             }
@@ -58,7 +80,6 @@ namespace LarksWebApp.Controllers
                 serviceLogger.LogError(ex.Message);
                 throw;
             }
-            return View();
         }
 
         // GET: MunicipalitiesController/Details/5
@@ -71,11 +92,10 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: MunicipalitiesController/Create
-        public ActionResult Create(Guid provinceId)
+        public ActionResult Create(Guid? provinceId)
         {
-            //Try Retrieving the Province ID FROM HERE. 
-
-            ViewData["provinceId"] = provinceId;
+            ViewData["provinceId"] = provinceId ?? Guid.Empty;
+            ViewData["provinces"] = new SelectList(_provinceRepository.GetAllProvinces(), "Id", "Designation", provinceId);
 
             return View();
         }
@@ -83,7 +103,7 @@ namespace LarksWebApp.Controllers
         // POST: MunicipalitiesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(IFormCollection collection)
         {
             try
             {
@@ -93,20 +113,17 @@ namespace LarksWebApp.Controllers
                     throw new Exception("Invalid Model State");
                 }
 
-
-               
+                var provinceId = Guid.Parse(collection["provinceId"]);
 
                 var municipality = new MunicipalityModel()
                 {
-                    ProvinceId = Guid.Parse(collection["provinceId"]),
+                    ProvinceId = provinceId,
                     Designation = collection["Designation"]
                 };
 
-                if (_municipalityRepo.CreateMunicipalityModel(municipality) != null)
+                if (await _municipalityRepo.CreateMunicipalityModel(municipality) != null)
                 {
-
-                    return RedirectToAction(nameof(Index), "Municipalities", new {provinceId= Guid.Parse(collection["provinceId"])});
-                    //return RedirectToRoute("Municipalities?provinceId=" + Guid.Parse(collection["provinceId"]));
+                    return RedirectToAction(nameof(Index), "Municipalities", new { provinceId });
                 }
 
 
@@ -118,6 +135,59 @@ namespace LarksWebApp.Controllers
                 serviceLogger.LogError(ex.Message);
                 return View();
             }
+        }
+
+        // GET: MunicipalitiesController/CreateNeighbourhood
+        public ActionResult CreateNeighbourhood(Guid provinceId)
+        {
+            try
+            {
+                var provinceObj = _provinceRepository.GetProvinceModel(provinceId);
+
+                if (provinceObj == null)
+                {
+                    return RedirectToAction(nameof(Index), new { provinceId });
+                }
+
+                var provinceDTO = _mapper.Map<ProvinceDTO>(provinceObj);
+
+                return View(provinceDTO);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Create neighbourhood " + ex.Message);
+                return RedirectToAction(nameof(Index), new { provinceId });
+            }
+        }
+
+        // POST: MunicipalitiesController/CreateNeighbourhood
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateNeighbourhood(Guid provinceId, Guid cityId, Guid districtId, Guid municipalityId, string designation)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    throw new Exception("Invalid Model State");
+                }
+
+                var neighbourhood = new SuburbModel()
+                {
+                    CityId = cityId,
+                    DistrictId = districtId,
+                    MunicipalityId = municipalityId,
+                    Designation = designation
+                };
+
+                await _suburbRepository.CreateSuburb(neighbourhood);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Create neighbourhood " + ex.Message);
+            }
+
+            return RedirectToAction(nameof(Index), new { provinceId });
         }
 
         // GET: MunicipalitiesController/Edit/5

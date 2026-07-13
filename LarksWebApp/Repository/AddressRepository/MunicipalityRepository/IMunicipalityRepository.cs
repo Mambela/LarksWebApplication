@@ -16,6 +16,8 @@ namespace LarksWebApp.Repository.MunicipalityRepository
 
         IList<MunicipalityModel> GetMunicipalityModels(Guid ProvinceId);
 
+        IList<MunicipalityModel> GetAllMunicipalities();
+
         public bool DeleteMunicipality(MunicipalityModel municipality);
 
 

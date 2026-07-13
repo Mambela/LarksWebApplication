@@ -1,35 +1,34 @@
-﻿ @using LarksWebApp.DTOs.DTO_Municipalities
+ @using LarksWebApp.DTOs.DTO_Municipalities
 
 @model Create_Municipality_DTO
 
 @{
-    ViewData["Title"] = "Create City";
-    var provinceId = ViewData["provinceId"];
+    ViewData["Title"] = "Create Municipality";
 }
 
-<h3>Create a new municipality</h3>
+<div class="app-breadcrumb">Larks &gt; <span class="current">Create Municipality</span></div>
+<h3 class="mb-4">Create a new municipality</h3>
 
+<div class="col-md-6">
+    <div class="app-card">
+        <div class="app-card__body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label>Province</label>
+                    @Html.DropDownList("provinceId", (SelectList)ViewData["provinces"], "Select Province", new { @class = "form-control" })
+                </div>
 
-<div class="col-md-8">
-@using(Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    <div class="form-group">
-             
-       @Html.LabelFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
-       <div class="col-md-10">
-            @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.Hidden("provinceId",new { id= "provinceId", Value = provinceId})
-       </div>
+                <div class="form-group mt-2">
+                    @Html.LabelFor(model => model.Designation)
+                    @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
+                </div>
+
+                <div class="form-group mt-3">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            }
+        </div>
     </div>
-
-    <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-    </div>
-        
-}
-
-
 </div>

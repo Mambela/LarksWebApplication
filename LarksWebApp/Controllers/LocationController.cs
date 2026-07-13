@@ -57,6 +57,7 @@ namespace LarksWebApp.Controllers
                 var createAdressDTO = new Create_Location_DTO();
 
                 createAdressDTO.ListofCountryDTO = listofCountryDTO;
+                createAdressDTO.ListOfCategories = listOfLocationsCategory;
 
                 return View(createAdressDTO);
             }

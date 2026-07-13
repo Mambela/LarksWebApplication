@@ -1,61 +1,62 @@
-﻿using AutoMapper;
-using LarksWebApp.DTOs.DTO_City;
+using AutoMapper;
 using LarksWebApp.DTOs.DTO_Neighbourhoods;
-using LarksWebApp.DTOs.DTO_Provinces;
 using LarksWebApp.Models;
+using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Repository.HoodRepository;
-using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Dynamic;
 
 namespace LarksWebApp.Controllers
 {
     [Authorize]
-    public class SuburbController : Controller
+    public class NeighbourhoodController : Controller
     {
         private readonly ISuburbRepository _hoodRepository;
-        private readonly IProvinceRepository _provinceRepository;
+        private readonly ICountryRepository _countryRepository;
         private readonly IMapper _mapper;
         private readonly ILoggerTrace serviceLogger;
 
 
-        public SuburbController(ISuburbRepository hoodRepository, IProvinceRepository provinceRepository, IMapper mapper, ILoggerTrace serviceLogger)
+        public NeighbourhoodController(ISuburbRepository hoodRepository, ICountryRepository countryRepository, IMapper mapper, ILoggerTrace serviceLogger)
         {
             _hoodRepository = hoodRepository;
-            _provinceRepository = provinceRepository;
+            _countryRepository = countryRepository;
             _mapper = mapper;
             this.serviceLogger = serviceLogger;
         }
 
 
         // GET: NeighbourhoodController
-        public ActionResult Index(Guid provinId)
+        public ActionResult Index(Guid? provinId)
         {
             try
             {
-                var NeighbourHoodObj = _hoodRepository.GetNeighbourhoodInMunicipality(provinId);
+                var neighbourhoodObjList = provinId.HasValue && provinId.Value != Guid.Empty
+                    ? _hoodRepository.GetNeighbourhoodInMunicipality(provinId.Value)
+                    : _hoodRepository.GetNeighbourhoodModels();
 
-                var NeighbourHoodDTOList = new List<SuburbDTO>();
+                var neighbourhoodDTOList = new List<SuburbDTO>();
 
-                for (int i = 0; i < NeighbourHoodObj.Count; i++)
+                foreach (var neighbourhood in neighbourhoodObjList)
                 {
-                    NeighbourHoodDTOList.Add(_mapper.Map<SuburbDTO>(NeighbourHoodObj[i]));
+                    var dto = _mapper.Map<SuburbDTO>(neighbourhood);
+                    dto.CityName = neighbourhood.City?.Designation;
+                    dto.DistrictName = neighbourhood.District?.Designation;
+                    dto.MunicipalityName = neighbourhood.Municipality?.Designation;
+                    dto.ProvinceName = neighbourhood.Municipality?.Province?.Designation;
+                    neighbourhoodDTOList.Add(dto);
                 }
 
-                return View(NeighbourHoodDTOList);
+                return View(neighbourhoodDTOList);
             }
             catch (Exception ex)
             {
                 serviceLogger.LogError(ex.Message);
-                return View();
-                
+                return View(new List<SuburbDTO>());
             }
-
-           
         }
 
         // GET: NeighbourhoodController/Details/5
@@ -67,43 +68,9 @@ namespace LarksWebApp.Controllers
         // GET: NeighbourhoodController/Create
         public ActionResult Create()
         {
+            ViewData["countries"] = new SelectList(_countryRepository.GetAll(), "Id", "Designation");
 
-            try
-            {
-                Guid provinceId = Guid.Empty;
-                if (TempData["provinceID"] == null)
-                {
-                    throw new Exception("There is a provice missing to query this neighbourhood");
-                }
-                else {
-                    provinceId = Guid.Parse(TempData["provinceID"].ToString());
-                }
-
-                var provinceObj = _provinceRepository.GetProvinceModel(provinceId);
-
-                if (provinceObj == null)
-                {
-
-                    return RedirectToAction(nameof(Index),"Country");
-                }
-
-                var createNeighbourhood = new Create_suburb_DTO();
-
-                var provinceDTO = _mapper.Map<ProvinceDTO>(provinceObj);
-
-                createNeighbourhood.provinceDTO = provinceDTO;
-
-                
-
-                return View(createNeighbourhood);
-
-            }
-            catch (Exception ex)
-            {
-                serviceLogger.LogError("Create neighborhood " + ex.Message);
-
-                return RedirectToAction(nameof(Index), "Country");
-            }
+            return View();
         }
 
         // POST: NeighbourhoodController/Create
@@ -113,7 +80,6 @@ namespace LarksWebApp.Controllers
         {
             try
             {
-
                 if (!ModelState.IsValid)
                 {
                     throw new Exception("Invalid Model State");
@@ -122,28 +88,36 @@ namespace LarksWebApp.Controllers
                 var neighbourhoodObj = new SuburbModel()
                 {
                     CityId = Guid.Parse(neighbourhood["newCityId"]),
-                    MunicipalityId = Guid.Parse(neighbourhood["newMunicipalityId"]),
-                    DistrictId = Guid.Parse(neighbourhood["newDistrictId"]),
-                    Designation =neighbourhood["Designation"]
+                    
+                    Designation = neighbourhood["Designation"]
                 };
 
 
-                if (await _hoodRepository.CreateSuburb(neighbourhoodObj) == null)
+                if(Guid.TryParse(neighbourhood["newMunicipalityId"], out Guid municipalityId))
                 {
-                    return RedirectToAction(nameof(Index), new { msg = $"Neighbourhood {neighbourhoodObj.Designation} saved successfully! " });
+                    neighbourhoodObj.MunicipalityId = municipalityId;
                 }
 
-                var countryId = TempData["countryID"].ToString();
+                if(Guid.TryParse(neighbourhood["newDistrictId"], out Guid districtId))
+                {
+                    neighbourhoodObj.DistrictId = districtId;
+                }
+                
+
+                /**
+                MunicipalityId = Guid.Parse(neighbourhood["newMunicipalityId"]),
+                    DistrictId = Guid.Parse(neighbourhood["newDistrictId"]),*/
 
 
-                return RedirectToAction(nameof(Index), new { msg = $"Neighbourhood  {neighbourhoodObj.Designation} saved successfully" });
- 
+
+                await _hoodRepository.CreateSuburb(neighbourhoodObj);
+
+                return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-
-                serviceLogger.LogError("Create a new Neighbourhood "+ex.Message);
-                return RedirectToAction(nameof(Index), "Country");
+                serviceLogger.LogError("Create a new Neighbourhood " + ex.Message);
+                return RedirectToAction(nameof(Create));
             }
         }
 

@@ -1,20 +1,39 @@
-﻿@{
-    ViewData["Title"] = "Neighbourhood Page";
+@model List<LarksWebApp.DTOs.DTO_Neighbourhoods.SuburbDTO>
+@{
+    ViewData["Title"] = "Neighbourhoods";
 }
 
-<div class="text-center">
-    <h4 class="display-4">List of Neighbourhoods</h4>
+<div class="app-breadcrumb">Larks &gt; <span class="current">Neighbourhoods</span></div>
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <h3 class="mb-0">Neighbourhoods</h3>
+    <a class="btn btn-primary" href="@Url.Action("Create","Neighbourhood")">+ Create New Neighbourhood</a>
 </div>
 
-<div class="row">
-      <div class="col-xs-6 col-md-4 align-self-end">
-        @Html.ActionLink("Create New Neighbourhood","Create","Neighbourhood")
+<div class="app-card">
+    <div class="app-card__body">
+        <table class="table table-modern">
+            <thead>
+                <tr>
+                    <th scope="col">Neighbourhood</th>
+                    <th scope="col">City</th>
+                    <th scope="col">District</th>
+                    <th scope="col">Municipality</th>
+                    <th scope="col">Province</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var neighbourhood in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => neighbourhood.Designation)</td>
+                        <td>@neighbourhood.CityName</td>
+                        <td>@neighbourhood.DistrictName</td>
+                        <td>@neighbourhood.MunicipalityName</td>
+                        <td>@neighbourhood.ProvinceName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-</div>
-
-
-<div class="col-md-8">
-
-
-
 </div>

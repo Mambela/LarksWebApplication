@@ -52,6 +52,11 @@ namespace LarksWebApp.Repository.CityRepository
             return _dbContext.Cities.Where(p => p.ProvinceId == provinceId).ToList();
         }
 
+        public IList<CityModel> GetAllCities()
+        {
+            return _dbContext.Cities.Include(c => c.Province).ToList();
+        }
+
         public CityModel GetCity(Guid id)
         {
             return _dbContext.Cities.Include(c => c.Neighbourhoods.Where(n => n.Id == id)).FirstOrDefault();

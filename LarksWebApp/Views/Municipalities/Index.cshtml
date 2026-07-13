@@ -1,47 +1,48 @@
-﻿@model LarksWebApp.DTOs.DTO_Municipalities.ViewMunicipalityCreateDTO
+@model LarksWebApp.DTOs.DTO_Municipalities.ViewMunicipalityCreateDTO
 @{
-    ViewData["Title"] = "Municipality Page";
-
+    ViewData["Title"] = "Municipalities";
+    var isScoped = Model.ProviceId != Guid.Empty;
 }
 
-<div class="text-center">
-    
-    <h4 class="display-4">List of Municipalities</h4>
-    
+<div class="app-breadcrumb">Larks &gt; <span class="current">Municipalities</span></div>
+
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <h3 class="mb-0">Municipalities</h3>
+    <div class="d-flex gap-2">
+        @if (isScoped)
+        {
+            <a class="btn btn-outline-soft" href="@Url.Action("CreateNeighbourhood","Municipalities",new{provinceId = Model.ProviceId})">+ Create New Neighbourhood</a>
+        }
+        <a class="btn btn-primary" href="@Url.Action("Create","Municipalities",new{provinceId = Model.ProviceId})">+ Create New Municipality</a>
+    </div>
 </div>
 
-<div class="row">
-    <div class="col-xs-6 col-md-4 align-self-end">
-       
-        @Html.ActionLink("Create New Municipality","Create",new{provinceId = Model.ProviceId})
-        @Html.Hidden("searchCountryId_hidden")
-        @Html.HiddenFor(model => model.ProviceId,
-        new { id= "natureOfVisitField", Value = @Model.ProviceId})
+<div class="app-card">
+    <div class="app-card__body">
+        <table class="table table-modern">
+            <thead>
+                <tr>
+                    <th scope="col">Municipality</th>
+                    @if (!isScoped)
+                    {
+                        <th scope="col">Province</th>
+                    }
+                    <th scope="col">Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var municipality in Model.MunicipalityDTO)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => municipality.Designation)</td>
+                        @if (!isScoped)
+                        {
+                            <td>@municipality.ProvinceName</td>
+                        }
+                        <td>@Html.ActionLink("Details", "Details", new { id = municipality.Id })</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-      <div class="col-xs-6 col-md-4 align-self-end">
-        @Html.ActionLink("Create New Neighbourhood","Create","Neighbourhood")
-    </div>
-    
-</div>
-
-
-<div class="col-md-8">
-
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Name of City</th>
-          <th scope="col">View More</th>
-        </tr>
-      </thead>
-      <tbody>
-         @foreach(var city in Model.MunicipalityDTO){
-            <tr>
-              <td>@Html.DisplayFor(modelItem => city.Designation)</td>
-              <td>@Html.ActionLink("Details","Details",new {id=city.Id})</td>
-
-            </tr>
-        }         
-      </tbody>
-    </table>
 </div>

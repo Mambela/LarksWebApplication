@@ -55,6 +55,11 @@ namespace LarksWebApp.Repository.ProviceRepository
             return _dbContext.Provinces.Where(p => p.Country.Designation.ToLower().Trim() == countryName.ToLower().Trim()).ToList();
         }
 
+        public List<ProvinceModel> GetAllProvinces()
+        {
+            return _dbContext.Provinces.Include(p => p.Country).ToList();
+        }
+
         public bool Save()
         {
             return _dbContext.SaveChanges() >=0; 

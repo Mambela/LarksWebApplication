@@ -1,72 +1,129 @@
-﻿@using LarksWebApp.DTOs.DTO_Neighbourhoods
-@using LarksWebApp.DTOs.DTO_Provinces
-
-
-
-@model Create_suburb_DTO
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
 @{
     ViewData["Title"] = "Create a Neighbourhood";
 }
-<div class="row">
-    <div class="col-md-4">
-        <div class="col-md-10">  
-                    @*ViewBag.CityList is holding all the cities values*@  
-                     @Html.LabelFor(model => model.Designation,"Select City ", new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.DropDownListFor(m => m.CityId,new SelectList(Model.provinceDTO.Cities,"Id","Designation"),"Select City",new { @class = "form-control" })
 
-            </div>
-    </div>
-     
-    <div class="col-md-4">
-         <div class="col-md-10">  
-                    @*ViewBag.CityList is holding all the cities values*@
-                   @*@Html.DropDownList("Cities",(IEnumerable<SelectListItem>)ViewData["Cities"],  new { @class = "form-control" } )*@
-                    @Html.LabelFor(model => model.Designation,"Select Districts ", new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.DropDownListFor(m => m.DistrictId,new SelectList(Model.provinceDTO.Districts,"Id","Designation"),"Select District",new { @class = "form-control" })
+<div class="app-breadcrumb">Larks &gt; <span class="current">Create Neighbourhood</span></div>
+<h3 class="mb-4">Create a new Neighbourhood</h3>
 
-            </div>
-    </div>
-    <div class="col-md-4">
-         <div class="col-md-10">  
-                    @*ViewBag.CityList is holding all the cities values*@
-                   @*@Html.DropDownList("Cities",(IEnumerable<SelectListItem>)ViewData["Cities"],  new { @class = "form-control" } *@
-                    @Html.LabelFor(model => model.Designation,"Select Municipality ", new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.DropDownListFor(m => m.MunicipalityId,new SelectList(Model.provinceDTO.Municipalities,"Id","Designation"),"Select Municipality",new { @class = "form-control"})
+<div class="col-md-6">
+    <div class="app-card">
+        <div class="app-card__body">
+            @using (Html.BeginForm("Create", "Neighbourhood", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label>Country</label>
+                    @Html.DropDownList("countryId", (SelectList)ViewData["countries"], "Select Country", new { @class = "form-control", id = "countrySelect" })
+                </div>
 
-            </div>
+                <div class="form-group mt-2">
+                    <label>Province</label>
+                    <select name="provinceId" id="provinceSelect" class="form-control" disabled>
+                        <option value="">Select a country first</option>
+                    </select>
+                </div>
+
+                <div class="form-group mt-2">
+                    <label>City</label>
+                    <select name="newCityId" id="citySelect" class="form-control" disabled>
+                        <option value="">Select a province first</option>
+                    </select>
+                </div>
+
+                <div class="form-group mt-2">
+                    <label>District</label>
+                    <select name="newDistrictId" id="districtSelect" class="form-control" disabled>
+                        <option value="">Select a province first</option>
+                    </select>
+                </div>
+
+                <div class="form-group mt-2">
+                    <label>Municipality</label>
+                    <select name="newMunicipalityId" id="municipalitySelect" class="form-control" disabled>
+                        <option value="">Select a province first</option>
+                    </select>
+                </div>
+
+                <div class="form-group mt-2">
+                    <label>Designation</label>
+                    <input type="text" name="Designation" class="form-control" required />
+                </div>
+
+                <div class="form-group mt-3">
+                    <input type="submit" value="Create Neighbourhood" class="btn btn-primary" />
+                </div>
+            }
+        </div>
     </div>
 </div>
 
-<div class="col-md-8">
-@using(Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    <div class="form-group">
-       @Html.LabelFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
-       <div class="col-md-10 my-3">
-            @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
-       </div>
-         <div class="col-md-10">
-            @Html.Hidden("newDistrictId")
-       </div>
-         <div class="col-md-10">
-            @Html.Hidden("newMunicipalityId")
-       </div>
-         <div class="col-md-10">
-            @Html.Hidden("newCityId")
-       </div>
-    </div>
+@section Scripts {
+    <script>
+        (function () {
+            function fillSelect(select, items, placeholder) {
+                select.innerHTML = '<option value="">' + placeholder + '</option>' +
+                    items.map(function (item) {
+                        return '<option value="' + item.id + '">' + item.designation + '</option>';
+                    }).join('');
+                select.disabled = items.length === 0;
+            }
 
-    <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-    </div>
-        
+            function resetSelects(selects, placeholder) {
+                selects.forEach(function (select) {
+                    select.innerHTML = '<option value="">' + placeholder + '</option>';
+                    select.disabled = true;
+                });
+            }
+
+            var countrySelect = document.getElementById('countrySelect');
+            var provinceSelect = document.getElementById('provinceSelect');
+            var citySelect = document.getElementById('citySelect');
+            var districtSelect = document.getElementById('districtSelect');
+            var municipalitySelect = document.getElementById('municipalitySelect');
+
+            countrySelect.addEventListener('change', function () {
+                var countryId = this.value;
+
+                resetSelects([citySelect, districtSelect, municipalitySelect], 'Select a province first');
+
+                if (!countryId) {
+                    resetSelects([provinceSelect], 'Select a country first');
+                    return;
+                }
+
+                resetSelects([provinceSelect], 'Loading...');
+
+                fetch(BASEURL + 'api/Province/CountryProvinces?CountryId=' + countryId)
+                    .then(function (r) { return r.json(); })
+                    .then(function (provinces) {
+                        fillSelect(provinceSelect, provinces, 'Select Province');
+                    }).catch(function (err) {
+                        console.log('Failed to load provinces for country', err);
+                    });
+            });
+
+            provinceSelect.addEventListener('change', function () {
+                var provinceId = this.value;
+
+                if (!provinceId) {
+                    resetSelects([citySelect, districtSelect, municipalitySelect], 'Select a province first');
+                    return;
+                }
+
+                resetSelects([citySelect, districtSelect, municipalitySelect], 'Loading...');
+
+                Promise.all([
+                    fetch(BASEURL + 'api/City/citiesinprovince?provinceId=' + provinceId).then(function (r) { return r.json(); }),
+                    fetch(BASEURL + 'api/District/districtsinprovice?provinceID=' + provinceId).then(function (r) { return r.json(); }),
+                    fetch(BASEURL + 'api/Municipality/MunicipalitiesInProvince?provinceId=' + provinceId).then(function (r) { return r.json(); })
+                ]).then(function (results) {
+                    fillSelect(citySelect, results[0], 'Select City');
+                    fillSelect(districtSelect, results[1], 'Select District');
+                    fillSelect(municipalitySelect, results[2], 'Select Municipality');
+                }).catch(function (err) {
+                    console.log('Failed to load province children', err);
+                });
+            });
+        })();
+    </script>
 }
-
-
-</div>

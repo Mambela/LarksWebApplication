@@ -2,11 +2,13 @@
 using LarksWebApp.DTOs.DTO_City;
 using LarksWebApp.Models;
 using LarksWebApp.Repository.CityRepository;
+using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
- 
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace LarksWebApp.Controllers
 {
@@ -14,33 +16,49 @@ namespace LarksWebApp.Controllers
     public class CitiesController : Controller
     {
         private readonly ICityRepository _citytRepository;
+        private readonly IProvinceRepository _provinceRepository;
         private readonly IMapper _mapper;
         private readonly ILoggerTrace serviceLogger;
 
-        public CitiesController(ICityRepository citytRepository, IMapper mapper, ILoggerTrace serviceLogger)
+        public CitiesController(ICityRepository citytRepository, IMapper mapper, ILoggerTrace serviceLogger, IProvinceRepository provinceRepository)
         {
             _citytRepository = citytRepository;
+            _provinceRepository = provinceRepository;
             _mapper = mapper;
             this.serviceLogger = serviceLogger;
         }
 
 
-    
+
         // GET: CityController
-        public ActionResult Index(Guid provinceId)
+        public ActionResult Index(Guid? provinceId)
         {
             try
             {
-                var citiesObjList = _citytRepository.GetAllCitiesInProvince(provinceId);
-
                 var cityDTOlist = new List<CitiesDTO>();
 
-                for (int i = 0; i < citiesObjList.Count; i++)
+                if (provinceId.HasValue && provinceId.Value != Guid.Empty)
                 {
-                    cityDTOlist.Add(_mapper.Map<CitiesDTO>(citiesObjList[i]));
+                    var citiesObjList = _citytRepository.GetAllCitiesInProvince(provinceId.Value);
+
+                    for (int i = 0; i < citiesObjList.Count; i++)
+                    {
+                        cityDTOlist.Add(_mapper.Map<CitiesDTO>(citiesObjList[i]));
+                    }
+
+                    TempData["provinceID"] = provinceId.Value;
+                }
+                else
+                {
+                    foreach (var city in _citytRepository.GetAllCities())
+                    {
+                        var dto = _mapper.Map<CitiesDTO>(city);
+                        dto.ProvinceName = city.Province?.Designation;
+                        cityDTOlist.Add(dto);
+                    }
                 }
 
-                TempData["provinceID"] = provinceId;
+                ViewData["provinceId"] = provinceId ?? Guid.Empty;
 
                 return View(cityDTOlist);
             }
@@ -48,9 +66,8 @@ namespace LarksWebApp.Controllers
             {
                 serviceLogger.LogError(ex.Message);
                 return View();
-                throw;
             }
-            
+
         }
 
         // GET: CityController/Details/5
@@ -62,33 +79,37 @@ namespace LarksWebApp.Controllers
         }
 
         // GET: CityController/Create
-        public ActionResult Create()
+        public ActionResult Create(Guid? provinceId)
         {
-            return View();
+            ViewData["provinces"] = new SelectList(_provinceRepository.GetAllProvinces(), "Id", "Designation", provinceId);
+
+            return View(new Create_City_DTO { ProvinceId = provinceId ?? Guid.Empty });
         }
 
         // POST: CityController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(IFormCollection collection)
         {
             try
             {
-           
+
                 if (!ModelState.IsValid)
                 {
                     throw new Exception("Invalid Model State");
                 }
 
+                var provinceId = Guid.Parse(collection["provinceId"]);
+
                 var cityModel = new CityModel()
                 {
-                    ProvinceId = Guid.Parse(TempData["provinceID"].ToString()),
+                    ProvinceId = provinceId,
                     Designation = collection["Designation"]
                 };
 
-                if (_citytRepository.CreateCity(cityModel) != null)
+                if (await _citytRepository.CreateCity(cityModel) != null)
                 {
-                    return RedirectToAction(nameof(Index), new { msg = $"City {cityModel.Designation} saved successfully! " });
+                    return RedirectToAction(nameof(Index), new { provinceId });
                 }
 
 
