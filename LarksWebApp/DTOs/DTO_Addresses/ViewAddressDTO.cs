@@ -14,8 +14,8 @@ namespace LarksWebApp.DTOs.DTO_Addresses
         public Guid MunicipalityID { get; set; }
 
 
-        public string Neighbourhood { get; set; }
-        public Guid NeighbourhoodId { get; set; }
+        public string Suburb { get; set; }
+        public Guid SuburbId { get; set; }
 
 
         public string StreetName { get; set; }

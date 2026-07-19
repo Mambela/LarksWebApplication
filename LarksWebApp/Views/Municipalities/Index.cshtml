@@ -11,7 +11,7 @@
     <div class="d-flex gap-2">
         @if (isScoped)
         {
-            <a class="btn btn-outline-soft" href="@Url.Action("CreateNeighbourhood","Municipalities",new{provinceId = Model.ProviceId})">+ Create New Neighbourhood</a>
+            <a class="btn btn-outline-soft" href="@Url.Action("CreateSuburb","Municipalities",new{provinceId = Model.ProviceId})">+ Create New Suburb</a>
         }
         <a class="btn btn-primary" href="@Url.Action("Create","Municipalities",new{provinceId = Model.ProviceId})">+ Create New Municipality</a>
     </div>

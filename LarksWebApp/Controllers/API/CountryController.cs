@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using LarksWebApp.DTOs;
 using LarksWebApp.DTOs.DTO_City;
+using LarksWebApp.DTOs.DTO_Country;
 using LarksWebApp.DTOs.DTO_Districts;
 using LarksWebApp.DTOs.DTO_Municipalities;
 using LarksWebApp.DTOs.DTO_Provinces;
 using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Services.Loggers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -118,6 +120,42 @@ namespace LarksWebApp.Controllers.API
                 return BadRequest("Failed to retrieve country");
             }
         }
-        
+
+        [Authorize(Roles = "Admin")]
+        [HttpPatch]
+        public IActionResult UpdateCountry([FromBody] Create_Country_DTO countryDTO, Guid countryId)
+        {
+            try
+            {
+                if (countryDTO == null || countryDTO.Id != countryId)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var countryObj = _countryRepository.GetCountry(countryId);
+
+                if (countryObj == null)
+                {
+                    return NotFound();
+                }
+
+                countryObj.Designation = countryDTO.Designation;
+
+                if (!_countryRepository.UpdateCountry(countryObj))
+                {
+                    ModelState.AddModelError("", $"Something went wrong while updating the record {countryObj.Designation}");
+
+                    return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
+                }
+
+                return Ok(countryDTO);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
     }
 }

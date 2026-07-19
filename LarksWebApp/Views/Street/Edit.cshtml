@@ -1,5 +1,28 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@using LarksWebApp.Models
+@model StreetModel
 @{
+    ViewData["Title"] = "Edit Street";
 }
+
+<div class="app-breadcrumb">Larks &gt; <span class="current">Edit Street</span></div>
+<h3 class="mb-4">Edit Street</h3>
+
+<div class="col-md-6">
+    <div class="app-card">
+        <div class="app-card__body">
+            @using (Html.BeginForm("Edit", "Street", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    <label>Designation</label>
+                    @Html.TextBox("Designation", Model.Designation, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group mt-3">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            }
+        </div>
+    </div>
+</div>

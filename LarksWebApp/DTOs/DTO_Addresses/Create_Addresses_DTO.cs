@@ -10,7 +10,7 @@
 
         public Guid MunicipalityID { get; set; }
 
-        public Guid NeighbourhoodId { get; set; }
+        public Guid SuburbId { get; set; }
         public Guid StreetID { get; set; }
 
         public string StreetNumber { get; set; }

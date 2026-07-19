@@ -10,9 +10,10 @@ using LarksWebApp.Models;
 using LarksWebApp.Repository.AddressRepository.Address_Repository;
 using LarksWebApp.Repository.CategoryRepository;
 using LarksWebApp.Repository.CountryRepository;
-using LarksWebApp.Repository.HoodRepository;
+using LarksWebApp.Repository.SuburbRepository;
 using LarksWebApp.Repository.LocationRepository;
 using LarksWebApp.Repository.StreetRepository;
+using LarksWebApp.Repository.SubcategoryRepository;
 using LarksWebApp.Services.FileManagement;
 using LarksWebApp.Services.Loggers;
 using LarksWebApp.Services.PaginationService;
@@ -41,13 +42,15 @@ namespace LarksWebApp.Controllers.API
         private readonly IAddressRepository addressRepository;
         private readonly IConfiguration _configuration;
         private readonly LarksContext _dbContext;
+        private readonly ISubcategoryRepository _subcategoryRepo;
 
         public LocationController(ILocationRepository repository, ILoggerTrace _logger, IMapper mapper,
             ICountryRepository countryRepo,
             ICategoryRepository categoryRepo,
             IFileManagement fileManagement,
             IUriService _uriService, ISuburbRepository _suburbRepository, IStreetRepository _streetRepository,
-            IAddressRepository _addressRepository, IConfiguration configuration, LarksContext dbContext)
+            IAddressRepository _addressRepository, IConfiguration configuration, LarksContext dbContext,
+            ISubcategoryRepository subcategoryRepo)
         {
 
             _countryRepo = countryRepo;
@@ -62,24 +65,37 @@ namespace LarksWebApp.Controllers.API
             addressRepository = _addressRepository;
             _configuration = configuration;
             _dbContext = dbContext;
+            _subcategoryRepo = subcategoryRepo;
+        }
+
+        private bool SubcategoriesAreValidForCategory(Guid categoryId, IEnumerable<Guid> subcategoryIds)
+        {
+            if (subcategoryIds == null || !subcategoryIds.Any())
+            {
+                return true;
+            }
+
+            var validIds = _subcategoryRepo.GetSubcategoriesInCategory(categoryId).Select(s => s.Id).ToHashSet();
+
+            return subcategoryIds.All(id => validIds.Contains(id));
         }
 
 
 
-        ///Locations By Neighbourhood 
-        [HttpGet("NeighbourhoodLocations")]
-        public IActionResult GetNeighBourhoodLocations(Guid suburbId) {
+        ///Locations By Suburb 
+        [HttpGet("SuburbLocations")]
+        public IActionResult GetSuburbLocations(Guid suburbId) {
 
             try
             {
                 var filter = new PaginationFilter();
-                var neighbourhoodLocationList = locationRepo.GetSuburbLocations(suburbId, filter);
+                var suburbLocationList = locationRepo.GetSuburbLocations(suburbId, filter);
 
 
-                var neighbourhoodLocationListDTO = new List<LocationDTO>();
+                var suburbLocationListDTO = new List<LocationDTO>();
 
 
-                foreach (var location in neighbourhoodLocationList)
+                foreach (var location in suburbLocationList)
                 {
                     var images = new List<string>();
 
@@ -92,7 +108,7 @@ namespace LarksWebApp.Controllers.API
                     {
                         Id = (Guid)location.AddressId,
                         Municipality = location.Municipality.Designation,
-                        Neighbourhood = location.Suburb.Designation,
+                        Suburb = location.Suburb.Designation,
                         Coordinates = new DTOs.BaseCoordinatesDTO 
                         {
                             lat = location.Lat,
@@ -117,16 +133,16 @@ namespace LarksWebApp.Controllers.API
                     };
 
 
-                    neighbourhoodLocationListDTO.Add(locationObj);
+                    suburbLocationListDTO.Add(locationObj);
                 }
 
 
-                return Ok(neighbourhoodLocationListDTO);
+                return Ok(suburbLocationListDTO);
 
             }
             catch (Exception ex)
             {
-                logger.LogError("Error while fetching the locations in a Neighbourhood " + ex.Message);
+                logger.LogError("Error while fetching the locations in a Suburb " + ex.Message);
 
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error occurred while trying to fetch locations");
                 
@@ -140,16 +156,16 @@ namespace LarksWebApp.Controllers.API
         {
             try
             {
-                var neighbourhoodLocationList = locationRepo.GetCategoryLocations(categoryId,filter);
+                var suburbLocationList = locationRepo.GetCategoryLocations(categoryId,filter);
 
                 int totalRecords = locationRepo.CountLocationByAttribute("CATEGORY", categoryId);
                 var route = Request.Path.Value; 
 
-                var neighbourhoodLocationListDTO = new List<LocationDTO>();
+                var suburbLocationListDTO = new List<LocationDTO>();
 
-                foreach (var location in neighbourhoodLocationList)
+                foreach (var location in suburbLocationList)
                 {
-                    neighbourhoodLocationListDTO.Add(
+                    suburbLocationListDTO.Add(
                         new LocationDTO
                         {
                             AdditionalInformation = location.AdditionalInformation,
@@ -171,7 +187,7 @@ namespace LarksWebApp.Controllers.API
 
                 var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
 
-                var pagedResponse = PaginationHelper.CreatePageResponse<LocationDTO>(neighbourhoodLocationListDTO, validFilter, totalRecords, uriService, route);
+                var pagedResponse = PaginationHelper.CreatePageResponse<LocationDTO>(suburbLocationListDTO, validFilter, totalRecords, uriService, route);
                 return Ok(pagedResponse);
             }
             catch (Exception ex)
@@ -248,14 +264,14 @@ namespace LarksWebApp.Controllers.API
 
             try
             {
-                var neighbourhoodLocationList = locationRepo.GetSubcategoryLocations(subcategoryId);
+                var suburbLocationList = locationRepo.GetSubcategoryLocations(subcategoryId);
 
 
 
-                var neighbourhoodLocationListDTO = _mapper.Map<List<LocationDTO>>(neighbourhoodLocationList);
+                var suburbLocationListDTO = _mapper.Map<List<LocationDTO>>(suburbLocationList);
 
 
-                return Ok(neighbourhoodLocationListDTO);
+                return Ok(suburbLocationListDTO);
             }
             catch (Exception ex)
             {
@@ -266,21 +282,21 @@ namespace LarksWebApp.Controllers.API
         }
 
 
-        ///Data Table Locations In Neighbourhood
+        ///Data Table Locations In Suburb
         ///
 
         [Route("[action]")]
         [HttpPost]
-        public IActionResult LocationsInNeighbourhoodDT(Guid neighbourhoodId)
+        public IActionResult LocationsInSuburbDT(Guid suburbId)
         {
             try
             {
                 var filter = new PaginationFilter();
-                var neighbourhoodLocationList = locationRepo.GetSuburbLocations(neighbourhoodId, filter);
+                var suburbLocationList = locationRepo.GetSuburbLocations(suburbId, filter);
 
-                var neighbourhoodLocationListDTO = new List<LocationDTO>();
+                var suburbLocationListDTO = new List<LocationDTO>();
 
-                foreach (var location in neighbourhoodLocationList)
+                foreach (var location in suburbLocationList)
                 {
                    
                     var locationObj = new LocationDTO
@@ -294,7 +310,7 @@ namespace LarksWebApp.Controllers.API
                         Subcategory = location.Category.Subcategories.Select(s => new SubCategoryDTO { Designation = s.Designation, Id = s.Id })                        
                     };
 
-                    neighbourhoodLocationListDTO.Add(locationObj);
+                    suburbLocationListDTO.Add(locationObj);
                 }
 
                 var draw = Request.Form["draw"].FirstOrDefault();
@@ -309,26 +325,26 @@ namespace LarksWebApp.Controllers.API
 
                 if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
                 {
-                    neighbourhoodLocationListDTO = (List<LocationDTO>)neighbourhoodLocationListDTO.OrderBy(c => c.Designation);
+                    suburbLocationListDTO = (List<LocationDTO>)suburbLocationListDTO.OrderBy(c => c.Designation);
                 }
 
 
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    neighbourhoodLocationListDTO = (List<LocationDTO>)neighbourhoodLocationListDTO.Where(m => m.Designation.Contains(searchValue)
+                    suburbLocationListDTO = (List<LocationDTO>)suburbLocationListDTO.Where(m => m.Designation.Contains(searchValue)
                                                 || m.Designation.Contains(searchValue));
 
                 }
 
-                recordsTotal = neighbourhoodLocationListDTO.Count();
-                var data = neighbourhoodLocationListDTO.Skip(skip).Take(pageSize).ToList();
+                recordsTotal = suburbLocationListDTO.Count();
+                var data = suburbLocationListDTO.Skip(skip).Take(pageSize).ToList();
                 var jsonData = new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data };
 
                 return Ok(jsonData);
             }
             catch (Exception ex)
             {
-                logger.LogError("Error in location in neighbourhood " + ex.Message);
+                logger.LogError("Error in location in suburb " + ex.Message);
 
                 return BadRequest();
 
@@ -374,10 +390,17 @@ namespace LarksWebApp.Controllers.API
 
                 // Save the Location first then use the object.
 
+                var resolvedCategoryId = (locationCollection.searchCategoryId_hidden != Guid.Empty) ? locationCollection.searchCategoryId_hidden : locationCollection.CategoryId;
+
+                if (!SubcategoriesAreValidForCategory(resolvedCategoryId, locationCollection.SubCategories))
+                {
+                    return BadRequest();
+                }
+
                 var locationObj = new LocationModel
                 {
                     AddressId = (locationCollection.searchAddress_hidden != Guid.Empty)? locationCollection.searchAddress_hidden :Guid.Empty,
-                    CategoryId = (locationCollection.searchCategoryId_hidden != Guid.Empty) ? locationCollection.searchCategoryId_hidden : locationCollection.CategoryId,
+                    CategoryId = resolvedCategoryId,
                     MunicipalityId = locationCollection.MunicipalityID,
                     CityId = locationCollection.CityId,
                     SuburbId = locationCollection.SuburbId,
@@ -385,7 +408,7 @@ namespace LarksWebApp.Controllers.API
                     AdditionalInformation = locationCollection.AdditionalInfo,
                     Lat = (decimal)locationCollection.Lat,
                     Lng = (decimal)locationCollection.Lng
-                    
+
                 };
 
 
@@ -590,6 +613,12 @@ namespace LarksWebApp.Controllers.API
 
                 if (locationDTO.SubCategories != null && locationDTO.SubCategories.Count > 0)
                 {
+                    if (!SubcategoriesAreValidForCategory(locationDTO.CategoryId, locationDTO.SubCategories))
+                    {
+                        ModelState.AddModelError("error", "One or more subcategories do not belong to the selected category.");
+                        return BadRequest(ModelState);
+                    }
+
                     var LocationSubcategory = locationDTO.SubCategories.Select(id => new LocationModelSubcategoryModel { LocationId = location.Id, SubcategoriesId = id });
 
                     if (!await locationRepo.Createlocationsubcategory(LocationSubcategory))
@@ -704,7 +733,6 @@ namespace LarksWebApp.Controllers.API
         }
 
 
-
         ///Location by Proximity 
         [HttpGet]
         [Route("locationbydistanceandcategory")]
@@ -814,19 +842,19 @@ namespace LarksWebApp.Controllers.API
             
                 try
                 {
-                     var neighbourhoodLocationList = locationRepo.GetLocationsInCity(cityId, filter);
+                     var suburbLocationList = locationRepo.GetLocationsInCity(cityId, filter);
                     int totalRecords = locationRepo.CountLocationByAttribute("CITY", cityId);
 
                     string searchParams = $"?cityId={cityId}";
                     var route = Request.Path.Value + searchParams;
                 
 
-                    //var neighbourhoodLocationListDTO = _mapper.Map<List<LocationDTO>>(neighbourhoodLocationList);
+                    //var suburbLocationListDTO = _mapper.Map<List<LocationDTO>>(suburbLocationList);
 
                     var locationsDTOList = new List<ViewLocationDTO>();
 
 
-                    foreach (var location in neighbourhoodLocationList)
+                    foreach (var location in suburbLocationList)
                     {
                         var locationObjDTO = _mapper.Map<ViewLocationDTO>(location);
 
@@ -878,7 +906,7 @@ namespace LarksWebApp.Controllers.API
                 var route = Request.Path.Value + searchParams;
 
 
-                //var neighbourhoodLocationListDTO = _mapper.Map<List<LocationDTO>>(neighbourhoodLocationList);
+                //var suburbLocationListDTO = _mapper.Map<List<LocationDTO>>(suburbLocationList);
 
                 var locationsDTOList = new List<ViewLocationDTO>();
 
@@ -942,7 +970,7 @@ namespace LarksWebApp.Controllers.API
                 var route = Request.Path.Value + searchParams;
 
 
-                //var neighbourhoodLocationListDTO = _mapper.Map<List<LocationDTO>>(neighbourhoodLocationList);
+                //var suburbLocationListDTO = _mapper.Map<List<LocationDTO>>(suburbLocationList);
 
                 var locationsDTOList = new List<ViewLocationDTO>();
 
@@ -1218,6 +1246,29 @@ namespace LarksWebApp.Controllers.API
                 //Now we can create a location
               
 
+                if (locationDTO.SubCategories != null && locationDTO.SubCategories.Count > 0)
+                {
+                    if (!SubcategoriesAreValidForCategory(locationDTO.CategoryId, locationDTO.SubCategories))
+                    {
+                        ModelState.AddModelError("error", "One or more subcategories do not belong to the selected category.");
+                        return BadRequest(ModelState);
+                    }
+
+                    if (!await locationRepo.RemoveLocationSubcategories(locationObj.Id))
+                    {
+                        ModelState.AddModelError("error", "Failed to update location subcategories.");
+                        return BadRequest(ModelState);
+                    }
+
+                    var updatedSubcategories = locationDTO.SubCategories.Select(id => new LocationModelSubcategoryModel { LocationId = locationObj.Id, SubcategoriesId = id });
+
+                    if (!await locationRepo.Createlocationsubcategory(updatedSubcategories))
+                    {
+                        ModelState.AddModelError("error", "Failed to update location subcategories.");
+                        return BadRequest(ModelState);
+                    }
+                }
+
                 locationObj.Designation = locationDTO.Designation;
                 locationObj.CategoryId = locationDTO.CategoryId;
                 locationObj.CityId = locationDTO.CityId;
@@ -1227,7 +1278,7 @@ namespace LarksWebApp.Controllers.API
                 locationObj.SuburbId = suburbId;
                 locationObj.Lat = locationDTO.Lat;
                 locationObj.Lng = locationDTO.Lng;
-                
+
 
                 if (!locationRepo.UpdateLocation(locationObj))
                 {

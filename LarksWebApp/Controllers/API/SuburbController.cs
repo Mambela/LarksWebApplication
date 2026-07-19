@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using LarksWebApp.DTOs.DTO_Addresses;
-using LarksWebApp.DTOs.DTO_Neighbourhoods;
+using LarksWebApp.DTOs.DTO_Suburbs;
 using LarksWebApp.Models;
 using LarksWebApp.Repository.AddressRepository.Address_Repository;
-using LarksWebApp.Repository.HoodRepository;
+using LarksWebApp.Repository.SuburbRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -40,44 +40,44 @@ namespace LarksWebApp.Controllers.API
         {
             try
             {
-                var hoodListObj = suburbRepository.GetNeighbourhoodModels();
+                var hoodListObj = suburbRepository.GetSuburbs();
 
-                var hoodListDTO = new List<DTOs.DTO_Neighbourhoods.SuburbDTO>();
+                var hoodListDTO = new List<DTOs.DTO_Suburbs.SuburbDTO>();
 
                 foreach(var hood in hoodListObj)
                 {
-                    hoodListDTO.Add(_mapper.Map<DTOs.DTO_Neighbourhoods.SuburbDTO>(hood));
+                    hoodListDTO.Add(_mapper.Map<DTOs.DTO_Suburbs.SuburbDTO>(hood));
                 }
 
                 return Ok(hoodListDTO);
             }
             catch (Exception ex)
             {
-                serviceLogger.LogError("Get list of neighbourhood " + ex.Message);
+                serviceLogger.LogError("Get list of suburbs " + ex.Message);
 
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
 
-        [HttpGet("sectorNeighbourhood")]
-        public IActionResult sectorNeighbourhood(string sector, Guid id)
+        [HttpGet("sectorSuburb")]
+        public IActionResult sectorSuburb(string sector, Guid id)
         {
             
             try
             {   
-                var hoodObjList = suburbRepository.GetNeighbourhoodModels(sector,id);
+                var hoodObjList = suburbRepository.GetSuburbs(sector,id);
 
 
                 if (hoodObjList == null)
                 {
                     return Ok(hoodObjList);
                 }
-                var hoodDTOList = new List<DTOs.DTO_Neighbourhoods.SuburbDTO>();
+                var hoodDTOList = new List<DTOs.DTO_Suburbs.SuburbDTO>();
 
                 foreach (var hood in hoodObjList)
                 {
-                    hoodDTOList.Add(_mapper.Map<DTOs.DTO_Neighbourhoods.SuburbDTO>(hood));
+                    hoodDTOList.Add(_mapper.Map<DTOs.DTO_Suburbs.SuburbDTO>(hood));
                 }
 
                 
@@ -86,9 +86,9 @@ namespace LarksWebApp.Controllers.API
             }
             catch (Exception ex)
             {
-                serviceLogger.LogError("Neighbourhood Sector " + ex.Message);
+                serviceLogger.LogError("Suburb Sector " + ex.Message);
 
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while trying to retrieve neighbourhood ");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while trying to retrieve suburbs ");
             }
 
         }
@@ -98,13 +98,13 @@ namespace LarksWebApp.Controllers.API
         {
             try
             {   
-                var suburbObjList = suburbRepository.GetNeighbourhoodModels(districtId,municipalityId,cityId);
+                var suburbObjList = suburbRepository.GetSuburbs(districtId,municipalityId,cityId);
 
-                var suburbDTOList = new List<DTOs.DTO_Neighbourhoods.SuburbDTO>();
+                var suburbDTOList = new List<DTOs.DTO_Suburbs.SuburbDTO>();
 
                 foreach (var hood in suburbObjList)
                 {
-                    suburbDTOList.Add(_mapper.Map<DTOs.DTO_Neighbourhoods.SuburbDTO>(hood));
+                    suburbDTOList.Add(_mapper.Map<DTOs.DTO_Suburbs.SuburbDTO>(hood));
                 }
 
                 
@@ -113,9 +113,9 @@ namespace LarksWebApp.Controllers.API
             }
             catch (Exception ex)
             {
-                serviceLogger.LogError("Neighbourhood Sector " + ex.Message);
+                serviceLogger.LogError("Suburb Sector " + ex.Message);
 
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while trying to retrieve neighbourhood ");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while trying to retrieve suburbs ");
             }
 
         }
@@ -188,7 +188,7 @@ namespace LarksWebApp.Controllers.API
                     {
                         Id = addressObj.Id,
                         Municipality = addressObj.Municipality.Designation,
-                        Neighbourhood = addressObj.Suburb.Designation,
+                        Suburb = addressObj.Suburb.Designation,
                         StreetName = addressObj.Street.Designation,                        
                         Province = addressObj.Province.Designation,
                         FullAddress = addressObj.StreetNumber + ", " + addressObj.Street.Designation + ", " + addressObj.Suburb.Designation + ", " + addressObj.Province.Designation
@@ -232,7 +232,7 @@ namespace LarksWebApp.Controllers.API
             }
             catch (Exception ex)
             {
-                serviceLogger.LogError("Fetch Address in Neighbourhood " + ex.Message);
+                serviceLogger.LogError("Fetch Address in Suburb " + ex.Message);
 
                 return BadRequest(ex.Message);
             }
@@ -282,18 +282,18 @@ namespace LarksWebApp.Controllers.API
         }
 
         /**
-         * https://localhost:44339/api/hood/Neighbourhood?id=1
+         * https://localhost:44339/api/Suburb/Suburb?id=1
          * **/
 
         [HttpGet("Suburb")]
-        public IActionResult GetNeighbourhood([FromQuery] Guid id)
+        public IActionResult GetSuburb([FromQuery] Guid id)
         {
 
             try
             {
                 var hoodObj = suburbRepository.GetSuburb(id);
 
-                var hoodDTO = _mapper.Map<DTOs.DTO_Neighbourhoods.SuburbDTO>(hoodObj);
+                var hoodDTO = _mapper.Map<DTOs.DTO_Suburbs.SuburbDTO>(hoodObj);
 
 
                 return Ok(hoodDTO);
@@ -313,11 +313,11 @@ namespace LarksWebApp.Controllers.API
 
                 var suburbObjList = suburbRepository.GetSuburbsInProvince(provinceId);
 
-                var suburbDTOList = new List<DTOs.DTO_Neighbourhoods.SuburbDTO>();
+                var suburbDTOList = new List<DTOs.DTO_Suburbs.SuburbDTO>();
 
                 foreach (var hood in suburbObjList)
                 {
-                    suburbDTOList.Add(_mapper.Map<DTOs.DTO_Neighbourhoods.SuburbDTO>(hood));
+                    suburbDTOList.Add(_mapper.Map<DTOs.DTO_Suburbs.SuburbDTO>(hood));
                 }
 
                 return Ok(suburbDTOList);
@@ -331,7 +331,7 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("SuburbByName")]
-        public IActionResult GetNeighbourhoodByName([FromQuery] string suburbname)
+        public IActionResult GetSuburbByName([FromQuery] string suburbname)
         {
 
             try
@@ -345,7 +345,7 @@ namespace LarksWebApp.Controllers.API
 
                 var hoodObj = suburbRepository.GetSuburbsByName(suburbname);
 
-                var hoodDTO = _mapper.Map<IList<DTOs.DTO_Neighbourhoods.SuburbDTO>>(hoodObj);
+                var hoodDTO = _mapper.Map<IList<DTOs.DTO_Suburbs.SuburbDTO>>(hoodObj);
 
                 return Ok(hoodDTO);
             }
@@ -358,24 +358,53 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPut]
-        public IActionResult UpdateNeighbourhood([FromBody] Create_suburb_DTO hoodDTO, Guid hoodId)
+        public IActionResult UpdateSuburb([FromBody] Create_suburb_DTO hoodDTO, Guid hoodId)
         {
 
             try
             {
                 if (hoodDTO == null || hoodDTO.Id != hoodId) return BadRequest(ModelState);
 
-                var neighbourHoodObj = _mapper.Map<SuburbModel>(hoodDTO);
+                var suburbObj = _mapper.Map<SuburbModel>(hoodDTO);
 
-                if (!suburbRepository.UpdateNeighbourhoody(neighbourHoodObj))
+                if (!suburbRepository.UpdateSuburb(suburbObj))
                 {
-                    ModelState.AddModelError("", $"Something went wrong while updatig the record {neighbourHoodObj.Designation}");
+                    ModelState.AddModelError("", $"Something went wrong while updatig the record {suburbObj.Designation}");
 
                     return StatusCode(StatusCodes.Status500InternalServerError, hoodDTO);
                 }
 
 
                 return Ok(hoodDTO);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete]
+        public IActionResult DeleteSuburb(Guid suburbId)
+        {
+            try
+            {
+                var suburbObj = suburbRepository.GetSuburb(suburbId);
+
+                if (suburbObj == null)
+                {
+                    return NotFound();
+                }
+
+                if (!suburbRepository.DeleteSuburb(suburbObj))
+                {
+                    ModelState.AddModelError("", $"Something went wrong while deleting the record {suburbObj.Designation}");
+
+                    return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
+                }
+
+                return NoContent();
             }
             catch (Exception ex)
             {

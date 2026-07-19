@@ -1,4 +1,4 @@
-﻿namespace LarksWebApp.DTOs.DTO_Neighbourhoods
+﻿namespace LarksWebApp.DTOs.DTO_Suburbs
 {
     public class SuburbDTO
     {

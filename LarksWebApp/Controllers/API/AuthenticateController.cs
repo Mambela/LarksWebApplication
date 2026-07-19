@@ -60,6 +60,8 @@ namespace LarksWebApp.Controllers.API
 
 
                     var token = new JwtSecurityToken(
+                        issuer: _configuration["Jwt:Issuer"],
+                        audience: _configuration["Jwt:Audience"],
                         expires:DateTime.Now.AddDays(3),
                         claims:authClaims,
                         signingCredentials: new SigningCredentials(authSigningKey,SecurityAlgorithms.HmacSha256)

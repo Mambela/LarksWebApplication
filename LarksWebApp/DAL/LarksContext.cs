@@ -62,9 +62,20 @@ namespace LarksWebApp.DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+            modelBuilder.Entity<SuburbModel>()
+                .HasOne(s => s.Municipality)
+                .WithMany(m => m.Suburbs)
+                .HasForeignKey(s => s.MunicipalityId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<SuburbStreets>().HasKey(n => new { n.StreetsID, n.SuburbId });
             modelBuilder.Entity<LocationModel>().Property(p => p.Lat).HasPrecision(8, 6);
             modelBuilder.Entity<LocationModel>().Property(p => p.Lng).HasPrecision(9, 6);
+
+            // Soft-deleted rows are excluded from every query against these entities by default.
+            modelBuilder.Entity<StreetModel>().HasQueryFilter(s => !s.IsDeleted);
+            modelBuilder.Entity<MunicipalityModel>().HasQueryFilter(m => !m.IsDeleted);
+            modelBuilder.Entity<SuburbModel>().HasQueryFilter(s => !s.IsDeleted);
 
             modelBuilder.Entity<LocationModelSubcategoryModel>().HasKey(n => new { n.LocationId, n.SubcategoriesId });
             

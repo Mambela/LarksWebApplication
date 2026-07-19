@@ -2,14 +2,14 @@
 $(document).ready(function () {
 
     /**
-     * CASCADING DROPDOWNS: Country -> Province -> Municipality -> Neighbourhood
+     * CASCADING DROPDOWNS: Country -> Province -> Municipality -> Suburb
      *
      * **/
 
     const countryDropDown = document.getElementById('CountryId');
     const provinceDropDown = document.getElementById('street_ProvinceId');
     const municipalityDropDown = document.getElementById('street_MunicipalityId');
-    const neighbourhoodDropDowm = document.getElementById('street_hoodId');
+    const suburbDropDown = document.getElementById('street_suburbId');
     const streetTable = document.getElementById('streetTable');
 
     function fillSelect(select, items, placeholder) {
@@ -32,7 +32,7 @@ $(document).ready(function () {
         countryDropDown.addEventListener('change', function (event) {
             var countryId = event.target.value;
 
-            resetSelects([municipalityDropDown, neighbourhoodDropDowm], 'Select a province first');
+            resetSelects([municipalityDropDown, suburbDropDown], 'Select a province first');
 
             if (!countryId) {
                 resetSelects([provinceDropDown], 'Select a country first');
@@ -56,7 +56,7 @@ $(document).ready(function () {
         provinceDropDown.addEventListener('change', function (event) {
             var provinceId = event.target.value;
 
-            resetSelects([neighbourhoodDropDowm], 'Select a municipality first');
+            resetSelects([suburbDropDown], 'Select a municipality first');
 
             if (!provinceId) {
                 resetSelects([municipalityDropDown], 'Select a province first');
@@ -81,19 +81,19 @@ $(document).ready(function () {
             var municipalityId = event.target.value;
 
             if (!municipalityId) {
-                resetSelects([neighbourhoodDropDowm], 'Select a municipality first');
+                resetSelects([suburbDropDown], 'Select a municipality first');
                 return;
             }
 
-            resetSelects([neighbourhoodDropDowm], 'Loading...');
+            resetSelects([suburbDropDown], 'Loading...');
 
-            fetch(BASEURL + 'api/Suburb/sectorNeighbourhood?sector=municipality&id=' + municipalityId)
+            fetch(BASEURL + 'api/Suburb/sectorSuburb?sector=municipality&id=' + municipalityId)
                 .then(function (r) { return r.json(); })
-                .then(function (neighbourhoods) {
-                    fillSelect(neighbourhoodDropDowm, neighbourhoods || [], 'Select Neighbourhood');
+                .then(function (suburbs) {
+                    fillSelect(suburbDropDown, suburbs || [], 'Select Suburb');
                 })
                 .catch(function (err) {
-                    console.log('Failed to load neighbourhoods for municipality', err);
+                    console.log('Failed to load suburbs for municipality', err);
                 });
         });
     }
@@ -103,7 +103,7 @@ $(document).ready(function () {
      *
      * ***/
 
-    var hoodId = 0;
+    var suburbId = 0;
 
     var listStreets = function () {
 
@@ -114,7 +114,7 @@ $(document).ready(function () {
             "serverside": true,
             "filter": true,
             "ajax": {
-                "url": BASEURL + "api/Streets/StreetsInNeighbourhood?neighbourhoodId=" + hoodId,
+                "url": BASEURL + "api/Streets/StreetsInSuburb?suburbId=" + suburbId,
                 "type": "POST",
                 "headers": {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -130,16 +130,19 @@ $(document).ready(function () {
                 { "data": "id", "name": "Id", "autoWidth": true },
                 { "data": "designation", "name": "Street", "autoWidth": true },
                 {
-                    "render": function (data, row) { return "<a href='#' class='btn btn-danger btn-sm' onclick=DeleteCustomer('" + row.id + "'); >Delete</a>"; }
+                    "render": function (data, row) {
+                        return "<a href='" + BASEURL + "Street/Edit/" + row.id + "' class='btn btn-primary btn-sm'>Edit</a> " +
+                            "<a href='" + BASEURL + "Street/Delete/" + row.id + "' class='btn btn-danger btn-sm'>Delete</a>";
+                    }
                 },
             ]
         });
     }
 
-    if (neighbourhoodDropDowm) {
-        neighbourhoodDropDowm.addEventListener('change', function handleChange(event) {
+    if (suburbDropDown) {
+        suburbDropDown.addEventListener('change', function handleChange(event) {
 
-            hoodId = event.target.value;
+            suburbId = event.target.value;
 
             if (streetTable) {
                 listStreets();

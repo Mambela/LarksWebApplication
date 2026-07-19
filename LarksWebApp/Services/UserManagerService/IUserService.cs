@@ -46,6 +46,8 @@ namespace LarksWebApp.Services.UserManager
 
 
                 var token = new JwtSecurityToken(
+                    issuer: configuration["Jwt:Issuer"],
+                    audience: configuration["Jwt:Audience"],
                     expires: DateTime.Now.AddDays(14),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)

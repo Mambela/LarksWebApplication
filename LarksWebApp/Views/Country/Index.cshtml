@@ -20,6 +20,7 @@
           @*<th scope="col">#</th>*@
           <th scope="col">Country Name</th>
           <th scope="col">View More</th>
+          <th scope="col">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -28,8 +29,9 @@
               @*<th scope="row">2</th>*@
               <td>@Html.DisplayFor(modelItem => country.Designation)</td>
               <td>@Html.ActionLink("Details","Details",new {id=country.Id})</td>
+              <td>@Html.ActionLink("Edit","Edit",new {id=country.Id})</td>
             </tr>
-        }         
+        }
       </tbody>
     </table>
 </div>

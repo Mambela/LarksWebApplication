@@ -3,8 +3,8 @@
 $(document).ready(function () {
 
 
-    var hoodId = 0;
-    const neighbourhoodDropDowm = document.getElementById('street_hoodId');
+    var suburbId = 0;
+    const suburbDropDown = document.getElementById('street_suburbId');
     const streetTable = document.getElementById('locationTable');
 
 
@@ -18,7 +18,7 @@ $(document).ready(function () {
             "serverside": true,
             "filter": true,
             "ajax": {
-                "url": BASEURL + "api/Location/LocationsInNeighbourhoodDT?neighbourhoodId=" + hoodId,
+                "url": BASEURL + "api/Location/LocationsInSuburbDT?suburbId=" + suburbId,
                 "type": "POST",
                 "headers": {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -46,10 +46,10 @@ $(document).ready(function () {
 
 
 
-    if (neighbourhoodDropDowm) {
-        neighbourhoodDropDowm.addEventListener('change', function handleChange(event) {
+    if (suburbDropDown) {
+        suburbDropDown.addEventListener('change', function handleChange(event) {
 
-            hoodId = event.target.value;
+            suburbId = event.target.value;
 
             if (streetTable) {
 

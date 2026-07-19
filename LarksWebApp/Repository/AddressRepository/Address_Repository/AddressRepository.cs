@@ -88,9 +88,9 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
             return Save();
         }
 
-        public List<AddressModel> GetAddressesInSuburb(Guid neighbourhoodId)
+        public List<AddressModel> GetAddressesInSuburb(Guid suburbId)
         {
-            return _dbContext.Addresses.Where(a => a.SuburbId == neighbourhoodId)
+            return _dbContext.Addresses.Where(a => a.SuburbId == suburbId)
               .Include(n => n.Suburb)
               .Include(m => m.Municipality)
               .Include(s => s.Street)

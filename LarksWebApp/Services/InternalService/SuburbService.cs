@@ -4,7 +4,7 @@ using LarksWebApp.Models.CoordinatesModel;
 using LarksWebApp.Repository.CityRepository;
 using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Repository.DistrictRepository;
-using LarksWebApp.Repository.HoodRepository;
+using LarksWebApp.Repository.SuburbRepository;
 using LarksWebApp.Repository.MunicipalityRepository;
 using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Services.ExternalService;
@@ -355,14 +355,14 @@ namespace LarksWebApp.Services.InternalService
                     {
                         CityId = (activeCityId == Guid.Empty) ? null : activeCityId,
                         DistrictId = (activeDisctrictId == Guid.Empty) ? null : activeDisctrictId,
-                        MunicipalityId = (activeMunicipalityId == Guid.Empty) ? null : activeMunicipalityId,
+                        MunicipalityId = activeMunicipalityId,
                         Designation = nominatimSuburb
 
                     };
 
-                    if (await suburbRepository.CreateSuburb(suburb) == null)
+                    if (activeMunicipalityId != Guid.Empty && await suburbRepository.CreateSuburb(suburb) == null)
                     {
-                        //Log something here. Information Logs For a particular suburb. 
+                        //Log something here. Information Logs For a particular suburb.
                     }
                 }
 

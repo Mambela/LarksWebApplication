@@ -1,21 +1,21 @@
 @model LarksWebApp.DTOs.DTO_Provinces.ProvinceDTO
 @{
-    ViewData["Title"] = "Create a Neighbourhood";
+    ViewData["Title"] = "Create a Suburb";
 }
 
-<div class="app-breadcrumb">Larks &gt; Municipalities &gt; <span class="current">Create Neighbourhood</span></div>
-<h3 class="mb-4">Create a new Neighbourhood</h3>
+<div class="app-breadcrumb">Larks &gt; Municipalities &gt; <span class="current">Create Suburb</span></div>
+<h3 class="mb-4">Create a new Suburb</h3>
 
 <div class="col-md-6">
     <div class="app-card">
         <div class="app-card__body">
             @if (Model.Cities.Count == 0 || Model.Districts.Count == 0 || Model.Municipalities.Count == 0)
             {
-                <p class="text-muted mb-0">A neighbourhood needs a City, a District and a Municipality to already exist in this province. Add those first.</p>
+                <p class="text-muted mb-0">A suburb needs a City, a District and a Municipality to already exist in this province. Add those first.</p>
             }
             else
             {
-                @using (Html.BeginForm("CreateNeighbourhood", "Municipalities", FormMethod.Post))
+                @using (Html.BeginForm("CreateSuburb", "Municipalities", FormMethod.Post))
                 {
                     @Html.AntiForgeryToken()
                     @Html.Hidden("provinceId", Model.Id)
@@ -36,7 +36,7 @@
                         @Html.DropDownList("municipalityId", new SelectList(Model.Municipalities, "Id", "Designation"), "Select Municipality", new { @class = "form-control" })
                     </div>
                     <div class="form-group mt-3">
-                        <input type="submit" value="Create Neighbourhood" class="btn btn-primary" />
+                        <input type="submit" value="Create Suburb" class="btn btn-primary" />
                     </div>
                 }
             }

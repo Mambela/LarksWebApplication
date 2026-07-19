@@ -8,7 +8,7 @@ using LarksWebApp.Repository.AddressRepository.HooksRepository;
 using LarksWebApp.Repository.CityRepository;
 using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Repository.DistrictRepository;
-using LarksWebApp.Repository.HoodRepository;
+using LarksWebApp.Repository.SuburbRepository;
 using LarksWebApp.Repository.MunicipalityRepository;
 using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Services.ExternalService;
@@ -44,7 +44,7 @@ namespace LarksWebApp.Controllers.API
             IAddressRepository addressRepository, IMapper mapper,
             ILoggerTrace serviceLogger, ICountryRepository _countryRepo,
             IProvinceRepository _provinceRepository, ICityRepository _cityRepository,
-            ISuburbRepository _neighbourhood, IDistrictRepository _districtRepository,
+            ISuburbRepository _suburb, IDistrictRepository _districtRepository,
             IMunicipalityRepository _municipalityRepo,
             IHooksRepository _hookRepository, IWebhookService _webHookService,
             IConfiguration configuration)
@@ -55,7 +55,7 @@ namespace LarksWebApp.Controllers.API
             countryRepository = _countryRepo;
             provinceRepository = _provinceRepository;
             cityRepository = _cityRepository;
-            suburbRepository = _neighbourhood;
+            suburbRepository = _suburb;
             municipalityRepository = _municipalityRepo;
             districtRepository = _districtRepository;
             hookRepository = _hookRepository;
@@ -105,7 +105,7 @@ namespace LarksWebApp.Controllers.API
                     {
                         Id = addressObj.Id,
                         Municipality = addressObj.Municipality.Designation,
-                        Neighbourhood = addressObj.Suburb.Designation,
+                        Suburb = addressObj.Suburb.Designation,
                         StreetName = addressObj.Street.Designation,
                         Province = addressObj.Province.Designation,
                         FullAddress = addressObj.StreetNumber + " " + addressObj.Street.Designation + ", " + addressObj.Suburb.Designation + ", " + addressObj.Province.Designation
@@ -128,8 +128,8 @@ namespace LarksWebApp.Controllers.API
         }
 
 
-        [HttpGet("NeighbourhoodAddress")]
-        public IActionResult GetNeighbourhoodAddress(Guid suburbId)
+        [HttpGet("SuburbAddress")]
+        public IActionResult GetSuburbAddress(Guid suburbId)
         {
 
             try
@@ -147,7 +147,7 @@ namespace LarksWebApp.Controllers.API
                     {
                         Id = addressObj.Id,
                         Municipality = addressObj.Municipality.Designation,
-                        Neighbourhood = addressObj.Suburb.Designation,
+                        Suburb = addressObj.Suburb.Designation,
                         StreetName = addressObj.Street.Designation,
                         StreetNumber = addressObj.StreetNumber,
                         Province = addressObj.Province.Designation,
@@ -189,7 +189,7 @@ namespace LarksWebApp.Controllers.API
                     {
                         Id = addressObj.Id,
                         Municipality = addressObj.Municipality.Designation,
-                        Neighbourhood = addressObj.Suburb.Designation,
+                        Suburb = addressObj.Suburb.Designation,
                         StreetName = addressObj.Street.Designation,
                         StreetNumber = addressObj.StreetNumber,
                         Province = addressObj.Province.Designation,
@@ -432,14 +432,14 @@ namespace LarksWebApp.Controllers.API
                 {
                     CityId = (activeCityId == Guid.Empty) ? null : activeCityId,
                     DistrictId = (activeDisctrictId == Guid.Empty) ? null : activeDisctrictId,
-                    MunicipalityId = (activeMunicipalityId == Guid.Empty) ? null : activeMunicipalityId,
+                    MunicipalityId = activeMunicipalityId,
                     Designation = (nominatimAddressDTO.Address.Suburb == null) ? nominatimAddressDTO.Address.Suburb : (nominatimAddressDTO.Address.City_District != null) ? nominatimAddressDTO.Address.City_District : (nominatimAddressDTO.Address.Town == null) ? nominatimAddressDTO.Address.City : nominatimAddressDTO.Address.Town
 
                 };
 
 
-                //Check if this Suburb doesn't exist 
-                if (suburbRepository.VerifySuburbExist(nominatimAddressDTO.Address.Suburb, activeMunicipalityId, activeCityId, activeDisctrictId) == null)
+                //Check if this Suburb doesn't exist
+                if (activeMunicipalityId != Guid.Empty && suburbRepository.VerifySuburbExist(nominatimAddressDTO.Address.Suburb, activeMunicipalityId, activeCityId, activeDisctrictId) == null)
                 {
                     //suburb doesn't exist let's create it
                     if (await suburbRepository.CreateSuburb(suburb) == null)
@@ -653,14 +653,14 @@ namespace LarksWebApp.Controllers.API
                     {
                         CityId = (activeCityId == Guid.Empty) ? null : activeCityId,
                         DistrictId = (activeDisctrictId == Guid.Empty) ? null : activeDisctrictId,
-                        MunicipalityId = (activeMunicipalityId == Guid.Empty) ? null : activeMunicipalityId,
+                        MunicipalityId = activeMunicipalityId,
                         Designation = (nominatimAddressDTO.Address.Suburb != null) ? nominatimAddressDTO.Address.Suburb : (nominatimAddressDTO.Address.City_District != null) ? nominatimAddressDTO.Address.City_District : (nominatimAddressDTO.Address.Town == null) ? nominatimAddressDTO.Address.City : nominatimAddressDTO.Address.Town
 
                     };
 
-                    if (await suburbRepository.CreateSuburb(suburb) == null)
+                    if (activeMunicipalityId != Guid.Empty && await suburbRepository.CreateSuburb(suburb) == null)
                     {
-                        //Log something here. Information Logs For a particular suburb. 
+                        //Log something here. Information Logs For a particular suburb.
                     }
                 }
 
@@ -931,15 +931,15 @@ namespace LarksWebApp.Controllers.API
                     {
                         CityId = (activeCityId == Guid.Empty) ? null : activeCityId,
                         DistrictId = (activeDisctrictId == Guid.Empty) ? null : activeDisctrictId,
-                        MunicipalityId = (activeMunicipalityId == Guid.Empty) ? null : activeMunicipalityId,
+                        MunicipalityId = activeMunicipalityId,
                         Designation = extractSuburb,
                         ReviewName = true
 
                     };
 
-                    if (await suburbRepository.CreateSuburb(suburb) == null)
+                    if (activeMunicipalityId != Guid.Empty && await suburbRepository.CreateSuburb(suburb) == null)
                     {
-                        //Log something here. Information Logs For a particular suburb. 
+                        //Log something here. Information Logs For a particular suburb.
                     }
                 }
 

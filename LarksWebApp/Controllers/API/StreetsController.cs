@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using LarksWebApp.DTOs;
-using LarksWebApp.DTOs.DTO_Neighbourhoods;
+using LarksWebApp.DTOs.DTO_Suburbs;
 using LarksWebApp.DTOs.DTO_Streets;
 using LarksWebApp.Models;
 using LarksWebApp.Models.CoordinatesModel;
 using LarksWebApp.Repository.AddressRepository.StreetRepository;
-using LarksWebApp.Repository.AssoHoodStreetRepository;
+using LarksWebApp.Repository.SuburbStreetRepository;
 using LarksWebApp.Repository.StreetRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Authorization;
@@ -22,18 +22,18 @@ namespace LarksWebApp.Controllers.API
     {
         private readonly IMapper _mapper;
         private readonly IStreetRepository _streetRepository;
-        private readonly INeighbourhoodStreet _neighbourhoodStreet;
+        private readonly ISuburbStreetRepository _suburbStreetRepository;
         private readonly IStreetCoordinateRepository _streetCoordinateRepo;
 
         private readonly ServiceLogger serviceLogger;
 
-        public StreetsController(IMapper mapper, IStreetRepository streetRepository, INeighbourhoodStreet neighbourhoodStreet , IStreetCoordinateRepository streetCoordinateRepository)
+        public StreetsController(IMapper mapper, IStreetRepository streetRepository, ISuburbStreetRepository suburbStreetRepository , IStreetCoordinateRepository streetCoordinateRepository)
         {
             _streetCoordinateRepo = streetCoordinateRepository;
             _mapper = mapper;
             _streetRepository = streetRepository;
             serviceLogger = new ServiceLogger();
-            _neighbourhoodStreet = neighbourhoodStreet;
+            _suburbStreetRepository = suburbStreetRepository;
         }
 
 
@@ -104,16 +104,16 @@ namespace LarksWebApp.Controllers.API
         }
 
 
-        [HttpGet("StreetsInNeighbourhood")]
-        public IActionResult GetstreetsInNeighbourhood(Guid neighbourhoodId)
+        [HttpGet("StreetsInSuburb")]
+        public IActionResult GetStreetsInSuburb(Guid suburbId)
         {
             try
             {
-                var neighBourhoodstreetObjList = _streetRepository.GetStreetInNeighBourhood(neighbourhoodId);
+                var suburbStreetObjList = _streetRepository.GetStreetsInSuburb(suburbId);
 
                 var streetListDTO = new List<View_Street_DTO>();
 
-                foreach (var StreetObj in neighBourhoodstreetObjList)
+                foreach (var StreetObj in suburbStreetObjList)
                 {
 
                     var streetCoordinates = _mapper.Map<IList<BaseCoordinatesDTO>>(StreetObj.Streets.StreetCoordinates);
@@ -133,23 +133,23 @@ namespace LarksWebApp.Controllers.API
             }
             catch (Exception ex)
             {
-                serviceLogger.LogError("Retrieving streets in a Neighbourhood " + ex.Message);
+                serviceLogger.LogError("Retrieving streets in a Suburb " + ex.Message);
                 return BadRequest();
             }        
         }
 
 
-        [HttpGet("StreetsInNeighbourhoodByName")]
-        public IActionResult GetStreetsInNeighbourhoodByValue(Guid neighbourhoodId, string streetValue)
+        [HttpGet("StreetsInSuburbByName")]
+        public IActionResult GetStreetsInSuburbByValue(Guid suburbId, string streetValue)
         {
             try
             {
 
-                var neighBourhoodstreetObjList = _streetRepository.GetStreetInNeighBourhoodByValue(neighbourhoodId,streetValue);
+                var suburbStreetObjList = _streetRepository.GetStreetsInSuburbByValue(suburbId,streetValue);
 
                 var streetListDTO = new List<View_Street_DTO>();
 
-                foreach (var StreetObj in neighBourhoodstreetObjList)
+                foreach (var StreetObj in suburbStreetObjList)
                 {
 
                     var streetCoordinates = _mapper.Map<IList<BaseCoordinatesDTO>>(StreetObj.Streets.StreetCoordinates);
@@ -170,7 +170,7 @@ namespace LarksWebApp.Controllers.API
             catch (Exception ex)
             {
                 ModelState.AddModelError("error", "There was an error whie trying to retrieve the streets");
-                serviceLogger.LogError("Retrieving streets in a Neighbourhood " + ex.Message);
+                serviceLogger.LogError("Retrieving streets in a Suburb " + ex.Message);
                 return BadRequest(ModelState);
             }
         }
@@ -185,23 +185,23 @@ namespace LarksWebApp.Controllers.API
 
                 var streetDTO =new View_Street_DTO();
 
-                var neighbourhoods = new List<SuburbDTO>();
+                var suburbs = new List<SuburbDTO>();
 
                 var streetCoordinatesList = new List<BaseCoordinatesDTO>();
 
                 
 
-                foreach (var neighbourhoodStreet in streetObj.NeighbourhoodStreets)
+                foreach (var suburbStreetLink in streetObj.SuburbLinks)
                 {
 
-                    var neighbourhood = new SuburbDTO
+                    var suburb = new SuburbDTO
                     {
-                        Id = neighbourhoodStreet.Suburb.Id,
-                        MunicipalityId = (Guid)neighbourhoodStreet.Suburb.MunicipalityId,
-                        Designation = neighbourhoodStreet.Suburb.Designation
+                        Id = suburbStreetLink.Suburb.Id,
+                        MunicipalityId = (Guid)suburbStreetLink.Suburb.MunicipalityId,
+                        Designation = suburbStreetLink.Suburb.Designation
                     };
 
-                    neighbourhoods.Add(neighbourhood);
+                    suburbs.Add(suburb);
                 }
 
 
@@ -219,7 +219,7 @@ namespace LarksWebApp.Controllers.API
 
 
                 streetDTO.Id = streetObj.Id;
-                streetDTO.Neighbourhoods = neighbourhoods;
+                streetDTO.Suburbs = suburbs;
                 streetDTO.Designation = streetObj.Designation;
                 streetDTO.Coordinates = streetCoordinatesList;
    
@@ -262,26 +262,26 @@ namespace LarksWebApp.Controllers.API
                 }
 
                 /*
-                 * Associate street to the Neighbourhoods
+                 * Associate street to the Suburbs
                  * **/
 
-                var neighbourhoodList = new List<SuburbStreets>();
+                var suburbLinkList = new List<SuburbStreets>();
 
-                for (int i = 0; i < streetDTO.NeighbourhoodID.Count; i++)
+                for (int i = 0; i < streetDTO.SuburbID.Count; i++)
                 {
 
-                    var neighbourhooObj = new SuburbStreets
+                    var suburbLinkObj = new SuburbStreets
                     {
-                        SuburbId = streetDTO.NeighbourhoodID[i],
+                        SuburbId = streetDTO.SuburbID[i],
                         StreetsID = streetObj.Id
                     };
 
-                    neighbourhoodList.Add(neighbourhooObj);
+                    suburbLinkList.Add(suburbLinkObj);
                 }
 
-                if (!await _neighbourhoodStreet.AssociateStreetToNeighBourhoods(neighbourhoodList))
+                if (!await _suburbStreetRepository.AssociateStreetToSuburbs(suburbLinkList))
                 {
-                    ModelState.AddModelError("", $"Something went wrong while associating the street {streetObj.Designation} to neighbourhoods");
+                    ModelState.AddModelError("", $"Something went wrong while associating the street {streetObj.Designation} to suburbs");
 
                     return StatusCode(201, ModelState);
                 }
@@ -331,17 +331,17 @@ namespace LarksWebApp.Controllers.API
         // end point for DataTable API
         [Route("[action]")]
         [HttpPost]
-        public IActionResult StreetsInNeighbourhood(Guid neighbourhoodId)
+        public IActionResult StreetsInSuburb(Guid suburbId)
         {
             try
             {
                 ///Consider running paginations in the Entity Framework
 
-                var neighBourhoodstreetObjList = _streetRepository.GetStreetInNeighBourhood(neighbourhoodId);
+                var suburbStreetObjList = _streetRepository.GetStreetsInSuburb(suburbId);
 
                 var streetListDTO = new List<View_Street_DTO>();
 
-                foreach (var StreetObj in neighBourhoodstreetObjList)
+                foreach (var StreetObj in suburbStreetObjList)
                 {
 
                     var streetCoordinates = _mapper.Map<IList<BaseCoordinatesDTO>>(StreetObj.Streets.StreetCoordinates);

@@ -3,7 +3,7 @@ using LarksWebApp.DTOs;
 using LarksWebApp.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace LarksWebApp.Repository.HoodRepository
+namespace LarksWebApp.Repository.SuburbRepository
 {
     public class SuburbRepository : ISuburbRepository
     {
@@ -25,17 +25,18 @@ namespace LarksWebApp.Repository.HoodRepository
             return null;
         }
 
-        public bool DeleteNeighbourhood(SuburbModel suburb)
+        public bool DeleteSuburb(SuburbModel suburb)
         {
 
-            _dbContext.Suburb.Remove(suburb);
+            suburb.IsDeleted = true;
+            _dbContext.Suburb.Update(suburb);
 
             return Save();
         }
 
         public SuburbModel GetSuburb(Guid suburbId)
         {
-            return _dbContext.Suburb.Include(s =>s.NeighbourhoodStreets)
+            return _dbContext.Suburb.Include(s =>s.StreetLinks)
                 .ThenInclude(s =>s.Streets).Where(n =>n.Id == suburbId).FirstOrDefault();
         }
 
@@ -50,7 +51,7 @@ namespace LarksWebApp.Repository.HoodRepository
         }
 
 
-        public IList<SuburbModel> GetNeighbourhoodInMunicipality(Guid municipalityId)
+        public IList<SuburbModel> GetSuburbsInMunicipality(Guid municipalityId)
         {
             return _dbContext.Suburb
                 .Include(s => s.City)
@@ -59,7 +60,7 @@ namespace LarksWebApp.Repository.HoodRepository
                 .Where(p =>p.MunicipalityId == municipalityId).ToList();
         }
 
-        public IList<SuburbModel> GetNeighbourhoodModels()
+        public IList<SuburbModel> GetSuburbs()
         {
             return _dbContext.Suburb
                 .Include(s => s.City)
@@ -69,7 +70,7 @@ namespace LarksWebApp.Repository.HoodRepository
 
         }
 
-        public IList<SuburbModel> GetNeighbourhoodModels(string sector, Guid id)
+        public IList<SuburbModel> GetSuburbs(string sector, Guid id)
         {
 
 
@@ -94,9 +95,9 @@ namespace LarksWebApp.Repository.HoodRepository
             return _dbContext.SaveChanges() >= 0;
         }
 
-        public bool UpdateNeighbourhoody(SuburbModel neighbourhood)
+        public bool UpdateSuburb(SuburbModel suburb)
         {
-            _dbContext.Suburb.Update(neighbourhood);
+            _dbContext.Suburb.Update(suburb);
 
             return Save();
         }
@@ -113,10 +114,10 @@ namespace LarksWebApp.Repository.HoodRepository
             if (suburb != null)
                 return suburb;
 
-           return _dbContext.Suburb.FirstOrDefault(n => n.Designation.Trim() == designation.Trim() && n.CityId == cityId);          
+           return _dbContext.Suburb.FirstOrDefault(n => n.Designation.Trim() == designation.Trim() && n.CityId == cityId);
         }
 
-        public bool VerifyNeighbourhoodExist(Guid Id)
+        public bool VerifySuburbExistsById(Guid Id)
         {
             return _dbContext.Suburb.Any(n => n.Id == Id);
         }
@@ -126,7 +127,7 @@ namespace LarksWebApp.Repository.HoodRepository
             throw new NotImplementedException();
         }
 
-        public IList<SuburbModel> GetNeighbourhoodModels(Guid districtId, Guid municipalityId, Guid cityId)
+        public IList<SuburbModel> GetSuburbs(Guid districtId, Guid municipalityId, Guid cityId)
         {
 
             return _dbContext.Suburb.Where(s => s.DistrictId == districtId || s.MunicipalityId == municipalityId || s.CityId == cityId).ToList();

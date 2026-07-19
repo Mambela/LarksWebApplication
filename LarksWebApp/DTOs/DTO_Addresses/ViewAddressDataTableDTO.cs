@@ -12,7 +12,7 @@
   
 
 
-        public string Neighbourhood { get; set; }
+        public string Suburb { get; set; }
 
         public string StreetName { get; set; }
 

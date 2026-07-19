@@ -59,7 +59,7 @@ namespace LarksWebApp.Repository.CityRepository
 
         public CityModel GetCity(Guid id)
         {
-            return _dbContext.Cities.Include(c => c.Neighbourhoods.Where(n => n.Id == id)).FirstOrDefault();
+            return _dbContext.Cities.Include(c => c.Suburbs.Where(n => n.Id == id)).FirstOrDefault();
         }
 
         public CityModel RetrieveCity(Guid id)

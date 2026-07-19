@@ -3,7 +3,7 @@ using LarksWebApp.DTOs.DTO_Municipalities;
 using LarksWebApp.DTOs.DTO_Provinces;
 using LarksWebApp.Models;
 using LarksWebApp.Repository.CityRepository;
-using LarksWebApp.Repository.HoodRepository;
+using LarksWebApp.Repository.SuburbRepository;
 using LarksWebApp.Repository.MunicipalityRepository;
 using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Services.Loggers;
@@ -137,8 +137,8 @@ namespace LarksWebApp.Controllers
             }
         }
 
-        // GET: MunicipalitiesController/CreateNeighbourhood
-        public ActionResult CreateNeighbourhood(Guid provinceId)
+        // GET: MunicipalitiesController/CreateSuburb
+        public ActionResult CreateSuburb(Guid provinceId)
         {
             try
             {
@@ -155,15 +155,15 @@ namespace LarksWebApp.Controllers
             }
             catch (Exception ex)
             {
-                serviceLogger.LogError("Create neighbourhood " + ex.Message);
+                serviceLogger.LogError("Create suburb " + ex.Message);
                 return RedirectToAction(nameof(Index), new { provinceId });
             }
         }
 
-        // POST: MunicipalitiesController/CreateNeighbourhood
+        // POST: MunicipalitiesController/CreateSuburb
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateNeighbourhood(Guid provinceId, Guid cityId, Guid districtId, Guid municipalityId, string designation)
+        public async Task<ActionResult> CreateSuburb(Guid provinceId, Guid cityId, Guid districtId, Guid municipalityId, string designation)
         {
             try
             {
@@ -172,7 +172,7 @@ namespace LarksWebApp.Controllers
                     throw new Exception("Invalid Model State");
                 }
 
-                var neighbourhood = new SuburbModel()
+                var suburb = new SuburbModel()
                 {
                     CityId = cityId,
                     DistrictId = districtId,
@@ -180,11 +180,11 @@ namespace LarksWebApp.Controllers
                     Designation = designation
                 };
 
-                await _suburbRepository.CreateSuburb(neighbourhood);
+                await _suburbRepository.CreateSuburb(suburb);
             }
             catch (Exception ex)
             {
-                serviceLogger.LogError("Create neighbourhood " + ex.Message);
+                serviceLogger.LogError("Create suburb " + ex.Message);
             }
 
             return RedirectToAction(nameof(Index), new { provinceId });

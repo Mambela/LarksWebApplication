@@ -1,20 +1,20 @@
-﻿using LarksWebApp.Models;
+using LarksWebApp.Models;
 
-namespace LarksWebApp.Repository.AssoHoodStreetRepository
+namespace LarksWebApp.Repository.SuburbStreetRepository
 {
-    public interface INeighbourhoodStreet
+    public interface ISuburbStreetRepository
     {
-        Task<SuburbStreets> AssociateStreetToNeighbourhood(SuburbStreets neighbourhoodStreets);
+        Task<SuburbStreets> AssociateStreetToSuburb(SuburbStreets suburbStreets);
 
-        Task<bool> AssociateStreetToNeighBourhoods(IList<SuburbStreets> neighbourhoodStreets);
-
-
-        SuburbStreets GetNeighbourhoodStreet(Guid hoodId, Guid StreetId);
+        Task<bool> AssociateStreetToSuburbs(IList<SuburbStreets> suburbStreets);
 
 
-        IList<SuburbStreets> GetStreetsInNeighbourhood(Guid hoodId);
+        SuburbStreets GetSuburbStreet(Guid suburbId, Guid StreetId);
 
-        bool RemoveNeighbourHoodStreetsAssociation(SuburbStreets neighbourhood);
+
+        IList<SuburbStreets> GetStreetsInSuburb(Guid suburbId);
+
+        bool RemoveSuburbStreetAssociation(SuburbStreets suburbStreets);
 
 
         bool Save();

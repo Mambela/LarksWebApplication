@@ -1,6 +1,6 @@
 ﻿using LarksWebApp.Models;
 
-namespace LarksWebApp.Repository.HoodRepository
+namespace LarksWebApp.Repository.SuburbRepository
 {
     public interface ISuburbRepository
     {
@@ -8,21 +8,21 @@ namespace LarksWebApp.Repository.HoodRepository
 
         SuburbModel GetSuburbInMunicipality(string designation, string municipalityId);
 
-        bool VerifyNeighbourhoodExist(Guid Id);
+        bool VerifySuburbExistsById(Guid Id);
 
-        Task<SuburbModel> CreateSuburb(SuburbModel neighbourhood);
+        Task<SuburbModel> CreateSuburb(SuburbModel suburb);
 
-        SuburbModel GetSuburb(Guid neighbourhoodId);
+        SuburbModel GetSuburb(Guid suburbId);
 
         IList<SuburbModel> GetSuburbsByName(string designation);
 
-        IList<SuburbModel> GetNeighbourhoodInMunicipality(Guid municipalityId);
+        IList<SuburbModel> GetSuburbsInMunicipality(Guid municipalityId);
 
 
-        IList<SuburbModel> GetNeighbourhoodModels();
+        IList<SuburbModel> GetSuburbs();
 
-        IList<SuburbModel> GetNeighbourhoodModels(string sector, Guid id);
-        IList<SuburbModel> GetNeighbourhoodModels(Guid districtId, Guid municipalityId,Guid cityId);
+        IList<SuburbModel> GetSuburbs(string sector, Guid id);
+        IList<SuburbModel> GetSuburbs(Guid districtId, Guid municipalityId,Guid cityId);
 
         IList<SuburbModel> GetSuburbsInProvince(Guid ProvinceId);
 
@@ -34,10 +34,10 @@ namespace LarksWebApp.Repository.HoodRepository
         IList<SuburbModel> GetSuburbs(IList<Guid> suburbs);
 
 
-        public bool DeleteNeighbourhood(SuburbModel neighbourhood);
+        public bool DeleteSuburb(SuburbModel suburb);
 
 
-        public bool UpdateNeighbourhoody(SuburbModel neighbourhood);
+        public bool UpdateSuburb(SuburbModel suburb);
 
         bool Save();
     }

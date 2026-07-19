@@ -98,10 +98,10 @@ $(document).ready(function () {
                 $hiddenInput.val(selectedMunicipalityId);
 
 
-                var endPoint = "api/Suburb/sectorNeighbourhood?sector=municipality&id=" + selectedMunicipalityId;
+                var endPoint = "api/Suburb/sectorSuburb?sector=municipality&id=" + selectedMunicipalityId;
 
                 console.log('Municipality Id ', selectedMunicipalityId);
-                FetchChildNodes(endPoint, '#dataListNeighbourhood');
+                FetchChildNodes(endPoint, '#dataListSuburb');
 
                  
                 break;
@@ -110,8 +110,8 @@ $(document).ready(function () {
     });
 
 
-    $('#searchNeighbourhood').on('input', function (e) {
-        //we are searching the streets under Neighbourhood.
+    $('#searchSuburb').on('input', function (e) {
+        //we are searching the streets under Suburb.
 
         var $input = $(e.target);
         $options = $('#' + $input.attr('list') + ' option'),
@@ -133,13 +133,13 @@ $(document).ready(function () {
             labelName = labelName.replaceAll(" ","");
 
             if (optionName.trim() === labelName.trim()) {
-                var selectedNeighbourhoodId = $option.attr('data-value')
-                $hiddenInput.val(selectedNeighbourhoodId);
+                var selectedSuburbId = $option.attr('data-value')
+                $hiddenInput.val(selectedSuburbId);
 
 
-                var endPoint = "api/Streets/StreetsInNeighbourhood?neighbourhoodId=" + selectedNeighbourhoodId;
+                var endPoint = "api/Streets/StreetsInSuburb?suburbId=" + selectedSuburbId;
  
-                console.log('Neighbourhood Id ', selectedNeighbourhoodId);
+                console.log('Suburb Id ', selectedSuburbId);
 
                 FetchChildNodes(endPoint, '#dataListStreet');
 
@@ -151,7 +151,7 @@ $(document).ready(function () {
 
 
     $('#searchAddress').on('input', function (e) {
-        //we are searching the streets under Neighbourhood.
+        //we are searching the streets under Suburb.
 
         var $input = $(e.target);
         $options = $('#' + $input.attr('list') + ' option'),
@@ -313,7 +313,7 @@ $(document).ready(function () {
             try {
                 let result_data = await RetrieveChildrenAsync(endPoint);
 
-                $("#dataListNeighbourhood").empty();
+                $("#dataListSuburb").empty();
 
                 console.log(result_data);
                 var listOfProvinces = result_data;
@@ -345,23 +345,23 @@ $(document).ready(function () {
                 $(targetElement).empty();
 
                 console.log(result_data);
-                var listOfNeighbourhoods = result_data;
+                var listOfSuburbs = result_data;
                 //currentProvinceList = result_data;
                                
 
                     switch (columnDecision) {
 
                         case "default":
-                            UpdateChildrenData(listOfNeighbourhoods, targetElement);
+                            UpdateChildrenData(listOfSuburbs, targetElement);
                             break;
                         case "fulladdress":
-                            UpdateAddressData(listOfNeighbourhoods, targetElement);
+                            UpdateAddressData(listOfSuburbs, targetElement);
                             break;
                         default:
                 }
 
 
-                console.log(listOfNeighbourhoods);
+                console.log(listOfSuburbs);
 
 
             } catch (error) {
@@ -404,7 +404,7 @@ $(document).ready(function () {
         UpdateProvinceChildren(singleProvince);
     }
 
-    function UpdateDropDownList(data, destinationControl, attribute = 'Neighbourhood') {
+    function UpdateDropDownList(data, destinationControl, attribute = 'Suburb') {
 
         var optionList = '<option disabled selected>Select a ' + attribute + ' </option>';
 

@@ -2,17 +2,17 @@ using LarksWebApp.DAL;
 using LarksWebApp.Repository.AddressRepository.Address_Repository;
 using LarksWebApp.Repository.AddressRepository.BuildingTypeRepository;
 using LarksWebApp.Repository.AddressRepository.StreetRepository;
-using LarksWebApp.Repository.AssoHoodStreetRepository;
+using LarksWebApp.Repository.SuburbStreetRepository;
 using LarksWebApp.Repository.CategoryRepository;
 using LarksWebApp.Repository.CityRepository;
 using LarksWebApp.Repository.Coordinates.CityCoordinateRepository;
-using LarksWebApp.Repository.Coordinates.HoodCoordinateRepository;
+using LarksWebApp.Repository.Coordinates.SuburbCoordinateRepository;
 using LarksWebApp.Repository.Coordinates.MunicipalityCoordinateRepository;
 using LarksWebApp.Repository.Coordinates.ProviceCoordinateRepository;
 using LarksWebApp.Repository.Coordinates.StreetCoordinateRepository;
 using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Repository.DistrictRepository;
-using LarksWebApp.Repository.HoodRepository;
+using LarksWebApp.Repository.SuburbRepository;
 using LarksWebApp.Repository.LocationRepository;
 using LarksWebApp.Repository.MunicipalityRepository;
 using LarksWebApp.Repository.ProviceRepository;
@@ -38,14 +38,35 @@ using LarksWebApp.Services.PaginationService;
 using Microsoft.AspNetCore.Mvc;
 using LarksWebApp.Services.InternalService;
 using System.Timers;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddCors();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(typeof(EntityMapping));
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Larks Web App API", Version = "v1" });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter a JWT bearer token obtained from POST /api/Authenticate"
+    });
+
+    c.AddSecurityRequirement(doc => new OpenApiSecurityRequirement
+    {
+        { new OpenApiSecuritySchemeReference("Bearer", doc), new List<string>() }
+    });
+});
 
 
 
@@ -74,13 +95,18 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
     .AddDefaultTokenProviders();
 
 
+var corsAllowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+
 builder.Services.AddCors(o =>
 {
-    o.AddDefaultPolicy(builder =>
+    o.AddDefaultPolicy(policy =>
     {
-        builder.AllowAnyOrigin()
-        .AllowAnyHeader()
-        .AllowAnyMethod();
+        if (corsAllowedOrigins.Length > 0)
+        {
+            policy.WithOrigins(corsAllowedOrigins)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
     });
 });
 
@@ -95,7 +121,9 @@ builder.Services.AddAuthentication(options =>
 {
 
     options.DefaultScheme = "JWT_OR_IDENTITY";
+    options.DefaultAuthenticateScheme = "JWT_OR_IDENTITY";
     options.DefaultChallengeScheme = "JWT_OR_IDENTITY";
+    options.DefaultForbidScheme = "JWT_OR_IDENTITY";
     //options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(o =>
 {
@@ -108,7 +136,7 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = false,
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true
     };
 })
@@ -153,6 +181,9 @@ var app = builder.Build();
 app.UseDeveloperExceptionPage();
 app.UseMigrationsEndPoint();
 
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 ConfigureRolesServices(builder.Services);
 
@@ -161,10 +192,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseCors(x => x
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader());
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -223,12 +251,12 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IProvinceCoordinatesRepository, ProvinceCoordinatesRepository>();
     services.AddScoped<ICityCoordinatesRepository, CityCoordinatesRepository>();
     services.AddScoped<IMunicipalityCoordinateRepository, MunicipalityCoordinateRepository>();
-    services.AddScoped<IHoodCoordinateRepository, HoodCoordinateRepository>();
+    services.AddScoped<ISuburbCoordinateRepository, SuburbCoordinateRepository>();
     services.AddScoped<IStreetCoordinatesRepository, StreetCoordinatesRepository>();
     services.AddScoped<ICategoryRepository, CategoryRepository>();
     services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
     services.AddScoped<ILoggerTrace, ServiceLogger>();
-    services.AddScoped<INeighbourhoodStreet, NeighbourhoodStreeetRepository>();
+    services.AddScoped<ISuburbStreetRepository, SuburbStreetRepository>();
     services.AddScoped<IStreetCoordinateRepository, StreetCoordinateRepository>();
     services.AddScoped<IAddressRepository, AddressRepository>();
     services.AddScoped<IBuildingTypeRepository, BuildingTypeRepository>();
@@ -275,9 +303,10 @@ async void ConfigureRolesServices(IServiceCollection services)
             var context = _services.GetRequiredService<LarksContext>();
             var userManager = _services.GetRequiredService<UserManager<ApplicationUser>>();
             var roleManager = _services.GetRequiredService<RoleManager<IdentityRole>>();
+            var configuration = _services.GetRequiredService<IConfiguration>();
 
             await ContextSeed.SeedRolesAsync(userManager, roleManager);
-            await ContextSeed.SeedSuperAdminAsync(userManager, roleManager);
+            await ContextSeed.SeedSuperAdminAsync(userManager, roleManager, configuration, logger);
 
         }
         catch (Exception ex)

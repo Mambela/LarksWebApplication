@@ -12,6 +12,6 @@ namespace LarksWebApp.Models
 
         public ProvinceModel Province { get; set; }
 
-        public IList<SuburbModel> Neighbourhoods { get; set; }
+        public IList<SuburbModel> Suburbs { get; set; }
     }
 }

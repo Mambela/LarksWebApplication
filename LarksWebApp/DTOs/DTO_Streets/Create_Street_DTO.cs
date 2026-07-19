@@ -1,7 +1,7 @@
 ﻿using LarksWebApp.DTOs.DTO_City;
 using LarksWebApp.DTOs.DTO_Districts;
 using LarksWebApp.DTOs.DTO_Municipalities;
-using LarksWebApp.DTOs.DTO_Neighbourhoods;
+using LarksWebApp.DTOs.DTO_Suburbs;
 using LarksWebApp.DTOs.DTO_Provinces;
 
 namespace LarksWebApp.DTOs.DTO_Streets
@@ -12,7 +12,7 @@ namespace LarksWebApp.DTOs.DTO_Streets
         public Guid Id { get; set; }
         public string Designation { get; set; }
 
-        public IList<Guid> NeighbourhoodID { get; set; }
+        public IList<Guid> SuburbID { get; set; }
 
         public Guid ? CountryId  { get; set; }
 
@@ -23,7 +23,7 @@ namespace LarksWebApp.DTOs.DTO_Streets
 
         public IList<DistrictDTO> ? ListofDistrictDTO { get; set; }
         public IList<MunicipalityDTO> ? ListofMunicipalityDTO { get; set; }
-        public IList<SuburbDTO> ? ListofNeighbourhoodDTO { get; set; }
+        public IList<SuburbDTO> ? ListofSuburbDTO { get; set; }
         public IList<BaseCoordinatesDTO> ? Coordinates{ get; set; }
 
 

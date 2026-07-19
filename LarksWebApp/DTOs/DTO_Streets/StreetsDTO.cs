@@ -4,7 +4,7 @@
     {
         public Guid Id { get; set; }
         public string Designation { get; set; }
-        public Guid NeighbourhoodID { get; set; }
+        public Guid SuburbID { get; set; }
 
         
     }

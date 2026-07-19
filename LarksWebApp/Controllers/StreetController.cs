@@ -6,7 +6,7 @@ using LarksWebApp.DTOs.DTO_Streets;
 using LarksWebApp.Models;
 using LarksWebApp.Models.CoordinatesModel;
 using LarksWebApp.Repository.AddressRepository.StreetRepository;
-using LarksWebApp.Repository.AssoHoodStreetRepository;
+using LarksWebApp.Repository.SuburbStreetRepository;
 using LarksWebApp.Repository.CountryRepository;
 using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Repository.StreetRepository;
@@ -25,7 +25,7 @@ namespace LarksWebApp.Controllers
         private readonly ICountryRepository _countryRepo;
         private readonly IStreetRepository _streetRepo;
         private readonly IStreetCoordinateRepository _streetCoordinateRepo;
-        private readonly INeighbourhoodStreet _neighbourhoodStreet;
+        private readonly ISuburbStreetRepository _suburbStreetRepository;
         private readonly IMapper _mapper;
         private readonly ILoggerTrace serviceLogger;
         private readonly IProvinceRepository _provinceRepository;
@@ -77,15 +77,15 @@ namespace LarksWebApp.Controllers
             return View();
         }
 
-        public ActionResult StreetsInNeighbourhood(Guid neighbourhoodId)
+        public ActionResult StreetsInSuburb(Guid suburbId)
         {
             try
             {
-                var neighBourhoodstreetObjList = _streetRepo.GetStreetInNeighBourhood(neighbourhoodId);
+                var suburbStreetObjList = _streetRepo.GetStreetsInSuburb(suburbId);
 
                 var streetListDTO = new List<View_Street_DTO>();
 
-                foreach (var StreetObj in neighBourhoodstreetObjList)
+                foreach (var StreetObj in suburbStreetObjList)
                 {
 
                     var streetCoordinates = _mapper.Map<IList<BaseCoordinatesDTO>>(StreetObj.Streets.StreetCoordinates);
@@ -106,7 +106,7 @@ namespace LarksWebApp.Controllers
             }
             catch (Exception ex)
             {
-                serviceLogger.LogError("Retrieving streets in a Neighbourhood " + ex.Message);
+                serviceLogger.LogError("Retrieving streets in a Suburb " + ex.Message);
                 return BadRequest();
             }
         }
@@ -189,26 +189,26 @@ namespace LarksWebApp.Controllers
                 }
 
                 /*
-                 * Associate street to the Neighbourhoods
+                 * Associate street to the Suburbs
                  * **/
 
-                var neighbourhoodList = new List<SuburbStreets>();
+                var suburbLinkList = new List<SuburbStreets>();
 
-                for (int i = 0; i < streetDTO.NeighbourhoodID.Count; i++)
+                for (int i = 0; i < streetDTO.SuburbID.Count; i++)
                 {
 
-                    var neighbourhooObj = new SuburbStreets
+                    var suburbLinkObj = new SuburbStreets
                     {
-                        SuburbId = streetDTO.NeighbourhoodID[i],
+                        SuburbId = streetDTO.SuburbID[i],
                         StreetsID = streetObj.Id
                     };
 
-                    neighbourhoodList.Add(neighbourhooObj);
+                    suburbLinkList.Add(suburbLinkObj);
                 }
 
-                if (!await _neighbourhoodStreet.AssociateStreetToNeighBourhoods(neighbourhoodList))
+                if (!await _suburbStreetRepository.AssociateStreetToSuburbs(suburbLinkList))
                 {
-                    ModelState.AddModelError("", $"Something went wrong while associating the street {streetObj.Designation} to neighbourhoods");
+                    ModelState.AddModelError("", $"Something went wrong while associating the street {streetObj.Designation} to suburbs");
 
                     return StatusCode(201, ModelState);
                 }
@@ -271,7 +271,14 @@ namespace LarksWebApp.Controllers
         // GET: StreetController/Edit/5
         public ActionResult Edit(Guid id)
         {
-            return View();
+            var streetObj = _streetRepo.GetStreetModel(id);
+
+            if (streetObj == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            return View(streetObj);
         }
 
         // POST: StreetController/Edit/5
@@ -281,10 +288,22 @@ namespace LarksWebApp.Controllers
         {
             try
             {
+                var streetObj = _streetRepo.GetStreetModel(id);
+
+                if (streetObj == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound);
+                }
+
+                streetObj.Designation = collection["Designation"];
+
+                _streetRepo.UpdateStreet(streetObj);
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                serviceLogger.LogError("Edit street " + ex.Message);
                 return View();
             }
         }
@@ -292,7 +311,14 @@ namespace LarksWebApp.Controllers
         // GET: StreetController/Delete/5
         public ActionResult Delete(Guid id)
         {
-            return View();
+            var streetObj = _streetRepo.GetStreetModel(id);
+
+            if (streetObj == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            return View(streetObj);
         }
 
         // POST: StreetController/Delete/5
@@ -302,10 +328,18 @@ namespace LarksWebApp.Controllers
         {
             try
             {
+                var streetObj = _streetRepo.GetStreetModel(id);
+
+                if (streetObj != null)
+                {
+                    _streetRepo.DeleteStreet(streetObj);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                serviceLogger.LogError("Delete street " + ex.Message);
                 return View();
             }
         }

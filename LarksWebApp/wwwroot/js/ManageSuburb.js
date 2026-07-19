@@ -14,7 +14,7 @@ $(document).ready(function () {
     var addressCityid = 0;
     var addressDistrictid = 0;
     var addressMunicipalityid = 0;
-    var addressNeighbourhoodid = 0;
+    var addressSuburbid = 0;
     var addressStreetId = 0;
     var addressBuildingTypeId = 0;
     var addressStreetNumber = "";
@@ -88,14 +88,14 @@ $(document).ready(function () {
 
     const municipalityDropDownList = document.getElementById('street_MunicipalityId');
 
-    const hoodDropDownList = document.getElementById('street_hoodId');
+    const suburbDropDownList = document.getElementById('street_suburbId');
 
     const streetDropDownList = document.getElementById('streetId');
 
     const buildingTypeList = document.getElementById('BuildingTypeId');
 
 
-    // const btnSaveNeighbourhood = document.getElementById('saveNeighbourhood');
+    // const btnSaveSuburb = document.getElementById('saveSuburb');
 
 
 
@@ -104,15 +104,15 @@ $(document).ready(function () {
      * **/
 
     
-    var currentNeighburhoodList = [];
+    var currentSuburbList = [];
     var coordinatesArray = [];
 
 
     /*
      * Fetch Provinces under country
      * **
-     * Fetch the Negihbourhood under a municipality
-     * Fetch the Negihbourhood under a District
+     * Fetch the Suburb under a municipality
+     * Fetch the Suburb under a District
      */
 
     //
@@ -159,7 +159,7 @@ $(document).ready(function () {
 
             var municipalityId = event.target.value;
 
-            RetrieveElementChildren('Suburb/sectorNeighbourhood?sector=municipality&id=' + municipalityId, hoodDropDownList)
+            RetrieveElementChildren('Suburb/sectorSuburb?sector=municipality&id=' + municipalityId, suburbDropDownList)
             addressMunicipalityid = municipalityId;
 
             if (previewMunicipality) {
@@ -175,7 +175,7 @@ $(document).ready(function () {
 
             var districtId = event.target.value;
 
-            RetrieveElementChildren('Suburb/sectorNeighbourhood?sector=districts&id=' + districtId, hoodDropDownList)
+            RetrieveElementChildren('Suburb/sectorSuburb?sector=districts&id=' + districtId, suburbDropDownList)
             addressDistrictid = districtId;
 
             if (previewDistrict) {
@@ -191,7 +191,7 @@ $(document).ready(function () {
 
             var cityId = event.target.value;
 
-            RetrieveElementChildren('Suburb/sectorNeighbourhood?sector=city&id=' + cityId, hoodDropDownList)
+            RetrieveElementChildren('Suburb/sectorSuburb?sector=city&id=' + cityId, suburbDropDownList)
             addressCityid = cityId;
 
             if (previewCity) {
@@ -202,17 +202,17 @@ $(document).ready(function () {
         });
     }
 
-    if (hoodDropDownList) {
-        hoodDropDownList.addEventListener('change', function handleChange(event) {
+    if (suburbDropDownList) {
+        suburbDropDownList.addEventListener('change', function handleChange(event) {
 
-            var hoodId = event.target.value;
+            var suburbId = event.target.value;
 
-            RetrieveElementChildren('Street/StreetsInNeighbourhood?neighbourhoodId=' + hoodId, streetDropDownList)
-            addressNeighbourhoodid = hoodId;
+            RetrieveElementChildren('Street/StreetsInSuburb?suburbId=' + suburbId, streetDropDownList)
+            addressSuburbid = suburbId;
 
 
-            if (previewNeibourhood) {
-                previewNeibourhood.innerText = $("#street_hoodId  option:selected").text();
+            if (previewSuburb) {
+                previewSuburb.innerText = $("#street_suburbId  option:selected").text();
             }
 
         });
@@ -285,7 +285,7 @@ $(document).ready(function () {
             });
     }
 
-    function UpdateDropDownList(data, destinationControl, attribute ='Neighbourhood') {
+    function UpdateDropDownList(data, destinationControl, attribute ='Suburb') {
 
         
 
@@ -305,9 +305,9 @@ $(document).ready(function () {
          
       
 
-        if (attribute == 'Neighbourhood') {
+        if (attribute == 'Suburb') {
 
-            CreateNeighbourhoodCheckBoxes(data);
+            CreateSuburbCheckBoxes(data);
         }
 
     }
@@ -345,31 +345,31 @@ $(document).ready(function () {
 
 
 
-        if (hoodDropDownList) {
-            hoodDropDownList.innerHTML = '<option disabled selected> No Neighbourhoods </option>';
+        if (suburbDropDownList) {
+            suburbDropDownList.innerHTML = '<option disabled selected> No Suburbs </option>';
         }
     }
 
-    function CreateNeighbourhoodCheckBoxes(data) {
-        var hoodDiv = document.getElementById('listOfNeighbourhoods');
+    function CreateSuburbCheckBoxes(data) {
+        var suburbDiv = document.getElementById('listOfSuburbs');
 
-        if (hoodDiv) {
+        if (suburbDiv) {
             var listOfInputs = "";
 
 
             for (var i = 0; i < data.length; i++) {
 
-                listOfInputs += `<input type="checkbox" class="btnNeighbourhoodCheckbox" value="${data[i].id}">
+                listOfInputs += `<input type="checkbox" class="btnSuburbCheckbox" value="${data[i].id}">
                             <label for="${data[i].id}"> ${data[i].designation}</label><br>`;
             }
 
-            hoodDiv.innerHTML = listOfInputs;
+            suburbDiv.innerHTML = listOfInputs;
 
-            console.log(hoodDiv);
+            console.log(suburbDiv);
 
-            $('.btnNeighbourhoodCheckbox').click(function (event) {
+            $('.btnSuburbCheckbox').click(function (event) {
 
-                let neighbourhoodId = event.target.value;
+                let suburbId = event.target.value;
 
                 let checkedState = event.target.checked;
 
@@ -377,16 +377,16 @@ $(document).ready(function () {
                 if (checkedState) {
                     //add element 
 
-                    currentNeighburhoodList.push(neighbourhoodId);
+                    currentSuburbList.push(suburbId);
 
                 }
                 else {
 
-                    const index = currentNeighburhoodList.indexOf(neighbourhoodId);
+                    const index = currentSuburbList.indexOf(suburbId);
 
                     if (index > -1) {
 
-                        currentNeighburhoodList.splice(index, 1);
+                        currentSuburbList.splice(index, 1);
 
                     }
 
@@ -409,17 +409,17 @@ $(document).ready(function () {
     //Working with coordinates and Street 
 
 
-    //Save the details of a neighbourhood.
-    $('#saveNeighbourhood').click(function () {
+    //Save the details of a suburb.
+    $('#saveSuburb').click(function () {
 
         //create an object
         //Create an array of loc++
-        //hoodDropDownList
+        //suburbDropDownList
         var streetDTO = new Object();
         var streetName = $("#Designation").val();
 
         streetDTO.Coordinates = coordinatesArray;
-        streetDTO.NeighbourhoodID = currentNeighburhoodList;
+        streetDTO.SuburbID = currentSuburbList;
         streetDTO.Designation = streetName;
         streetDTO.CityId
         streetDTO.MunicipalityId
@@ -484,12 +484,12 @@ $(document).ready(function () {
     });
 
     /*
-     * Associate related neighbouhoods to street 
+     * Associate related suburbs to street 
      *
      * **/
-    $('#addNeighbourhood').click(function () {
+    $('#addSuburb').click(function () {
 
-        addNeighbourhoodToTable();
+        addSuburbToTable();
     });
 
 
@@ -503,21 +503,21 @@ $(document).ready(function () {
 
     }
 
-    function addNeighbourhoodToTable() {
+    function addSuburbToTable() {
 
-        if (!hoodDropDownList) {
-            alert("Please select a neighbourhood");
+        if (!suburbDropDownList) {
+            alert("Please select a suburb");
         }
         else {
-            var neighbourhoodId = hoodDropDownList.value;
-            var neighbourhoodText = hoodDropDownList.innerText;
+            var suburbId = suburbDropDownList.value;
+            var suburbText = suburbDropDownList.innerText;
 
 
-            hoodDropDownList = null;
+            suburbDropDownList = null;
         }
 
 
-        //hoodDropDownList
+        //suburbDropDownList
     }
 
 
@@ -563,7 +563,7 @@ $(document).ready(function () {
                 addressDTO.CountryId = addressCountryid;
                 addressDTO.ProvinceID = addressProvinceid;
                 addressDTO.MunicipalityID = addressMunicipalityid;
-                addressDTO.NeighbourhoodId = addressNeighbourhoodid;
+                addressDTO.SuburbId = addressSuburbid;
                 addressDTO.StreetID = addressStreetId;
                 addressDTO.StreetNumber = $("#StreetNumber").val();
                 addressDTO.AdditionalInfo = $("#AdditionalInfo").val();
@@ -591,7 +591,7 @@ $(document).ready(function () {
 
     const previewStreetNumb = document.getElementById('streetNumbCurrentAddre');
     const previewStreetName = document.getElementById('streetNameCurrentAddre');
-    const previewNeibourhood = document.getElementById('neighbourhoodCurrentAddre');
+    const previewSuburb = document.getElementById('suburbCurrentAddre');
     const previewAdditionalCurrentInfo = document.getElementById('additionInfoCurrentAddre');
     const previewMunicipality = document.getElementById('municipalityCurrentAddre');
     const previewDistrict = document.getElementById('districtCurrentAddre');
@@ -656,9 +656,9 @@ $(document).ready(function () {
             return false;
         }
 
-        if (!addressNeighbourhoodid) {
+        if (!addressSuburbid) {
 
-            swal("Error saving address", "Please select a neighbourhood ", "error");
+            swal("Error saving address", "Please select a suburb ", "error");
             return false;
         }
 

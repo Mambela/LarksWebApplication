@@ -1,13 +1,13 @@
-@model List<LarksWebApp.DTOs.DTO_Neighbourhoods.SuburbDTO>
+@model List<LarksWebApp.DTOs.DTO_Suburbs.SuburbDTO>
 @{
-    ViewData["Title"] = "Neighbourhoods";
+    ViewData["Title"] = "Suburbs";
 }
 
-<div class="app-breadcrumb">Larks &gt; <span class="current">Neighbourhoods</span></div>
+<div class="app-breadcrumb">Larks &gt; <span class="current">Suburbs</span></div>
 
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-    <h3 class="mb-0">Neighbourhoods</h3>
-    <a class="btn btn-primary" href="@Url.Action("Create","Neighbourhood")">+ Create New Neighbourhood</a>
+    <h3 class="mb-0">Suburbs</h3>
+    <a class="btn btn-primary" href="@Url.Action("Create","Suburb")">+ Create New Suburb</a>
 </div>
 
 <div class="app-card">
@@ -15,22 +15,27 @@
         <table class="table table-modern">
             <thead>
                 <tr>
-                    <th scope="col">Neighbourhood</th>
+                    <th scope="col">Suburb</th>
                     <th scope="col">City</th>
                     <th scope="col">District</th>
                     <th scope="col">Municipality</th>
                     <th scope="col">Province</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var neighbourhood in Model)
+                @foreach (var suburb in Model)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => neighbourhood.Designation)</td>
-                        <td>@neighbourhood.CityName</td>
-                        <td>@neighbourhood.DistrictName</td>
-                        <td>@neighbourhood.MunicipalityName</td>
-                        <td>@neighbourhood.ProvinceName</td>
+                        <td>@Html.DisplayFor(modelItem => suburb.Designation)</td>
+                        <td>@suburb.CityName</td>
+                        <td>@suburb.DistrictName</td>
+                        <td>@suburb.MunicipalityName</td>
+                        <td>@suburb.ProvinceName</td>
+                        <td>
+                            <a class="btn btn-primary btn-sm" href="@Url.Action("Edit","Suburb",new{id=suburb.Id})">Edit</a>
+                            <a class="btn btn-danger btn-sm" href="@Url.Action("Delete","Suburb",new{id=suburb.Id})">Delete</a>
+                        </td>
                     </tr>
                 }
             </tbody>

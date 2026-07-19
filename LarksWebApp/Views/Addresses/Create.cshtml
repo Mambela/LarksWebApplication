@@ -57,8 +57,8 @@
                 <div class="col-md-4">
                     <div class="col-md-10">
                         @*ViewBag.CityList is holding all the cities values*@
-                        @Html.Label("listOfMunicipalities","List of Neighbourhood ", new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.DropDownList("street_hoodId",Enumerable.Empty<SelectListItem>(),"Select Municipality",new { @class = "form-control" })
+                        @Html.Label("listOfMunicipalities","List of Suburbs ", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.DropDownList("street_suburbId",Enumerable.Empty<SelectListItem>(),"Select Municipality",new { @class = "form-control" })
                     </div>
                 </div>
                 
@@ -73,7 +73,7 @@
                 <div class="col-md-4">
                     <div class="col-md-10">
                         @*ViewBag.CityList is holding all the cities values*@
-                        @Html.Label("listOfNeighbourhood","List of Neighbourhoods ", new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.Label("listOfSuburb","List of Suburbs ", new { htmlAttributes = new { @class = "form-control" } })
                         @Html.DropDownListFor(m => m.BuildingTypeId,new SelectList(Model.ListOfBuildingType_DTO,"Id","Designation"),"Select Building Type",new { @class = "form-control" })
 
                     </div>
@@ -132,7 +132,7 @@
                         
                         </tr>
                           <tr>
-                            <td id="neighbourhoodCurrentAddre"></td>
+                            <td id="suburbCurrentAddre"></td>
                         </tr>
                           <tr>
                             <td id="additionInfoCurrentAddre"></td>
@@ -180,6 +180,6 @@
     {
 
     <script src="~/js/Multi-Functions.js" asp-append-version="true"></script>
-    <script src="~/js/ManangeNeighbourhood.js" asp-append-version="true"></script>
+    <script src="~/js/ManageSuburb.js" asp-append-version="true"></script>
 
     }

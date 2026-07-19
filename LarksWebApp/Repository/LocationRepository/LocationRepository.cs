@@ -113,6 +113,15 @@ namespace LarksWebApp.Repository.LocationRepository
             return Save();
         }
 
+        public async Task<bool> RemoveLocationSubcategories(Guid locationId)
+        {
+            var existing = _dbContext.LocationModelSubcategoryModel.Where(l => l.LocationId == locationId);
+
+            _dbContext.LocationModelSubcategoryModel.RemoveRange(existing);
+
+            return Save();
+        }
+
         public  IList<LocationModel> LocationToInDistanceAsync(decimal lat, decimal lng, double distance,PaginationFilter filter)
         {
             return  _dbContext.Location

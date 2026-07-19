@@ -6,8 +6,9 @@ namespace LarksWebApp.Models
     public class SuburbModel :IdentityBaseEntity
     {
 
+        public bool IsDeleted { get; set; }
 
-        public Guid? MunicipalityId { get; set; }
+        public Guid MunicipalityId { get; set; }
 
         public MunicipalityModel Municipality { get; set; }
 
@@ -20,9 +21,9 @@ namespace LarksWebApp.Models
         public Guid? DistrictId { get; set; }
         public DistrictModel District { get; set; }
 
-        public IList<SuburbStreets> NeighbourhoodStreets { get; set; }
+        public IList<SuburbStreets> StreetLinks { get; set; }
 
-        public IList<SuburbCoordinates> NeighbourhoodCoordinates { get; set; }
+        public IList<SuburbCoordinates> Coordinates { get; set; }
 
         public IList<AddressModel> Addresses { get; set; }
     }

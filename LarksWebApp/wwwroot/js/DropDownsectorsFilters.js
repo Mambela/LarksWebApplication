@@ -5,7 +5,7 @@
  *  #COUNTRY
  *  #PROVINCES
  *  #MUNICIPALITY
- *  #NEIGHBOURHOOD
+ *  #SUBURB
  *  #STREET 
  * 
  * ***/
@@ -18,7 +18,7 @@ $(document).ready(function () {
     const countryDropDown = document.getElementById('CountryId');
     const provincesDropDown = document.getElementById('provinceId');
     const municipalityDropDown = document.getElementById('municipalityId');
-    const neighbourhoodDropDown = document.getElementById('neighbourhoodId');
+    const suburbDropDown = document.getElementById('suburbId');
     const streetDropDown = document.getElementById('streetId');
 
 
@@ -75,9 +75,9 @@ $(document).ready(function () {
 
 
 
-    if (neighbourhoodDropDown) {
+    if (suburbDropDown) {
 
-        neighbourhoodDropDown.addEventListener('change', function handleChange(event) {
+        suburbDropDown.addEventListener('change', function handleChange(event) {
             ResetDropdowns();
             var countryId = event.target.value;
             RetrieveProvinceChildren('api/province/CountryProvinces?CountryId=' + countryId, provinceDropDownList);
@@ -130,7 +130,7 @@ $(document).ready(function () {
     }
 
 
-    function UpdateDropDownList(data, destinationControl, attribute = 'Neighbourhood') {
+    function UpdateDropDownList(data, destinationControl, attribute = 'Suburb') {
 
 
 
@@ -147,9 +147,9 @@ $(document).ready(function () {
 
 
 
-        if (attribute == 'Neighbourhood') {
+        if (attribute == 'Suburb') {
 
-            CreateNeighbourhoodCheckBoxes(data);
+            CreateSuburbCheckBoxes(data);
         }
     }
 
@@ -175,8 +175,8 @@ $(document).ready(function () {
 
 
 
-        if (neighbourhoodDropDown) {
-            neighbourhoodDropDown.innerHTML = '<option disabled selected> No Neighbourhoods </option>';
+        if (suburbDropDown) {
+            suburbDropDown.innerHTML = '<option disabled selected> No Suburbs </option>';
         }
     }
 });

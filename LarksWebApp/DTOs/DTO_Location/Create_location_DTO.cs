@@ -40,7 +40,7 @@ namespace LarksWebApp.DTOs.DTO_Location
         public Guid searchProvince_hidden { get; set; }
         public Guid searchMunicipality_hidden { get; set; }
         public Guid searchDistrict_hidden { get; set; }
-        public Guid searchNeighbourhood_hidden { get; set; }
+        public Guid searchSuburb_hidden { get; set; }
         public Guid searchStreet_hidden { get; set; }
 
 

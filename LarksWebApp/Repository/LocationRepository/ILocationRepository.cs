@@ -37,6 +37,8 @@ namespace LarksWebApp.Repository.LocationRepository
 
         Task<bool> Createlocationsubcategory(IEnumerable<LocationModelSubcategoryModel> Subcategory);
 
+        Task<bool> RemoveLocationSubcategories(Guid locationId);
+
         Task<IList<LocationImageModel>> CreateLocationImage(IList<LocationImageModel> imageListLocation);
 
         Task<IList<LocationImageModel>> GetLocationImageModels(Guid locationId);

@@ -2,22 +2,22 @@
 $(document).ready(function () {
 
     /**
-     * DATA TABLE FOR NEIGHBOURHOOD
+     * DATA TABLE FOR SUBURB
      * 
      * **/
 
-    var hoodId = 0;
-    var listHoods = function () {
+    var suburbId = 0;
+    var listSuburbs = function () {
 
         //var tableObj =
-        $('#neighbouhrhoodTable').DataTable({
+        $('#suburbTable').DataTable({
             "destroy": true,
             "processing": true,
             "serverside": true,
             "filter": true,
             "ajax": {
                 "url": 
-                    + "api/Suburb/AddressesInNeighbourhood?neighbourhoodId=" + hoodId,
+                    + "api/Suburb/AddressesInSuburb?suburbId=" + suburbId,
                 "type": "POST",
                 "headers": {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -33,7 +33,7 @@ $(document).ready(function () {
                 { "data": "id", "name": "Id", "autoWidth": true },
                 { "data": "province", "name": "Province", "autoWidth": true },
                 { "data": "municipality", "name": "Municipality", "autoWidth": true },
-                { "data": "neighbourhood", "name": "Neighbourhood", "autoWidth": true },
+                { "data": "suburb", "name": "Suburb", "autoWidth": true },
                 { "data": "streetName", "name": "Street", "autoWidth": true },
                 { "data": "fullAddress", "name": "Address", "autoWidth": true },
                 {
@@ -52,7 +52,7 @@ $(document).ready(function () {
             "serverside": true,
             "filter": true,
             "ajax": {
-                "url": BASEURL + "api/Streets/StreetsInNeighbourhood?neighbourhoodId=" + hoodId,
+                "url": BASEURL + "api/Streets/StreetsInSuburb?suburbId=" + suburbId,
                 "type": "POST",
                 "headers": {
                     "Content-Type": "application/x-www-form-urlencoded"
@@ -74,22 +74,22 @@ $(document).ready(function () {
         });
     }
     
-    //listHoods();
+    //listSuburbs();
     const streetDropDown = document.getElementById('streetId');
-    const neighbourhoodDropDowm = document.getElementById('street_hoodId');
-    const neighbourhoodTable = document.getElementById('neighbouhrhoodTable');
+    const suburbDropDown = document.getElementById('street_suburbId');
+    const suburbTable = document.getElementById('suburbTable');
     const streetTable = document.getElementById('streetTable');
 
 
 
-    if (neighbourhoodDropDowm) {
-        neighbourhoodDropDowm.addEventListener('change', function handleChange(event) {
+    if (suburbDropDown) {
+        suburbDropDown.addEventListener('change', function handleChange(event) {
 
-            hoodId = event.target.value;
+            suburbId = event.target.value;
 
-            if (neighbourhoodTable) {
+            if (suburbTable) {
 
-                listHoods();
+                listSuburbs();
             }
 
             if (streetTable) {

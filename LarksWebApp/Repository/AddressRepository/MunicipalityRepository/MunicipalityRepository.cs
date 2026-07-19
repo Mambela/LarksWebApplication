@@ -26,7 +26,8 @@ namespace LarksWebApp.Repository.MunicipalityRepository
 
         public bool DeleteMunicipality(MunicipalityModel municipality)
         {
-             _dbContext.Municipalities.Remove(municipality);
+             municipality.IsDeleted = true;
+             _dbContext.Municipalities.Update(municipality);
 
             return Save();
         }

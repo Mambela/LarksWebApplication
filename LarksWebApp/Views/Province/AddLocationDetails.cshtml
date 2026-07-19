@@ -75,14 +75,14 @@
     </div>
 
     <div class="col-xs-12 col-md-6 col-lg-4">
-        <h5>Add a Neighbourhood</h5>
+        <h5>Add a Suburb</h5>
         @if (Model.Cities.Count == 0 || Model.Districts.Count == 0 || Model.Municipalities.Count == 0)
         {
-            <p class="text-muted">A neighbourhood needs a City, a District and a Municipality to already exist in this province. Add those first.</p>
+            <p class="text-muted">A suburb needs a City, a District and a Municipality to already exist in this province. Add those first.</p>
         }
         else
         {
-            @using (Html.BeginForm("CreateNeighbourhood", "Province", FormMethod.Post))
+            @using (Html.BeginForm("CreateSuburb", "Province", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
                 @Html.Hidden("provinceId", Model.Id)
@@ -103,7 +103,7 @@
                     @Html.DropDownList("municipalityId", new SelectList(Model.Municipalities, "Id", "Designation"), "Select Municipality", new { @class = "form-control" })
                 </div>
                 <div class="form-group mt-2">
-                    <input type="submit" value="Create Neighbourhood" class="btn btn-primary" />
+                    <input type="submit" value="Create Suburb" class="btn btn-primary" />
                 </div>
             }
         }

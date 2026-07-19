@@ -16,7 +16,7 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
 
         List<AddressModel> GetAddressesNearLocation(double latitude, double longitude);
 
-        List<AddressModel> GetAddressesInSuburb(Guid neighbourhoodId);
+        List<AddressModel> GetAddressesInSuburb(Guid suburbId);
 
         
 

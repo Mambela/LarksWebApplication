@@ -51,9 +51,9 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l4-3 4 3v13"/><path d="M13 21V4l4 3v14"/></svg>
                     <span>Cities</span>
                 </a>
-                <a class="app-nav-link @(InArea("Neighbourhood","Suburb") ? "active" : "")" asp-area="" asp-controller="Neighbourhood" asp-action="Index">
+                <a class="app-nav-link @(InArea("Suburb") ? "active" : "")" asp-area="" asp-controller="Suburb" asp-action="Index">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
-                    <span>Neighbourhoods</span>
+                    <span>Suburbs</span>
                 </a>
                 <a class="app-nav-link @(InArea("Street") ? "active" : "")" asp-area="" asp-controller="Street" asp-action="Index">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3 4 21"/><path d="M15 3l5 18"/><path d="M11 10h2M10 15h4"/></svg>

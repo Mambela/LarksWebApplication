@@ -45,11 +45,11 @@
 
             </div>
             <div class="col-md-3">
-                <label for="searchNeighbourhood" class="form-label">Neighbourhood</label>
-                <input class="form-control" list="dataListNeighbourhood" id="searchNeighbourhood" placeholder="Type to search Neighbourhood...">
-                <datalist id="dataListNeighbourhood">
+                <label for="searchSuburb" class="form-label">Suburb</label>
+                <input class="form-control" list="dataListSuburb" id="searchSuburb" placeholder="Type to search Suburb...">
+                <datalist id="dataListSuburb">
                 </datalist>
-                @*<input type="hidden" name="MuniciaplitySubmitted" id="searchNeighbourhood_hidden">*@
+                @*<input type="hidden" name="MuniciaplitySubmitted" id="searchSuburb_hidden">*@
 
             </div>
 
@@ -126,7 +126,7 @@
                             @Html.Hidden("searchProvince_hidden")
                             @Html.Hidden("searchMunicipality_hidden")
                             @Html.Hidden("searchDistrict_hidden")
-                            @Html.Hidden("searchNeighbourhood_hidden")
+                            @Html.Hidden("searchSuburb_hidden")
                             @Html.Hidden("searchStreet_hidden")                            
                             @Html.HiddenFor(m=>m.searchAddress_hidden, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(m=>m.searchAddress_hidden)

@@ -1,5 +1,33 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+@using LarksWebApp.DTOs
+@model CountryDTO
 @{
+      ViewData["Title"] = "Edit Country";
 }
+
+
+<h2>Edit country</h2>
+<div class="col-md-8">
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+  <div class="mb-3">
+  <div class="form-group">
+       @Html.LabelFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
+       <div class="col-md-10">
+            @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control" } })
+       </div>
+  </div>
+
+</div>
+
+   <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+  </div>
+}
+</div>

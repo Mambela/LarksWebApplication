@@ -3,7 +3,7 @@ using LarksWebApp.DTOs.DTO_Districts;
 using LarksWebApp.DTOs.DTO_Municipalities;
 using LarksWebApp.DTOs.DTO_Provinces;
 
-namespace LarksWebApp.DTOs.DTO_Neighbourhoods
+namespace LarksWebApp.DTOs.DTO_Suburbs
 {
     public class Create_suburb_DTO
     {

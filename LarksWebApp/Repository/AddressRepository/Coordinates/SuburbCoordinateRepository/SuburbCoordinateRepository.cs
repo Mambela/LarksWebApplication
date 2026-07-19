@@ -1,18 +1,18 @@
-﻿using LarksWebApp.DAL;
+using LarksWebApp.DAL;
 using LarksWebApp.Models.CoordinatesModel;
 
-namespace LarksWebApp.Repository.Coordinates.HoodCoordinateRepository
+namespace LarksWebApp.Repository.Coordinates.SuburbCoordinateRepository
 {
-    public class HoodCoordinateRepository : IHoodCoordinateRepository
+    public class SuburbCoordinateRepository : ISuburbCoordinateRepository
     {
         private readonly LarksContext _dbContext;
 
-        public HoodCoordinateRepository(LarksContext dbContext)
+        public SuburbCoordinateRepository(LarksContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<bool> CreateNeighbourhoodCoordinates(IList<SuburbCoordinates> listStreetCoordinates)
+        public async Task<bool> CreateSuburbCoordinates(IList<SuburbCoordinates> listStreetCoordinates)
         {
 
             await _dbContext.SuburbCoordinates.AddRangeAsync(listStreetCoordinates);
@@ -20,9 +20,9 @@ namespace LarksWebApp.Repository.Coordinates.HoodCoordinateRepository
             return Save();
         }
 
-        public IList<SuburbCoordinates> GetNeighbourhoodCoordinates(Guid neighbourhoodCoordinatestreetId)
+        public IList<SuburbCoordinates> GetSuburbCoordinates(Guid suburbId)
         {
-           return _dbContext.SuburbCoordinates.Where(n => n.SuburbID == neighbourhoodCoordinatestreetId).ToList();    
+           return _dbContext.SuburbCoordinates.Where(n => n.SuburbID == suburbId).ToList();
         }
 
         public bool Save()
@@ -30,9 +30,9 @@ namespace LarksWebApp.Repository.Coordinates.HoodCoordinateRepository
             return _dbContext.SaveChanges() >= 0;
         }
 
-        public bool UpdateCoordiantes(SuburbCoordinates neighbourhood)
+        public bool UpdateCoordiantes(SuburbCoordinates suburb)
         {
-            _dbContext.SuburbCoordinates.Update(neighbourhood);
+            _dbContext.SuburbCoordinates.Update(suburb);
 
 
             return Save();

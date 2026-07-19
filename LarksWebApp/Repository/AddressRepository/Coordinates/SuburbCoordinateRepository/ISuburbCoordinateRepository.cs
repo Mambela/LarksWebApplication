@@ -1,13 +1,13 @@
-﻿using LarksWebApp.Models.CoordinatesModel;
+using LarksWebApp.Models.CoordinatesModel;
 
-namespace LarksWebApp.Repository.Coordinates.HoodCoordinateRepository
+namespace LarksWebApp.Repository.Coordinates.SuburbCoordinateRepository
 {
-    public interface IHoodCoordinateRepository
+    public interface ISuburbCoordinateRepository
     {
 
-        Task<bool> CreateNeighbourhoodCoordinates(IList<SuburbCoordinates> listStreetCoordinates);
+        Task<bool> CreateSuburbCoordinates(IList<SuburbCoordinates> listStreetCoordinates);
 
-        IList<SuburbCoordinates> GetNeighbourhoodCoordinates(Guid streetId);
+        IList<SuburbCoordinates> GetSuburbCoordinates(Guid suburbId);
 
         bool UpdateCoordiantes(SuburbCoordinates street);
 

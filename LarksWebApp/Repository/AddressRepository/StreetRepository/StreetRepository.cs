@@ -35,19 +35,20 @@ namespace LarksWebApp.Repository.StreetRepository
         public bool DeleteStreet(StreetModel street)
         {
 
-            _dbContext.Streets.Remove(street);
+            street.IsDeleted = true;
+            _dbContext.Streets.Update(street);
             return Save();
         }
 
-        public List<SuburbStreets> GetStreetInNeighBourhood(Guid neighbourhoodId)
+        public List<SuburbStreets> GetStreetsInSuburb(Guid suburbId)
         {
-            return _dbContext.SuburbStreets.Where(n => n.SuburbId == neighbourhoodId).Include(s => s.Streets).ThenInclude(s =>s.StreetCoordinates).ToList();
+            return _dbContext.SuburbStreets.Where(n => n.SuburbId == suburbId).Include(s => s.Streets).ThenInclude(s =>s.StreetCoordinates).ToList();
         }
 
-        public List<SuburbStreets> GetStreetInNeighBourhoodByValue(Guid neighbourhoodId, string hood)
+        public List<SuburbStreets> GetStreetsInSuburbByValue(Guid suburbId, string streetValue)
         {
 
-            return _dbContext.SuburbStreets.Where(n => n.Streets.Designation.Contains(hood) && n.SuburbId == neighbourhoodId)
+            return _dbContext.SuburbStreets.Where(n => n.Streets.Designation.Contains(streetValue) && n.SuburbId == suburbId)
                 .Include(s => s.Streets).ThenInclude(s => s.StreetCoordinates).ToList();
             throw new NotImplementedException();
         }
@@ -56,7 +57,7 @@ namespace LarksWebApp.Repository.StreetRepository
         {
 
             return _dbContext.Streets.Include(m => m.StreetCoordinates)
-                .Include(s => s.NeighbourhoodStreets).ThenInclude(n => n.Suburb)
+                .Include(s => s.SuburbLinks).ThenInclude(n => n.Suburb)
                 .FirstOrDefault(s => s.Id == StreetId);
 
         }

@@ -6,7 +6,9 @@ namespace LarksWebApp.Models
     public class StreetModel :IdentityBaseEntity
     {
 
-        public IList<SuburbStreets> NeighbourhoodStreets { get; set; }
+        public bool IsDeleted { get; set; }
+
+        public IList<SuburbStreets> SuburbLinks { get; set; }
 
         public IList<StreetCoordinates> StreetCoordinates { get; set; }
 

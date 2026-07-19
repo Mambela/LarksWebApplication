@@ -1,8 +1,10 @@
 using AutoMapper;
-using LarksWebApp.DTOs.DTO_Neighbourhoods;
+using LarksWebApp.DTOs.DTO_Suburbs;
 using LarksWebApp.Models;
+using LarksWebApp.Repository.CityRepository;
 using LarksWebApp.Repository.CountryRepository;
-using LarksWebApp.Repository.HoodRepository;
+using LarksWebApp.Repository.MunicipalityRepository;
+using LarksWebApp.Repository.SuburbRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,45 +14,51 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace LarksWebApp.Controllers
 {
     [Authorize]
-    public class NeighbourhoodController : Controller
+    public class SuburbController : Controller
     {
-        private readonly ISuburbRepository _hoodRepository;
+        private readonly ISuburbRepository _suburbRepository;
         private readonly ICountryRepository _countryRepository;
+        private readonly IMunicipalityRepository _municipalityRepository;
+        private readonly ICityRepository _cityRepository;
         private readonly IMapper _mapper;
         private readonly ILoggerTrace serviceLogger;
 
 
-        public NeighbourhoodController(ISuburbRepository hoodRepository, ICountryRepository countryRepository, IMapper mapper, ILoggerTrace serviceLogger)
+        public SuburbController(ISuburbRepository suburbRepository, ICountryRepository countryRepository,
+            IMunicipalityRepository municipalityRepository, ICityRepository cityRepository,
+            IMapper mapper, ILoggerTrace serviceLogger)
         {
-            _hoodRepository = hoodRepository;
+            _suburbRepository = suburbRepository;
             _countryRepository = countryRepository;
+            _municipalityRepository = municipalityRepository;
+            _cityRepository = cityRepository;
             _mapper = mapper;
             this.serviceLogger = serviceLogger;
         }
 
 
-        // GET: NeighbourhoodController
+        // GET: SuburbController
         public ActionResult Index(Guid? provinId)
         {
             try
             {
-                var neighbourhoodObjList = provinId.HasValue && provinId.Value != Guid.Empty
-                    ? _hoodRepository.GetNeighbourhoodInMunicipality(provinId.Value)
-                    : _hoodRepository.GetNeighbourhoodModels();
+                var suburbObjList = provinId.HasValue && provinId.Value != Guid.Empty
+                    ? _suburbRepository.GetSuburbsInMunicipality(provinId.Value)
+                    : _suburbRepository.GetSuburbs();
 
-                var neighbourhoodDTOList = new List<SuburbDTO>();
+                var suburbDTOList = new List<SuburbDTO>();
 
-                foreach (var neighbourhood in neighbourhoodObjList)
+                foreach (var suburb in suburbObjList)
                 {
-                    var dto = _mapper.Map<SuburbDTO>(neighbourhood);
-                    dto.CityName = neighbourhood.City?.Designation;
-                    dto.DistrictName = neighbourhood.District?.Designation;
-                    dto.MunicipalityName = neighbourhood.Municipality?.Designation;
-                    dto.ProvinceName = neighbourhood.Municipality?.Province?.Designation;
-                    neighbourhoodDTOList.Add(dto);
+                    var dto = _mapper.Map<SuburbDTO>(suburb);
+                    dto.CityName = suburb.City?.Designation;
+                    dto.DistrictName = suburb.District?.Designation;
+                    dto.MunicipalityName = suburb.Municipality?.Designation;
+                    dto.ProvinceName = suburb.Municipality?.Province?.Designation;
+                    suburbDTOList.Add(dto);
                 }
 
-                return View(neighbourhoodDTOList);
+                return View(suburbDTOList);
             }
             catch (Exception ex)
             {
@@ -59,13 +67,13 @@ namespace LarksWebApp.Controllers
             }
         }
 
-        // GET: NeighbourhoodController/Details/5
+        // GET: SuburbController/Details/5
         public ActionResult Details(Guid id)
         {
             return View();
         }
 
-        // GET: NeighbourhoodController/Create
+        // GET: SuburbController/Create
         public ActionResult Create()
         {
             ViewData["countries"] = new SelectList(_countryRepository.GetAll(), "Id", "Designation");
@@ -73,10 +81,10 @@ namespace LarksWebApp.Controllers
             return View();
         }
 
-        // POST: NeighbourhoodController/Create
+        // POST: SuburbController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateAsync(IFormCollection neighbourhood)
+        public async Task<ActionResult> CreateAsync(IFormCollection suburb)
         {
             try
             {
@@ -85,109 +93,156 @@ namespace LarksWebApp.Controllers
                     throw new Exception("Invalid Model State");
                 }
 
-                var neighbourhoodObj = new SuburbModel()
+                var suburbObj = new SuburbModel()
                 {
-                    CityId = Guid.Parse(neighbourhood["newCityId"]),
-                    
-                    Designation = neighbourhood["Designation"]
+                    CityId = Guid.Parse(suburb["newCityId"]),
+
+                    Designation = suburb["Designation"]
                 };
 
 
-                if(Guid.TryParse(neighbourhood["newMunicipalityId"], out Guid municipalityId))
+                if(Guid.TryParse(suburb["newMunicipalityId"], out Guid municipalityId))
                 {
-                    neighbourhoodObj.MunicipalityId = municipalityId;
+                    suburbObj.MunicipalityId = municipalityId;
                 }
 
-                if(Guid.TryParse(neighbourhood["newDistrictId"], out Guid districtId))
+                if(Guid.TryParse(suburb["newDistrictId"], out Guid districtId))
                 {
-                    neighbourhoodObj.DistrictId = districtId;
+                    suburbObj.DistrictId = districtId;
                 }
-                
+
 
                 /**
-                MunicipalityId = Guid.Parse(neighbourhood["newMunicipalityId"]),
-                    DistrictId = Guid.Parse(neighbourhood["newDistrictId"]),*/
+                MunicipalityId = Guid.Parse(suburb["newMunicipalityId"]),
+                    DistrictId = Guid.Parse(suburb["newDistrictId"]),*/
 
 
 
-                await _hoodRepository.CreateSuburb(neighbourhoodObj);
+                await _suburbRepository.CreateSuburb(suburbObj);
 
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                serviceLogger.LogError("Create a new Neighbourhood " + ex.Message);
+                serviceLogger.LogError("Create a new Suburb " + ex.Message);
                 return RedirectToAction(nameof(Create));
             }
         }
 
-        // GET: NeighbourhoodController/Edit/5
+        // GET: SuburbController/Edit/5
         public ActionResult Edit(Guid id)
         {
-            return View();
+            var suburbObj = _suburbRepository.GetSuburb(id);
+
+            if (suburbObj == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            ViewData["municipalities"] = new SelectList(_municipalityRepository.GetAllMunicipalities(), "Id", "Designation", suburbObj.MunicipalityId);
+            ViewData["cities"] = new SelectList(_cityRepository.GetAllCities(), "Id", "Designation", suburbObj.CityId);
+
+            return View(_mapper.Map<SuburbDTO>(suburbObj));
         }
 
-        public ActionResult sectorNeighbourhood(string sector, Guid id)
+        public ActionResult sectorSuburb(string sector, Guid id)
         {
 
             try
             {
-                var hoodObjList = _hoodRepository.GetNeighbourhoodModels(sector, id);
+                var suburbObjList = _suburbRepository.GetSuburbs(sector, id);
 
-                var hoodDTOList = new List<SuburbDTO>();
+                var suburbDTOList = new List<SuburbDTO>();
 
-                foreach (var hood in hoodObjList)
+                foreach (var suburb in suburbObjList)
                 {
-                    hoodDTOList.Add(_mapper.Map<SuburbDTO>(hood));
+                    suburbDTOList.Add(_mapper.Map<SuburbDTO>(suburb));
                 }
 
 
-                return Ok(hoodDTOList);
+                return Ok(suburbDTOList);
 
             }
             catch (Exception ex)
             {
-                serviceLogger.LogError("Neighbourhood Sector " + ex.Message);
+                serviceLogger.LogError("Suburb Sector " + ex.Message);
 
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while trying to retrieve neighbourhood ");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while trying to retrieve suburbs ");
             }
 
         }
 
 
 
-        // POST: NeighbourhoodController/Edit/5
+        // POST: SuburbController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Guid id, IFormCollection collection)
         {
             try
             {
+                var suburbObj = _suburbRepository.GetSuburb(id);
+
+                if (suburbObj == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound);
+                }
+
+                suburbObj.Designation = collection["Designation"];
+
+                if (Guid.TryParse(collection["MunicipalityId"], out Guid municipalityId))
+                {
+                    suburbObj.MunicipalityId = municipalityId;
+                }
+
+                if (Guid.TryParse(collection["CityId"], out Guid cityId))
+                {
+                    suburbObj.CityId = cityId;
+                }
+
+                _suburbRepository.UpdateSuburb(suburbObj);
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                serviceLogger.LogError("Edit suburb " + ex.Message);
                 return View();
             }
         }
 
-        // GET: NeighbourhoodController/Delete/5
+        // GET: SuburbController/Delete/5
         public ActionResult Delete(Guid id)
         {
-            return View();
+            var suburbObj = _suburbRepository.GetSuburb(id);
+
+            if (suburbObj == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            return View(_mapper.Map<SuburbDTO>(suburbObj));
         }
 
-        // POST: NeighbourhoodController/Delete/5
+        // POST: SuburbController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(Guid id, IFormCollection collection)
         {
             try
             {
+                var suburbObj = _suburbRepository.GetSuburb(id);
+
+                if (suburbObj != null)
+                {
+                    _suburbRepository.DeleteSuburb(suburbObj);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                serviceLogger.LogError("Delete suburb " + ex.Message);
                 return View();
             }
         }

@@ -115,7 +115,14 @@ namespace LarksWebApp.Controllers
         // GET: CountryController/Edit/5
         public ActionResult Edit(Guid id)
         {
-            return View();
+            var countryObj = _countryRepository.GetCountry(id);
+
+            if (countryObj == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            return View(_mapper.Map<CountryDTO>(countryObj));
         }
 
         // POST: CountryController/Edit/5
@@ -125,10 +132,22 @@ namespace LarksWebApp.Controllers
         {
             try
             {
+                var countryObj = _countryRepository.GetCountry(id);
+
+                if (countryObj == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound);
+                }
+
+                countryObj.Designation = collection["Designation"];
+
+                _countryRepository.UpdateCountry(countryObj);
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                serviceLogger.LogError(ex.Message);
                 return View();
             }
         }
