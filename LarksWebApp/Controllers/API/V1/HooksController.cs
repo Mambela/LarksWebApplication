@@ -37,7 +37,11 @@ namespace LarksWebApp.Controllers.API.V1
         /// <param name="userWebhook"></param>
         /// <returns></returns>
         [HttpPost]
-         
+        [ProducesResponseType(typeof(HooksModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(HooksDTO), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorMessage), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateWebHook(HooksDTO userWebhook)
         {
             try
@@ -91,6 +95,7 @@ namespace LarksWebApp.Controllers.API.V1
         /// <returns></returns>
         [HttpPost]
         [Route("TestWebHook")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public async Task<IActionResult> PostWebHook(HookTestDTO hooksDTO)
         {
             try
@@ -121,6 +126,7 @@ namespace LarksWebApp.Controllers.API.V1
         /// <param name="hookDesignation"></param>
         /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult actionResult(string hookDesignation)
         {
             try
@@ -145,6 +151,8 @@ namespace LarksWebApp.Controllers.API.V1
         /// <param name="hookId"></param>
         /// <returns></returns>
         [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateWebHook(HooksDTO webHook,Guid  hookId)
         {
             try

@@ -2,6 +2,7 @@
 using LarksWebApp.DTOs;
 using LarksWebApp.DTOs.DTO_Suburbs;
 using LarksWebApp.DTOs.DTO_Streets;
+using LarksWebApp.DTOs.PaginationDTO;
 using LarksWebApp.Models;
 using LarksWebApp.Models.CoordinatesModel;
 using LarksWebApp.Repository.AddressRepository.StreetRepository;
@@ -38,7 +39,10 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpPut]
-
+        [ProducesResponseType(typeof(Create_Street_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Create_Street_DTO), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult UpdateStreet([FromBody] Create_Street_DTO street_DTO, Guid streetId)
         {
             try
@@ -70,6 +74,10 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteStreet(Guid streetID)
         {
             try
@@ -105,6 +113,8 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("StreetsInSuburb")]
+        [ProducesResponseType(typeof(List<View_Street_DTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult GetStreetsInSuburb(Guid suburbId)
         {
             try
@@ -140,6 +150,8 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("StreetsInSuburbByName")]
+        [ProducesResponseType(typeof(List<View_Street_DTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         public IActionResult GetStreetsInSuburbByValue(Guid suburbId, string streetValue)
         {
             try
@@ -177,6 +189,8 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("Streets")]
+        [ProducesResponseType(typeof(View_Street_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult Getstreet(Guid id)
         {
             try
@@ -236,6 +250,10 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
+        [ProducesResponseType(typeof(Create_Street_DTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateStreet(Create_Street_DTO streetDTO)
         {
 
@@ -331,6 +349,8 @@ namespace LarksWebApp.Controllers.API
         // end point for DataTable API
         [Route("[action]")]
         [HttpPost]
+        [ProducesResponseType(typeof(DataTableResponse<List<View_Street_DTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult StreetsInSuburb(Guid suburbId)
         {
             try

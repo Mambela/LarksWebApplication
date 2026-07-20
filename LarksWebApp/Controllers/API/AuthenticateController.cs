@@ -33,6 +33,9 @@ namespace LarksWebApp.Controllers.API
 
         [AllowAnonymous]
         [HttpPost]
+        [ProducesResponseType(typeof(LoginResponseDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
         { 
             try

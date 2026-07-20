@@ -82,8 +82,10 @@ namespace LarksWebApp.Controllers.API
 
 
 
-        ///Locations By Suburb 
+        ///Locations By Suburb
         [HttpGet("SuburbLocations")]
+        [ProducesResponseType(typeof(List<LocationDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult GetSuburbLocations(Guid suburbId) {
 
             try
@@ -150,8 +152,10 @@ namespace LarksWebApp.Controllers.API
         }
 
  
-        ///Location by Category 
+        ///Location by Category
         [HttpGet("categorylocations")]
+        [ProducesResponseType(typeof(PagedResponse<List<LocationDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult GetlocationinCategory([FromQuery] Guid categoryId,PaginationFilter filter)
         {
             try
@@ -201,6 +205,8 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("locationbyId")]
+        [ProducesResponseType(typeof(ViewLocationDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult GetLocationById([FromQuery] Guid locationId)
         {
             try
@@ -258,8 +264,10 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
-        ///Location by subCategory 
+        ///Location by subCategory
         [HttpGet("SubcategoryLocations")]
+        [ProducesResponseType(typeof(List<LocationDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult GetlocationInSubCategory(Guid subcategoryId) {
 
             try
@@ -287,6 +295,8 @@ namespace LarksWebApp.Controllers.API
 
         [Route("[action]")]
         [HttpPost]
+        [ProducesResponseType(typeof(DataTableResponse<List<LocationDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult LocationsInSuburbDT(Guid suburbId)
         {
             try
@@ -356,7 +366,9 @@ namespace LarksWebApp.Controllers.API
         //[Authorize(Roles = "Admin,SuperAdmin")]
         [HttpPost]
         [Route("newLocation")]
-        public async Task<IActionResult> CreateLocation([FromForm] Create_Location_DTO locationCollection) 
+        [ProducesResponseType(typeof(Create_Location_DTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateLocation([FromForm] Create_Location_DTO locationCollection)
         {
 
             try
@@ -460,6 +472,9 @@ namespace LarksWebApp.Controllers.API
 
         [HttpPost]
         [Route("newlocationwithaddress")]
+        [ProducesResponseType(typeof(Created_Location_DTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateLocationWithSuggestions([FromForm] CreateLocation_w_address_DTO locationDTO)
         {
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
@@ -681,9 +696,11 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
-        ///Location near a POINT 
+        ///Location near a POINT
         [HttpGet]
         [Route("locationbydistance")]
+        [ProducesResponseType(typeof(PagedResponse<List<ViewLocationDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetLocations([FromQuery] decimal lat, decimal lng, double distance,[FromQuery] PaginationFilter paginationFilter)
         {
             try
@@ -733,9 +750,11 @@ namespace LarksWebApp.Controllers.API
         }
 
 
-        ///Location by Proximity 
+        ///Location by Proximity
         [HttpGet]
         [Route("locationbydistanceandcategory")]
+        [ProducesResponseType(typeof(PagedResponse<List<ViewLocationDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetLocationByCategory([FromQuery] decimal lat, decimal lng, double distance,Guid category, [FromQuery] PaginationFilter paginationFilter)
         {
             try
@@ -786,6 +805,8 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("locationsinsuburb")]
+        [ProducesResponseType(typeof(PagedResponse<List<ViewLocationDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetLocationInSuburb([FromQuery] decimal lat, decimal lng, double distance, Guid category, [FromQuery] PaginationFilter paginationFilter)
         {
             try
@@ -837,6 +858,8 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("locationsincity")]
+        [ProducesResponseType(typeof(PagedResponse<List<ViewLocationDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetLocationInCity([FromQuery] PaginationFilter filter, Guid cityId)
         {
             
@@ -893,6 +916,8 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("locationsinmunicipality")]
+        [ProducesResponseType(typeof(PagedResponse<List<ViewLocationDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetLocationInmunicipality([FromQuery] Guid municipalityId,[FromQuery] PaginationFilter filter)
         {
             try
@@ -950,6 +975,9 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("searchlocation")]
+        [ProducesResponseType(typeof(PagedResponse<List<ViewLocationDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetLocationByName([FromQuery] string searchParameter, [FromQuery] PaginationFilter filter)
         {
             try
@@ -1011,8 +1039,10 @@ namespace LarksWebApp.Controllers.API
         }
 
 
-        [HttpGet] 
+        [HttpGet]
         [Route("searchlocationAll")]
+        [ProducesResponseType(typeof(List<ViewLocationDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SearchlocationAll([FromQuery] string countryName,[FromQuery] int pageSize,[FromQuery] int skip, [FromQuery] string ? searchParameter, [FromQuery] Guid ? categoryId, [FromQuery] Guid ? suburbId, [FromQuery] Guid ? cityId, [FromQuery] Guid ? municipalityId)
         {
             try
@@ -1055,6 +1085,8 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("locationsInList")]
+        [ProducesResponseType(typeof(List<ViewLocationDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> retrievalLocation([FromQuery] IList<Guid> locationListIds, [FromQuery] PaginationFilter filter)
         {
             try
@@ -1098,6 +1130,9 @@ namespace LarksWebApp.Controllers.API
         
         [HttpPatch]
         [Route("updateLocation")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> updateLocationAsync([FromForm] UpdateLocationDTO locationDTO) {
             try
             {

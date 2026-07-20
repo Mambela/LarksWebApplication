@@ -52,6 +52,11 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Larks Web App API", Version = "v1" });
 
+    // Several DTOs share a short type name (e.g. two distinct "SuburbDTO" classes in
+    // different namespaces) — disambiguate with the full namespace so schema generation
+    // doesn't collide.
+    c.CustomSchemaIds(type => type.FullName);
+
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",

@@ -29,6 +29,9 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(ViewCountryDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult GetCountry(Guid id)
         {
 
@@ -85,6 +88,8 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("allcountries")]
+        [ProducesResponseType(typeof(List<CountryDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult GetCountries()
         {
             try
@@ -104,6 +109,8 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("countryByName")]
+        [ProducesResponseType(typeof(ViewCountryDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetCountries(string countryName)
         {
             try
@@ -123,6 +130,11 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPatch]
+        [ProducesResponseType(typeof(Create_Country_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult UpdateCountry([FromBody] Create_Country_DTO countryDTO, Guid countryId)
         {
             try

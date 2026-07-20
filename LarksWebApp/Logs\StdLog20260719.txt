@@ -1,5 +1,0 @@
-2026-07-19 12:41:38.539 +02:00 [WRN] SuperAdmin seed skipped: SuperAdmin:Username/Email/Password are not configured.
-2026-07-19 12:42:36.243 +02:00 [WRN] SuperAdmin seed skipped: SuperAdmin:Username/Email/Password are not configured.
-2026-07-19 13:27:34.868 +02:00 [WRN] SuperAdmin seed skipped: SuperAdmin:Username/Email/Password are not configured.
-2026-07-19 13:29:30.677 +02:00 [WRN] SuperAdmin seed skipped: SuperAdmin:Username/Email/Password are not configured.
-2026-07-19 13:33:05.957 +02:00 [WRN] SuperAdmin seed skipped: SuperAdmin:Username/Email/Password are not configured.

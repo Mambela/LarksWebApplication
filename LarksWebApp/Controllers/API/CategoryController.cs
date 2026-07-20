@@ -30,6 +30,8 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<CategoryDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult GetCategories(string lang)
         {
             try
@@ -58,6 +60,10 @@ namespace LarksWebApp.Controllers.API
 
         [HttpPost]
         //[Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(CreateCategoryDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateCategories(CreateCategoryDTO createCategoryDTO)
         {
 
@@ -107,6 +113,10 @@ namespace LarksWebApp.Controllers.API
 
         
         [HttpPatch]
+        [ProducesResponseType(typeof(CreateCategoryDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(CreateCategoryDTO), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult UpdateCategory([FromBody] CreateCategoryDTO categoryDTO, Guid categoryId)
         {
 
@@ -142,6 +152,10 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteCountry(Guid categoryId)
         {
 

@@ -30,6 +30,9 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(Create_BuildingType_DTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateBuildingType(Create_BuildingType_DTO buildingType_DTO)
         {
             try
@@ -70,6 +73,8 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet]
+        [ProducesResponseType(typeof(Create_BuildingType_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult GetBuildingType(Guid id)
         {
             try
@@ -89,6 +94,8 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("buildingTypesbyname")]
+        [ProducesResponseType(typeof(IList<Create_BuildingType_DTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult GetAllBuildingTypes(string lng)
         {
             try

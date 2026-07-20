@@ -28,6 +28,9 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(Create_Districts_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult GetDistrict(Guid districtID)
         {
             try
@@ -55,6 +58,8 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("districtsinprovice")]
+        [ProducesResponseType(typeof(List<DistrictDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetDistrictsInProvince(Guid provinceID) {
 
             try
@@ -75,6 +80,10 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
+        [ProducesResponseType(typeof(Create_Districts_DTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateDistrict(Create_Districts_DTO createDistrictDTO)
         {
 
@@ -125,6 +134,10 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpPatch]
+        [ProducesResponseType(typeof(Create_Districts_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Create_Districts_DTO), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult UpdateDistrict([FromBody] Create_Districts_DTO updateDTO, Guid districtId)
         {
             try

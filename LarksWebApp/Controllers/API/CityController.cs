@@ -28,6 +28,9 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
+        [ProducesResponseType(typeof(Create_City_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateCity(Create_City_DTO createCityDTO)
         {
             try
@@ -67,6 +70,8 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("city")]
+        [ProducesResponseType(typeof(CitiesDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult RetrieveCity(Guid cityId)
         {
             try
@@ -89,6 +94,8 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet]
         [Route("citiesinprovince")]
+        [ProducesResponseType(typeof(IList<CitiesDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult RetrieveCitiesInProvince(Guid provinceId)
         {
             try
@@ -111,6 +118,8 @@ namespace LarksWebApp.Controllers.API
         
         [HttpGet]
         [Route("citiesincountry")]
+        [ProducesResponseType(typeof(IList<CitiesDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult RetrieveCitiesInCountry(Guid countryId)
         {
             try
@@ -132,6 +141,9 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpPatch]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult Update(Create_City_DTO create_City_DTO, Guid  cityId)
         {
             try
@@ -160,6 +172,10 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult DeleteCity(Guid cityId)
         {
             try

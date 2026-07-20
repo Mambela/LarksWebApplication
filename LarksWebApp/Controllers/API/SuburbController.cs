@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LarksWebApp.DTOs.DTO_Addresses;
 using LarksWebApp.DTOs.DTO_Suburbs;
+using LarksWebApp.DTOs.PaginationDTO;
 using LarksWebApp.Models;
 using LarksWebApp.Repository.AddressRepository.Address_Repository;
 using LarksWebApp.Repository.SuburbRepository;
@@ -36,6 +37,8 @@ namespace LarksWebApp.Controllers.API
          * https://localhost:44339/api/Suburb/all
          * **/
         [HttpGet("all")]
+        [ProducesResponseType(typeof(List<DTOs.DTO_Suburbs.SuburbDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetHood()
         {
             try
@@ -61,6 +64,8 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("sectorSuburb")]
+        [ProducesResponseType(typeof(List<DTOs.DTO_Suburbs.SuburbDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult sectorSuburb(string sector, Guid id)
         {
             
@@ -94,6 +99,8 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("suburbInAnySector")]
+        [ProducesResponseType(typeof(List<DTOs.DTO_Suburbs.SuburbDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult suburbInAnySector(Guid districtId,Guid municipalityId, Guid cityId)
         {
             try
@@ -123,6 +130,10 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
+        [ProducesResponseType(typeof(Create_suburb_DTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateSuburb(Create_suburb_DTO suburb_DTO)
         {
 
@@ -170,6 +181,8 @@ namespace LarksWebApp.Controllers.API
 
         [Route("[action]")]
         [HttpPost]
+        [ProducesResponseType(typeof(DataTableResponse<List<ViewAddressDataTableDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult AddressesInSuburb(Guid suburbId)
         {
             try
@@ -240,6 +253,8 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("ListOfSuburb")]
+        [ProducesResponseType(typeof(IList<DTOs.DTO_Addresses.SuburbDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult GetListSububurb([FromQuery] string suburbsQuery)
         {
             try
@@ -263,6 +278,8 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("SuburbList")]
+        [ProducesResponseType(typeof(IList<DTOs.DTO_Addresses.SuburbDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult GetSuburbList([FromQuery] Guid []suburbList)
         {
             try
@@ -286,6 +303,8 @@ namespace LarksWebApp.Controllers.API
          * **/
 
         [HttpGet("Suburb")]
+        [ProducesResponseType(typeof(DTOs.DTO_Suburbs.SuburbDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult GetSuburb([FromQuery] Guid id)
         {
 
@@ -307,6 +326,8 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("SuburbInProvince")]
+        [ProducesResponseType(typeof(List<DTOs.DTO_Suburbs.SuburbDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult GetSuburbsInProvince([FromQuery] Guid provinceId)
         {
             try { 
@@ -331,6 +352,9 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("SuburbByName")]
+        [ProducesResponseType(typeof(IList<DTOs.DTO_Suburbs.SuburbDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult GetSuburbByName([FromQuery] string suburbname)
         {
 
@@ -358,6 +382,10 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPut]
+        [ProducesResponseType(typeof(Create_suburb_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Create_suburb_DTO), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult UpdateSuburb([FromBody] Create_suburb_DTO hoodDTO, Guid hoodId)
         {
 
@@ -386,6 +414,10 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteSuburb(Guid suburbId)
         {
             try

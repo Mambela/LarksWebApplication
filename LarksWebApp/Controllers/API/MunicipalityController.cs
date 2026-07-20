@@ -31,6 +31,9 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(Create_Municipality_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult GetMunicipality(Guid MuncipalityId)
         {
             try
@@ -51,6 +54,9 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("MunicipalitiesInProvince")]
+        [ProducesResponseType(typeof(IList<Create_Municipality_DTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         public IActionResult GetProvinceMunicipalities(Guid provinceId)
         {
             try
@@ -78,7 +84,13 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-
+        [ProducesResponseType(typeof(Create_Municipality_DTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(Create_Municipality_DTO), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateMuncipality(Create_Municipality_DTO municipalityDTO)
         {
             try
@@ -162,6 +174,10 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPatch]
+        [ProducesResponseType(typeof(Create_Municipality_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Create_Municipality_DTO), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateMunicipality([FromBody] Create_Municipality_DTO municipality_DTO, Guid municipalityID)
         {
 
@@ -230,6 +246,10 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteMunicipality(Guid MunicipalityID)
         {
             try

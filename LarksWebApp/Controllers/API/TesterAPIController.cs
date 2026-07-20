@@ -9,6 +9,7 @@ namespace LarksWebApp.Controllers.API
     {
 
         [HttpGet(Name = "HealthTesterapi")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public IActionResult GetTest()
         {
             return Ok("Test controller API FOLder");

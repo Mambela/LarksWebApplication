@@ -23,6 +23,8 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<IdentityRole>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
         public IActionResult GetAllRoles()
         {
             try

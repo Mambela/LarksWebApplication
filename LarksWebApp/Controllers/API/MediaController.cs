@@ -31,6 +31,10 @@ namespace LarksWebApp.Controllers.API
 
         // GET api/<MediaController>/5
         [HttpGet("LocationImages")]
+        [Produces("image/jpeg")]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public ActionResult GetLocationImages(string filename)
         {
             try

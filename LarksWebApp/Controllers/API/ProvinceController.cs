@@ -29,7 +29,8 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("CountryProvinces")]
-
+        [ProducesResponseType(typeof(List<ProvinceDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetCountryProvince(Guid CountryId)
         {
             try
@@ -52,6 +53,8 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("ProvincesInCountry")]
+        [ProducesResponseType(typeof(List<ProvinceDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetProvincesinCountry(string countryname)
         {
             try
@@ -73,6 +76,8 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("Province")]
+        [ProducesResponseType(typeof(Create_Province_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetProvince(Guid provinceID)
         {
             var provinceObj = _provinceRepository.GetProvinceModel(provinceID);
@@ -89,6 +94,12 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
+        [ProducesResponseType(typeof(Create_Province_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Create_Province_DTO), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateProvince(Create_Province_DTO provinceDTO)
         {
 
@@ -174,7 +185,9 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpDelete]
-
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
         public IActionResult DeleteProvince(Guid ProvinceID)
         {
 
@@ -199,6 +212,9 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPatch]
+        [ProducesResponseType(typeof(ProvinceModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Create_Province_DTO), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateProvince(Create_Province_DTO provinceDTO, Guid ProvinceId)
         {
             try

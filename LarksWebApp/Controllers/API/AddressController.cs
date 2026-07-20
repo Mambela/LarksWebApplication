@@ -66,6 +66,8 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("GetAddress")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         public IActionResult GetAddress(Guid addressId)
         {
             try
@@ -87,6 +89,8 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("StreetAddress")]
+        [ProducesResponseType(typeof(List<ViewAddressDataTableDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult GetStreetAddress(Guid streetId)
         {
 
@@ -129,6 +133,8 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("SuburbAddress")]
+        [ProducesResponseType(typeof(List<ViewAddressDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult GetSuburbAddress(Guid suburbId)
         {
 
@@ -171,6 +177,8 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("AddressByCoordinates")]
+        [ProducesResponseType(typeof(List<ViewAddressDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Get(int Limit, double latitude, double longitude)
         {
 
@@ -212,6 +220,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpGet("GetGeolocationAddress")]
+        [ProducesResponseType(typeof(FullAddress_DTO), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetGeolocationAddress(int distance, decimal latitude, decimal longitude)
         {
             try
@@ -240,6 +249,10 @@ namespace LarksWebApp.Controllers.API
 
         [HttpPost]
         [Route("CreateAddress")]
+        [ProducesResponseType(typeof(Create_Addresses_DTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateAddress(Create_Addresses_DTO addressDTO)
         {
             try
@@ -281,6 +294,8 @@ namespace LarksWebApp.Controllers.API
 
         [HttpPost]
         [Route("CreateCountryDemographicDivision")]
+        [ProducesResponseType(typeof(NominatimAddressDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateLocationEntity(NominatimAddressDTO nominatimAddressDTO)
         {
 
@@ -478,6 +493,10 @@ namespace LarksWebApp.Controllers.API
 
         [HttpPost]
         [Route("CreateDivisionsByGeolocation")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateDemographicByGeolocation(AddressGeolocationDTO addressGeolocationDTO)
         {
             try
@@ -717,6 +736,9 @@ namespace LarksWebApp.Controllers.API
 
         [HttpPost]
         [Route("CreateLocationByGeoposition")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateDemographicByGeolocation([FromBody] BaseCoordinatesDTO baseCordinates)
         {
             try

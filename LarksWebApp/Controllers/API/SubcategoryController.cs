@@ -29,7 +29,10 @@ namespace LarksWebApp.Controllers.API
 
         //[Authorize(Roles = "Admin")]
         [HttpPost]
-
+        [ProducesResponseType(typeof(Create_subcategoryDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateCategory(Create_subcategoryDTO create_SubcateogryDTO) {
 
             try
@@ -79,6 +82,7 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("Allsubcategories")]
+        [ProducesResponseType(typeof(List<SubCategoryDTO>), StatusCodes.Status200OK)]
         public IActionResult GetSubcategories(string lang)
         {
 
@@ -90,6 +94,7 @@ namespace LarksWebApp.Controllers.API
         }
         
         [HttpGet("SubcategoriesInCategory")]
+        [ProducesResponseType(typeof(List<SubCategoryDTO>), StatusCodes.Status200OK)]
         public IActionResult GetSubcategoriesInCategory(Guid categoryId)
         {
 
@@ -101,6 +106,8 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("Subcategory")]
+        [ProducesResponseType(typeof(SubCategoryDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public IActionResult GetSubcategory(Guid Id)
         {
             try
@@ -120,6 +127,7 @@ namespace LarksWebApp.Controllers.API
 
 
         [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult DeleteSubCategories()
         {
             try
@@ -137,6 +145,8 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPatch]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateSubcategory(Create_subcategoryDTO create_SubcateogryDTO,Guid subcategoryId)
         {
             try
