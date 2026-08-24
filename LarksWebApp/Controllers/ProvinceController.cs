@@ -42,7 +42,11 @@ namespace LarksWebApp.Controllers
         }
         public ActionResult Index()
         {
-            return View();
+            var provinceListObj = _provinceRepository.GetAllProvinces();
+
+            var provinceListDTO = _mapper.Map<List<ProvinceDTO>>(provinceListObj);
+
+            return View(provinceListDTO);
         }
 
         // GET: ProvinceController/Details/5
@@ -252,7 +256,13 @@ namespace LarksWebApp.Controllers
             try
             {
                 var provinceObj = _provinceRepository.GetProvinceModel(id);
-                var provinceDTO  = _mapper.Map<ProvinceDTO>(provinceObj);
+
+                if (provinceObj == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound);
+                }
+
+                var provinceDTO  = _mapper.Map<Create_Province_DTO>(provinceObj);
 
                 return View(provinceDTO);
             }
@@ -261,7 +271,7 @@ namespace LarksWebApp.Controllers
                 serviceLogger.LogError(ex.Message);
                 return View();
             }
-            
+
         }
 
         // POST: ProvinceController/Edit/5
@@ -271,20 +281,17 @@ namespace LarksWebApp.Controllers
         {
             try
             {
-                if (id == null || provinceCollection["designation"].ToString() != null)
+                if (!Guid.TryParse(provinceCollection["CountryId"], out Guid countryId) || string.IsNullOrWhiteSpace(provinceCollection["Designation"]))
                 {
-                    return View();    
+                    return View();
                 }
-
 
                 var provinceModel = new ProvinceModel()
                 {
-                    Designation = provinceCollection["designation"],
+                    Designation = provinceCollection["Designation"],
                     Id = id,
-                    CountryId = Guid.Parse(provinceCollection["countryID"])
+                    CountryId = countryId
                 };
-
-
 
                 if (!_provinceRepository.UpdateProvince(provinceModel))
                 {
@@ -304,7 +311,14 @@ namespace LarksWebApp.Controllers
         // GET: ProvinceController/Delete/5
         public ActionResult Delete(Guid id)
         {
-            return View();
+            var provinceObj = _provinceRepository.GetProvinceModel(id);
+
+            if (provinceObj == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            return View(_mapper.Map<ProvinceDTO>(provinceObj));
         }
 
         // POST: ProvinceController/Delete/5
@@ -314,10 +328,18 @@ namespace LarksWebApp.Controllers
         {
             try
             {
+                var provinceObj = _provinceRepository.GetProvinceModel(id);
+
+                if (provinceObj != null)
+                {
+                    _provinceRepository.DeleteProvince(provinceObj);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                serviceLogger.LogError(ex.Message);
                 return View();
             }
         }

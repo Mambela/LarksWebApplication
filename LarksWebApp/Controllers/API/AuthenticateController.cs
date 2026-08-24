@@ -1,5 +1,6 @@
-﻿using LarksWebApp.DTOs.DTO_User;
+using LarksWebApp.DTOs.DTO_User;
 using LarksWebApp.Models.Users;
+using LarksWebApp.Repository.TokenRepository;
 using LarksWebApp.Services.Loggers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace LarksWebApp.Controllers.API
@@ -18,16 +20,22 @@ namespace LarksWebApp.Controllers.API
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
         private ILoggerTrace _serviceLogger;
         private readonly IConfiguration _configuration;
 
-        public AuthenticateController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, ILoggerTrace serviceLogger,IConfiguration configuration)
+        private static readonly TimeSpan AccessTokenLifetime = TimeSpan.FromHours(1);
+        private static readonly TimeSpan RefreshTokenLifetime = TimeSpan.FromDays(30);
+
+        public AuthenticateController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager,
+            IRefreshTokenRepository refreshTokenRepository, ILoggerTrace serviceLogger, IConfiguration configuration)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _refreshTokenRepository = refreshTokenRepository;
             _serviceLogger = serviceLogger;
             _configuration = configuration;
-            
+
         }
 
 
@@ -37,46 +45,25 @@ namespace LarksWebApp.Controllers.API
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
-        { 
+        {
             try
             {
                 var user = await _userManager.FindByEmailAsync(loginModel.Username);
 
                 if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
                 {
-
                     var userRoles = await _userManager.GetRolesAsync(user);
 
-                    var authClaims = new List<Claim>
+                    var (accessToken, expiration) = GenerateAccessToken(loginModel.Username, userRoles);
+                    var refreshToken = await IssueRefreshTokenAsync(user.Id);
+
+                    return Ok(new LoginResponseDTO
                     {
-                        new Claim(ClaimTypes.Name, loginModel.Username),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    };
-
-
-                    foreach (var userRole in userRoles)
-                    {
-                        authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                    }
-
-                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-
-
-                    var token = new JwtSecurityToken(
-                        issuer: _configuration["Jwt:Issuer"],
-                        audience: _configuration["Jwt:Audience"],
-                        expires:DateTime.Now.AddDays(3),
-                        claims:authClaims,
-                        signingCredentials: new SigningCredentials(authSigningKey,SecurityAlgorithms.HmacSha256)
-                        );
-
-
-                    return Ok(new
-                    {   
-                        username = loginModel.Username,
-                        fullName = user.FirstName+" "+user.LastName,
-                        token = new JwtSecurityTokenHandler().WriteToken(token),
-                        expiration = token.ValidTo
+                        Username = loginModel.Username,
+                        FullName = user.FirstName + " " + user.LastName,
+                        Token = accessToken,
+                        Expiration = expiration,
+                        RefreshToken = refreshToken
                     });
                 }
 
@@ -89,31 +76,107 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
-        private string GetUserId()
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("refresh")]
+        [ProducesResponseType(typeof(LoginResponseDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequestDTO refreshTokenRequest)
         {
-            string userId = "";
-
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            if (claimsIdentity != null)
+            try
             {
-                // the principal identity is a claims identity.
-                // now we need to find the NameIdentifier claim
-                var userIdClaim = claimsIdentity.Claims
-                    .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-
-
-                if (userIdClaim != null)
+                if (!ModelState.IsValid)
                 {
-
-                    // var userIdValue = userIdClaim.Value;
-                    userId = userIdClaim.Value.ToString();
+                    return BadRequest(ModelState);
                 }
-                return userId;
-            }
 
-            return null;
+                var existingToken = _refreshTokenRepository.GetByHash(HashToken(refreshTokenRequest.RefreshToken));
+
+                if (existingToken == null || existingToken.IsRevoked || existingToken.ExpiresAt < DateTime.UtcNow)
+                {
+                    return Unauthorized();
+                }
+
+                var user = await _userManager.FindByIdAsync(existingToken.UserId);
+
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+
+                // A refresh token is single-use: revoke the presented one and issue a new one.
+                _refreshTokenRepository.Revoke(existingToken);
+
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                var (accessToken, expiration) = GenerateAccessToken(user.Email, userRoles);
+                var newRefreshToken = await IssueRefreshTokenAsync(user.Id);
+
+                return Ok(new LoginResponseDTO
+                {
+                    Username = user.Email,
+                    FullName = user.FirstName + " " + user.LastName,
+                    Token = accessToken,
+                    Expiration = expiration,
+                    RefreshToken = newRefreshToken
+                });
+            }
+            catch (Exception ex)
+            {
+                _serviceLogger.LogError("An error occurred while trying to refresh a token " + ex.Message);
+                return Unauthorized();
+            }
         }
 
-        
+        private (string token, DateTime expiration) GenerateAccessToken(string username, IEnumerable<string> roles)
+        {
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+
+            foreach (var role in roles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                expires: DateTime.Now.Add(AccessTokenLifetime),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+
+            return (new JwtSecurityTokenHandler().WriteToken(token), token.ValidTo);
+        }
+
+        private async Task<string> IssueRefreshTokenAsync(string userId)
+        {
+            var rawValue = GenerateRefreshTokenValue();
+
+            await _refreshTokenRepository.CreateAsync(new RefreshToken
+            {
+                UserId = userId,
+                TokenHash = HashToken(rawValue),
+                ExpiresAt = DateTime.UtcNow.Add(RefreshTokenLifetime)
+            });
+
+            return rawValue;
+        }
+
+        private static string GenerateRefreshTokenValue()
+        {
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+        }
+
+        private static string HashToken(string value)
+        {
+            return Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(value)));
+        }
     }
 }

@@ -193,7 +193,16 @@ namespace LarksWebApp.Controllers
         // GET: MunicipalitiesController/Edit/5
         public ActionResult Edit(Guid id)
         {
-            return View();
+            var municipalityObj = _municipalityRepo.GetMuncipality(id);
+
+            if (municipalityObj == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            ViewData["provinces"] = new SelectList(_provinceRepository.GetAllProvinces(), "Id", "Designation", municipalityObj.ProvinceId);
+
+            return View(_mapper.Map<Create_Municipality_DTO>(municipalityObj));
         }
 
         // POST: MunicipalitiesController/Edit/5
@@ -203,10 +212,29 @@ namespace LarksWebApp.Controllers
         {
             try
             {
+                var municipalityObj = _municipalityRepo.GetMuncipality(id);
+
+                if (municipalityObj == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound);
+                }
+
+                if (!Guid.TryParse(collection["provinceId"], out Guid provinceId) || string.IsNullOrWhiteSpace(collection["Designation"]))
+                {
+                    ViewData["provinces"] = new SelectList(_provinceRepository.GetAllProvinces(), "Id", "Designation", municipalityObj.ProvinceId);
+                    return View(_mapper.Map<Create_Municipality_DTO>(municipalityObj));
+                }
+
+                municipalityObj.Designation = collection["Designation"];
+                municipalityObj.ProvinceId = provinceId;
+
+                _municipalityRepo.UpdateMunicipality(municipalityObj);
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                serviceLogger.LogError(ex.Message);
                 return View();
             }
         }
@@ -214,7 +242,14 @@ namespace LarksWebApp.Controllers
         // GET: MunicipalitiesController/Delete/5
         public ActionResult Delete(Guid id)
         {
-            return View();
+            var municipalityObj = _municipalityRepo.GetMuncipality(id);
+
+            if (municipalityObj == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            return View(_mapper.Map<MunicipalityDTO>(municipalityObj));
         }
 
         // POST: MunicipalitiesController/Delete/5
@@ -224,10 +259,18 @@ namespace LarksWebApp.Controllers
         {
             try
             {
+                var municipalityObj = _municipalityRepo.GetMuncipality(id);
+
+                if (municipalityObj != null)
+                {
+                    _municipalityRepo.DeleteMunicipality(municipalityObj);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                serviceLogger.LogError(ex.Message);
                 return View();
             }
         }

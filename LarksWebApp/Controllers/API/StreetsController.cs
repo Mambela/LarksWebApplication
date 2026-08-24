@@ -190,12 +190,18 @@ namespace LarksWebApp.Controllers.API
 
         [HttpGet("Streets")]
         [ProducesResponseType(typeof(View_Street_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public IActionResult Getstreet(Guid id)
         {
             try
             {
                 var streetObj = _streetRepository.GetStreetModel(id);
+
+                if (streetObj == null)
+                {
+                    return NotFound();
+                }
 
                 var streetDTO =new View_Street_DTO();
 
@@ -330,9 +336,10 @@ namespace LarksWebApp.Controllers.API
                 }
 
                 /*
-                 * 
+                 *
                  * **/
 
+                streetDTO.Id = streetObj.Id;
 
                 return StatusCode(StatusCodes.Status201Created, streetDTO);
 

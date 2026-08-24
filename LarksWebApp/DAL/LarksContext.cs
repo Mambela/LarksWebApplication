@@ -47,6 +47,8 @@ namespace LarksWebApp.DAL
 
         public DbSet<AuthToken> Tokens { get; set; }
 
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
        public DbSet<LocationModelSubcategoryModel> LocationModelSubcategoryModel { get; set; }
 
 

@@ -302,6 +302,10 @@ namespace LarksWebApp.Services.InternalService
 
                         }
                     }
+                    else
+                    {
+                        activeDisctrictId = district.Id;
+                    }
                 }
                 #endregion
 

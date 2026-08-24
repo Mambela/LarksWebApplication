@@ -85,6 +85,7 @@ namespace LarksWebApp.Controllers.API
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(Create_Municipality_DTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Create_Municipality_DTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
@@ -95,15 +96,14 @@ namespace LarksWebApp.Controllers.API
         {
             try
             {
-        
+
                 if (municipalityDTO == null) return BadRequest();
 
-                if (_municipalityRepository.VerifyMunicipalityExist(municipalityDTO.Designation, municipalityDTO.ProvinceId) != null)
+                var existingMunicipality = _municipalityRepository.VerifyMunicipalityExist(municipalityDTO.Designation, municipalityDTO.ProvinceId);
+
+                if (existingMunicipality != null)
                 {
-                    ModelState.AddModelError("", $"The record {municipalityDTO.Designation} already exists as a country");
-
-                    return BadRequest(ModelState);
-
+                    return Ok(_mapper.Map<Create_Municipality_DTO>(existingMunicipality));
                 }
 
 
@@ -184,7 +184,7 @@ namespace LarksWebApp.Controllers.API
             try
             {
 
-                if (municipality_DTO == null || municipality_DTO.ProvinceId != municipalityID)
+                if (municipality_DTO == null || municipality_DTO.Id != municipalityID)
                 {
 
                     return BadRequest(ModelState);

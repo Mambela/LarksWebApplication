@@ -89,21 +89,30 @@ namespace LarksWebApp.Controllers
         // POST: CountryController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(IFormCollection collection)
         {
             try
             {
+                string designation = collection["Designation"];
+
+                var existingCountry = _countryRepository.CountryExistis(designation);
+
+                if (existingCountry != null)
+                {
+                    return RedirectToAction(nameof(Index), new { msg = $"Country {existingCountry.Designation} already exists." });
+                }
+
                 CountryModel countryModel = new CountryModel();
 
-                countryModel.Designation = collection["Designation"];
+                countryModel.Designation = designation;
 
-                if (_countryRepository.CreateCountry(countryModel) != null)
+                if (await _countryRepository.CreateCountry(countryModel) != null)
                 {
                     return RedirectToAction(nameof(Index),new {msg=$"Country {countryModel.Designation} saved successfully! "});
-                    
+
                 }
                 return RedirectToAction(nameof(Index));
-                
+
             }
             catch(Exception ex)
             {
@@ -155,7 +164,14 @@ namespace LarksWebApp.Controllers
         // GET: CountryController/Delete/5
         public ActionResult Delete(Guid id)
         {
-            return View();
+            var countryObj = _countryRepository.GetCountry(id);
+
+            if (countryObj == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            return View(_mapper.Map<CountryDTO>(countryObj));
         }
 
         // POST: CountryController/Delete/5
@@ -165,10 +181,18 @@ namespace LarksWebApp.Controllers
         {
             try
             {
+                var countryObj = _countryRepository.GetCountry(id);
+
+                if (countryObj != null)
+                {
+                    _countryRepository.DeleteCountry(countryObj);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                serviceLogger.LogError(ex.Message);
                 return View();
             }
         }

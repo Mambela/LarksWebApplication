@@ -762,6 +762,36 @@ namespace LarksWebApp.Migrations
                     b.ToTable("Tokens");
                 });
 
+            modelBuilder.Entity("LarksWebApp.Models.Users.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -1154,6 +1184,17 @@ namespace LarksWebApp.Migrations
                 });
 
             modelBuilder.Entity("LarksWebApp.Models.Users.AuthToken", b =>
+                {
+                    b.HasOne("LarksWebApp.Models.Users.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LarksWebApp.Models.Users.RefreshToken", b =>
                 {
                     b.HasOne("LarksWebApp.Models.Users.ApplicationUser", "User")
                         .WithMany()

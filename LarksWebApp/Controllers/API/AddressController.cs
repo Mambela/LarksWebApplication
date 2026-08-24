@@ -411,6 +411,10 @@ namespace LarksWebApp.Controllers.API
 
                         }
                     }
+                    else
+                    {
+                        activeDisctrictId = district.Id;
+                    }
                 }
                 #endregion
 
@@ -421,7 +425,7 @@ namespace LarksWebApp.Controllers.API
 
                 if (currentMunicipality != null)
                 {
-                    var municipality = municipalityRepository.VerifyMunicipalityExist(currentMunicipality, country.Id);
+                    var municipality = municipalityRepository.VerifyMunicipalityExist(currentMunicipality, province.Id);
 
                     if (municipality == null)
                     {
@@ -630,6 +634,10 @@ namespace LarksWebApp.Controllers.API
                             // report the error to the some log
 
                         }
+                    }
+                    else
+                    {
+                        activeDisctrictId = district.Id;
                     }
                 }
                 #endregion
@@ -907,6 +915,10 @@ namespace LarksWebApp.Controllers.API
 
                         }
                     }
+                    else
+                    {
+                        activeDisctrictId = district.Id;
+                    }
                 }
                 #endregion
 
@@ -917,7 +929,7 @@ namespace LarksWebApp.Controllers.API
 
                 if (currentMunicipality != null)
                 {
-                    var municipality = municipalityRepository.VerifyMunicipalityExist(currentMunicipality, country.Id);
+                    var municipality = municipalityRepository.VerifyMunicipalityExist(currentMunicipality, province.Id);
 
                     if (municipality == null)
                     {

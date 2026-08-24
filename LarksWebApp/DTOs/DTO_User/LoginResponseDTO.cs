@@ -9,5 +9,7 @@ namespace LarksWebApp.DTOs.DTO_User
         public string Token { get; set; }
 
         public DateTime Expiration { get; set; }
+
+        public string RefreshToken { get; set; }
     }
 }

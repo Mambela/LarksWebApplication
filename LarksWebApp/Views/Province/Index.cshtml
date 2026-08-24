@@ -21,6 +21,8 @@
         <tr>
           <th scope="col">Country Name</th>
           <th scope="col">View More</th>
+          <th scope="col"></th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -28,8 +30,10 @@
             <tr>
               <td>@Html.DisplayFor(modelItem => province.Designation)</td>
               <td>@Html.ActionLink("Details","Details",new {id=province.Id})</td>
+              <td>@Html.ActionLink("Edit","Edit",new {id=province.Id})</td>
+              <td>@Html.ActionLink("Delete","Delete",new {id=province.Id})</td>
             </tr>
-        }         
+        }
       </tbody>
     </table>
 </div>

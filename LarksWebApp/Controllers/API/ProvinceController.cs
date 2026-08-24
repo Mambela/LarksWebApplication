@@ -112,11 +112,12 @@ namespace LarksWebApp.Controllers.API
                     return BadRequest();
                 }
 
-                if (_provinceRepository.VerifyProvinceExist(provinceDTO.Designation, provinceDTO.CountryId) !=null)
-                {
-                    ModelState.AddModelError("", $"The record {provinceDTO.Designation} already exists as a country");
-                }
+                var existingProvince = _provinceRepository.VerifyProvinceExist(provinceDTO.Designation, provinceDTO.CountryId);
 
+                if (existingProvince != null)
+                {
+                    return Ok(_mapper.Map<Create_Province_DTO>(existingProvince));
+                }
 
                 if (!ModelState.IsValid)
                 {

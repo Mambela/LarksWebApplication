@@ -116,9 +116,12 @@ namespace LarksWebApp.Controllers
                 MunicipalityId = Guid.Parse(suburb["newMunicipalityId"]),
                     DistrictId = Guid.Parse(suburb["newDistrictId"]),*/
 
+                var existingSuburb = _suburbRepository.VerifySuburbExist(suburbObj.Designation, suburbObj.MunicipalityId, suburbObj.CityId, suburbObj.DistrictId);
 
-
-                await _suburbRepository.CreateSuburb(suburbObj);
+                if (existingSuburb == null)
+                {
+                    await _suburbRepository.CreateSuburb(suburbObj);
+                }
 
                 return RedirectToAction(nameof(Index));
             }

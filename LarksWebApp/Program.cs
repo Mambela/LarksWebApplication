@@ -271,6 +271,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddScoped<IWebhookService, WebHookService>();
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<ITokenManager, TokenManager>();
+    services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
     services.AddSingleton<IUriService>(o =>
     {
         var accessor = o.GetRequiredService<IHttpContextAccessor>();

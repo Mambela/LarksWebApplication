@@ -1,0 +1,25 @@
+@using LarksWebApp.DTOs.DTO_Provinces
+@model ProvinceDTO
+@{
+    ViewData["Title"] = "Delete Province";
+}
+
+<div class="app-breadcrumb">Larks &gt; <span class="current">Delete Province</span></div>
+<h3 class="mb-4">Delete Province</h3>
+
+<div class="col-md-6">
+    <div class="app-card">
+        <div class="app-card__body">
+            <p>Are you sure you want to delete <strong>@Model.Designation</strong>?</p>
+
+            @using (Html.BeginForm("Delete", "Province", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("id", Model.Id)
+
+                <input type="submit" value="Delete" class="btn btn-danger" />
+                <a class="btn btn-secondary" href="@Url.Action("Index", "Province")">Cancel</a>
+            }
+        </div>
+    </div>
+</div>

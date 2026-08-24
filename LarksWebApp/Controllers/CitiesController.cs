@@ -127,7 +127,16 @@ namespace LarksWebApp.Controllers
         // GET: CityController/Edit/5
         public ActionResult Edit(Guid id)
         {
-            return View();
+            var cityObj = _citytRepository.GetCity(id);
+
+            if (cityObj == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            ViewData["provinces"] = new SelectList(_provinceRepository.GetAllProvinces(), "Id", "Designation", cityObj.ProvinceId);
+
+            return View(_mapper.Map<Create_City_DTO>(cityObj));
         }
 
         // POST: CityController/Edit/5
@@ -137,10 +146,29 @@ namespace LarksWebApp.Controllers
         {
             try
             {
+                var cityObj = _citytRepository.GetCity(id);
+
+                if (cityObj == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound);
+                }
+
+                if (!Guid.TryParse(collection["provinceId"], out Guid provinceId) || string.IsNullOrWhiteSpace(collection["Designation"]))
+                {
+                    ViewData["provinces"] = new SelectList(_provinceRepository.GetAllProvinces(), "Id", "Designation", cityObj.ProvinceId);
+                    return View(_mapper.Map<Create_City_DTO>(cityObj));
+                }
+
+                cityObj.Designation = collection["Designation"];
+                cityObj.ProvinceId = provinceId;
+
+                _citytRepository.UpdateCity(cityObj);
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                serviceLogger.LogError(ex.Message);
                 return View();
             }
         }
@@ -148,7 +176,14 @@ namespace LarksWebApp.Controllers
         // GET: CityController/Delete/5
         public ActionResult Delete(Guid id)
         {
-            return View();
+            var cityObj = _citytRepository.GetCity(id);
+
+            if (cityObj == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            return View(_mapper.Map<CitiesDTO>(cityObj));
         }
 
         // POST: CityController/Delete/5
@@ -158,10 +193,18 @@ namespace LarksWebApp.Controllers
         {
             try
             {
+                var cityObj = _citytRepository.GetCity(id);
+
+                if (cityObj != null)
+                {
+                    _citytRepository.DeleteCity(cityObj);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                serviceLogger.LogError(ex.Message);
                 return View();
             }
         }

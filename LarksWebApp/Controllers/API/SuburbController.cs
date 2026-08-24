@@ -131,6 +131,7 @@ namespace LarksWebApp.Controllers.API
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(Create_suburb_DTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Create_suburb_DTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
@@ -151,11 +152,11 @@ namespace LarksWebApp.Controllers.API
                 }
 
 
-                if (suburbRepository.VerifySuburbExist(suburb_DTO.Designation, suburb_DTO.MunicipalityId) ==null)
-                {
-                    ModelState.AddModelError("", $"The record {suburb_DTO.Designation} already exists as a country");
+                var existingSuburb = suburbRepository.VerifySuburbExist(suburb_DTO.Designation, suburb_DTO.MunicipalityId);
 
-                    return BadRequest(ModelState);
+                if (existingSuburb != null)
+                {
+                    return Ok(_mapper.Map<Create_suburb_DTO>(existingSuburb));
                 }
 
                 var HoodObj = _mapper.Map<SuburbModel>(suburb_DTO);
@@ -168,6 +169,8 @@ namespace LarksWebApp.Controllers.API
                     return StatusCode(500, ModelState);
                 }
 
+
+                suburb_DTO.Id = HoodObj.Id;
 
                 return StatusCode(StatusCodes.Status201Created, suburb_DTO);
             }

@@ -23,6 +23,8 @@
                         <th scope="col">Province</th>
                     }
                     <th scope="col">Details</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -35,6 +37,8 @@
                             <td>@city.ProvinceName</td>
                         }
                         <td>@Html.ActionLink("Details", "Details", new { id = city.Id })</td>
+                        <td>@Html.ActionLink("Edit", "Edit", new { id = city.Id })</td>
+                        <td>@Html.ActionLink("Delete", "Delete", new { id = city.Id })</td>
                     </tr>
                 }
             </tbody>

@@ -68,7 +68,7 @@ namespace LarksWebApp.Controllers.API
             _subcategoryRepo = subcategoryRepo;
         }
 
-        private bool SubcategoriesAreValidForCategory(Guid categoryId, IEnumerable<Guid> subcategoryIds)
+        private bool SubcategoriesAreValidForCategory(Guid categoryId, IEnumerable<Guid>? subcategoryIds)
         {
             if (subcategoryIds == null || !subcategoryIds.Any())
             {
@@ -223,16 +223,16 @@ namespace LarksWebApp.Controllers.API
                 
 
                 var locationDTO = new  ViewLocationDTO
-                { 
+                {
                     Id = locationObj.Id,
-                    City = locationObj.City.Designation,
+                    City = locationObj.City?.Designation,
                     Category = locationObj.Category.Designation,
                     CategoryId = locationObj.Category.Id,
                     Country = locationObj.Municipality.Province.Country.Designation,
-                    District = (locationObj.Suburb.District != null)? locationObj.Suburb.District.Designation:"N/A",
+                    District = (locationObj.Suburb?.District != null)? locationObj.Suburb.District.Designation:"N/A",
                     Designation = locationObj.Designation,
                     Municipality = locationObj.Municipality.Designation,
-                    Suburb = locationObj.Suburb.Designation,
+                    Suburb = locationObj.Suburb?.Designation,
                     Images = locationObj.Images.Select(s =>s.ImagePath).ToList(),
                     AdditionalInformation = locationObj.AdditionalInformation,
                     Lat = locationObj.Lat,
@@ -468,6 +468,155 @@ namespace LarksWebApp.Controllers.API
             }
 
 
+        }
+
+        /// <summary>
+        /// Builds and saves a Location plus its subcategory links from the minimal set of fields
+        /// needed to create one. Shared by the JSON and multipart create endpoints below; the
+        /// caller is responsible for anything endpoint-specific (e.g. saving uploaded files).
+        /// </summary>
+        private async Task<LocationModel?> CreateLocationEntityAsync(CreateLocationDTO dto)
+        {
+            if (!SubcategoriesAreValidForCategory(dto.CategoryId, dto.SubCategories))
+            {
+                return null;
+            }
+
+            var locationObj = new LocationModel
+            {
+                AddressId = dto.AddressId,
+                CategoryId = dto.CategoryId,
+                MunicipalityId = dto.MunicipalityId,
+                CityId = dto.CityId,
+                SuburbId = dto.SuburbId,
+                Designation = dto.Designation,
+                AdditionalInformation = dto.AdditionalInfo,
+                Lat = dto.Lat,
+                Lng = dto.Lng
+            };
+
+            if (await locationRepo.CreateLocation(locationObj) == null)
+            {
+                return null;
+            }
+
+            if (dto.SubCategories != null && dto.SubCategories.Count > 0)
+            {
+                var locationSubcategory = dto.SubCategories.Select(id => new LocationModelSubcategoryModel { LocationId = locationObj.Id, SubcategoriesId = id });
+
+                if (!await locationRepo.Createlocationsubcategory(locationSubcategory))
+                {
+                    return null;
+                }
+            }
+
+            return locationObj;
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("create")]
+        [ProducesResponseType(typeof(Created_Location_DTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateLocationJson([FromBody] CreateLocationDTO locationDTO)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var locationObj = await CreateLocationEntityAsync(locationDTO);
+
+                if (locationObj == null)
+                {
+                    return BadRequest();
+                }
+
+                var createdLocation = new Created_Location_DTO
+                {
+                    Id = locationObj.Id,
+                    Designation = locationObj.Designation,
+                    CategoryId = locationDTO.CategoryId,
+                    AddressId = locationDTO.AddressId,
+                    MunicipalityId = locationDTO.MunicipalityId,
+                    CityId = locationDTO.CityId ?? Guid.Empty,
+                    SuburbId = locationDTO.SuburbId ?? Guid.Empty,
+                    Lat = locationDTO.Lat,
+                    Lng = locationDTO.Lng
+                };
+
+                return StatusCode(StatusCodes.Status201Created, createdLocation);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error thrown when creating location (json) " + ex.Message);
+                return BadRequest();
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("create-with-files")]
+        [ProducesResponseType(typeof(Created_Location_DTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateLocationWithFiles([FromForm] CreateLocationWithFilesDTO locationDTO)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var savedImages = new List<MediaResponse>();
+
+                if (locationDTO.Files != null && locationDTO.Files.Count > 0)
+                {
+                    savedImages = await _fileManagement.SaveMedia(locationDTO.Files, "Locations");
+                }
+
+                var locationObj = await CreateLocationEntityAsync(locationDTO);
+
+                if (locationObj == null)
+                {
+                    return BadRequest();
+                }
+
+                var locationImageList = savedImages.Select(image => new LocationImageModel
+                {
+                    ImagePath = image.imageMessage,
+                    LocationId = locationObj.Id
+                }).ToList();
+
+                if (locationImageList.Count > 0 && await locationRepo.CreateLocationImage(locationImageList) == null)
+                {
+                    return BadRequest();
+                }
+
+                var createdLocation = new Created_Location_DTO
+                {
+                    Id = locationObj.Id,
+                    Designation = locationObj.Designation,
+                    CategoryId = locationDTO.CategoryId,
+                    AddressId = locationDTO.AddressId,
+                    MunicipalityId = locationDTO.MunicipalityId,
+                    CityId = locationDTO.CityId ?? Guid.Empty,
+                    SuburbId = locationDTO.SuburbId ?? Guid.Empty,
+                    Lat = locationDTO.Lat,
+                    Lng = locationDTO.Lng
+                };
+
+                return StatusCode(StatusCodes.Status201Created, createdLocation);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error thrown when creating location (with files) " + ex.Message);
+                return BadRequest();
+            }
         }
 
         [HttpPost]
