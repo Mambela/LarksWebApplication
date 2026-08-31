@@ -55,6 +55,7 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
                 .Include(m => m.Municipality)
                 .Include(s => s.Street)
                 .Include(p => p.Province)
+                .Include(c => c.Country)
                 .FirstOrDefault(a => a.Id == AddressId);
 
         }

@@ -101,11 +101,28 @@ namespace LarksWebApp.Controllers.API
         [HttpGet("suburbInAnySector")]
         [ProducesResponseType(typeof(List<DTOs.DTO_Suburbs.SuburbDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public IActionResult suburbInAnySector(Guid districtId,Guid municipalityId, Guid cityId)
+        public IActionResult suburbInAnySector(Guid? districtId, Guid? municipalityId, Guid? cityId)
         {
             try
-            {   
-                var suburbObjList = suburbRepository.GetSuburbs(districtId,municipalityId,cityId);
+            {
+                IList<SuburbModel> suburbObjList;
+
+                if (municipalityId != null && municipalityId != Guid.Empty)
+                {
+                    suburbObjList = suburbRepository.GetSuburbsInMunicipality(municipalityId.Value);
+                }
+                else if (cityId != null && cityId != Guid.Empty)
+                {
+                    suburbObjList = suburbRepository.GetSuburbsInCities(cityId.Value);
+                }
+                else if (districtId != null && districtId != Guid.Empty)
+                {
+                    suburbObjList = suburbRepository.GetSuburbInDistricts(districtId.Value);
+                }
+                else
+                {
+                    return Ok(new List<DTOs.DTO_Suburbs.SuburbDTO>());
+                }
 
                 var suburbDTOList = new List<DTOs.DTO_Suburbs.SuburbDTO>();
 
@@ -114,7 +131,7 @@ namespace LarksWebApp.Controllers.API
                     suburbDTOList.Add(_mapper.Map<DTOs.DTO_Suburbs.SuburbDTO>(hood));
                 }
 
-                
+
                 return Ok(suburbDTOList);
 
             }
@@ -130,12 +147,12 @@ namespace LarksWebApp.Controllers.API
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        [ProducesResponseType(typeof(Create_suburb_DTO), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(Create_suburb_DTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CreateSuburbDTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(CreateSuburbDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateSuburb(Create_suburb_DTO suburb_DTO)
+        public async Task<IActionResult> CreateSuburb(CreateSuburbDTO suburb_DTO)
         {
 
             try
@@ -156,7 +173,7 @@ namespace LarksWebApp.Controllers.API
 
                 if (existingSuburb != null)
                 {
-                    return Ok(_mapper.Map<Create_suburb_DTO>(existingSuburb));
+                    return Ok(_mapper.Map<CreateSuburbDTO>(existingSuburb));
                 }
 
                 var HoodObj = _mapper.Map<SuburbModel>(suburb_DTO);

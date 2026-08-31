@@ -44,6 +44,9 @@ namespace LarksWebApp.DTOs.DTO_Addresses
         [JsonProperty("road")]
         public string ?Road { get; set; }
 
+        [JsonProperty("house_number")]
+        public string ?HouseNumber { get; set; }
+
         [JsonProperty("suburb")]
         public string ?Suburb { get; set; }
 

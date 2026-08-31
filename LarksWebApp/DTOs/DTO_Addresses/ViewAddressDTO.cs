@@ -6,6 +6,8 @@ namespace LarksWebApp.DTOs.DTO_Addresses
     {
         public Guid Id { get; set; }
 
+        public string Country { get; set; }
+        public Guid CountryID { get; set; }
 
         public string Province { get; set; }
         public Guid ProvinceID { get; set; }

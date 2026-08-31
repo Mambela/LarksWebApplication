@@ -37,17 +37,29 @@ namespace LarksWebApp.Repository.SuburbRepository
         public SuburbModel GetSuburb(Guid suburbId)
         {
             return _dbContext.Suburb.Include(s =>s.StreetLinks)
-                .ThenInclude(s =>s.Streets).Where(n =>n.Id == suburbId).FirstOrDefault();
+                .ThenInclude(s =>s.Streets)
+                .Include(s => s.City)
+                .Include(s => s.District)
+                .Include(s => s.Municipality).ThenInclude(m => m.Province)
+                .Where(n =>n.Id == suburbId).FirstOrDefault();
         }
 
         public IList<SuburbModel> GetSuburbsInCities(Guid cityId)
         {
-            return _dbContext.Suburb.Where(c => c.CityId == cityId).ToList();
+            return _dbContext.Suburb
+                .Include(s => s.City)
+                .Include(s => s.District)
+                .Include(s => s.Municipality).ThenInclude(m => m.Province)
+                .Where(c => c.CityId == cityId).ToList();
         }
 
         public IList<SuburbModel> GetSuburbInDistricts(Guid districtiD)
         {
-            return _dbContext.Suburb.Where(c => c.DistrictId == districtiD).ToList();
+            return _dbContext.Suburb
+                .Include(s => s.City)
+                .Include(s => s.District)
+                .Include(s => s.Municipality).ThenInclude(m => m.Province)
+                .Where(c => c.DistrictId == districtiD).ToList();
         }
 
 
@@ -76,15 +88,15 @@ namespace LarksWebApp.Repository.SuburbRepository
 
             if (sector == "district")
             {
-                return _dbContext.Suburb.Where(c => c.DistrictId == id).ToList();
+                return _dbContext.Suburb.Include(s => s.City).Include(s => s.District).Include(s => s.Municipality).ThenInclude(m => m.Province).Where(c => c.DistrictId == id).ToList();
             }
             else if (sector == "municipality")
             {
-                return _dbContext.Suburb.Where(p => p.MunicipalityId == id).ToList();
+                return _dbContext.Suburb.Include(s => s.City).Include(s => s.District).Include(s => s.Municipality).ThenInclude(m => m.Province).Where(p => p.MunicipalityId == id).ToList();
             }
             else if (sector == "city")
             {
-                return _dbContext.Suburb.Where(p => p.CityId == id).ToList();
+                return _dbContext.Suburb.Include(s => s.City).Include(s => s.District).Include(s => s.Municipality).ThenInclude(m => m.Province).Where(p => p.CityId == id).ToList();
             }
 
             return null;
@@ -130,22 +142,38 @@ namespace LarksWebApp.Repository.SuburbRepository
         public IList<SuburbModel> GetSuburbs(Guid districtId, Guid municipalityId, Guid cityId)
         {
 
-            return _dbContext.Suburb.Where(s => s.DistrictId == districtId || s.MunicipalityId == municipalityId || s.CityId == cityId).ToList();
+            return _dbContext.Suburb.Where(s => s.DistrictId == districtId || s.MunicipalityId == municipalityId || s.CityId == cityId)
+                .Include(s => s.City)
+                .Include(s => s.District)
+                .Include(s => s.Municipality).ThenInclude(m => m.Province)
+                .ToList();
         }
 
         public IList<SuburbModel> GetSuburbs(IList<Guid> suburbs)
         {
-            return _dbContext.Suburb.Where(c => suburbs.Contains(c.Id)).OrderBy(s =>s.Designation).ToList();
+            return _dbContext.Suburb
+                .Include(s => s.City)
+                .Include(s => s.District)
+                .Include(s => s.Municipality).ThenInclude(m => m.Province)
+                .Where(c => suburbs.Contains(c.Id)).OrderBy(s =>s.Designation).ToList();
         }
 
         public IList<SuburbModel> GetSuburbsByName(string designation)
         {
-            return _dbContext.Suburb.Where(s => s.Designation.Contains(designation)).ToList();
+            return _dbContext.Suburb
+                .Include(s => s.City)
+                .Include(s => s.District)
+                .Include(s => s.Municipality).ThenInclude(m => m.Province)
+                .Where(s => s.Designation.Contains(designation)).ToList();
         }
 
         public IList<SuburbModel> GetSuburbsInProvince(Guid ProvinceId)
         {
-            return _dbContext.Suburb.Where(p =>p.Municipality.ProvinceId == ProvinceId).OrderBy(o =>o.Designation).ToList();   
+            return _dbContext.Suburb
+                .Include(s => s.City)
+                .Include(s => s.District)
+                .Include(s => s.Municipality).ThenInclude(m => m.Province)
+                .Where(p =>p.Municipality.ProvinceId == ProvinceId).OrderBy(o =>o.Designation).ToList();
         }
     }
 }

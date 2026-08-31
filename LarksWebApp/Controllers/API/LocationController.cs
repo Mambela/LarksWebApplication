@@ -264,6 +264,54 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
+        ///Resolves the Address linked to a Location via its AddressId.
+        [HttpGet("locationaddress")]
+        [ProducesResponseType(typeof(ViewAddressDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetLocationAddress([FromQuery] Guid locationId)
+        {
+            try
+            {
+                var locationObj = locationRepo.GetLocation(locationId);
+
+                if (locationObj == null || locationObj.AddressId == null || locationObj.AddressId == Guid.Empty)
+                {
+                    return NotFound();
+                }
+
+                var addressObj = addressRepository.GetAddress(locationObj.AddressId.Value);
+
+                if (addressObj == null)
+                {
+                    return NotFound();
+                }
+
+                var addressDTO = new ViewAddressDTO
+                {
+                    Id = addressObj.Id,
+                    Country = addressObj.Country?.Designation,
+                    CountryID = addressObj.CountryID ?? Guid.Empty,
+                    Province = addressObj.Province?.Designation,
+                    ProvinceID = addressObj.ProvinceID ?? Guid.Empty,
+                    Municipality = addressObj.Municipality?.Designation,
+                    MunicipalityID = addressObj.MunicipalityID ?? Guid.Empty,
+                    Suburb = addressObj.Suburb?.Designation,
+                    SuburbId = addressObj.SuburbId ?? Guid.Empty,
+                    StreetName = addressObj.Street?.Designation,
+                    StreetID = addressObj.StreetID ?? Guid.Empty,
+                    StreetNumber = addressObj.StreetNumber,
+                    FullAddress = addressObj.StreetNumber + " " + addressObj.Street?.Designation + ", " + addressObj.Suburb?.Designation + ", " + addressObj.Province?.Designation
+                };
+
+                return Ok(addressDTO);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error while retrieving the address for a location " + ex.Message);
+                return BadRequest();
+            }
+        }
+
         ///Location by subCategory
         [HttpGet("SubcategoryLocations")]
         [ProducesResponseType(typeof(List<LocationDTO>), StatusCodes.Status200OK)]
@@ -513,7 +561,8 @@ namespace LarksWebApp.Controllers.API
             return locationObj;
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(typeof(Created_Location_DTO), StatusCodes.Status201Created)]

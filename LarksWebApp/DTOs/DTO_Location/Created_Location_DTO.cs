@@ -8,7 +8,7 @@
 
         public Guid CategoryId { get; set; }
 
-        public Guid AddressId { get; set; }
+        public Guid ? AddressId { get; set; }
         public Guid ProvinceId { get; set; }
 
         public Guid SuburbId { get; set; }

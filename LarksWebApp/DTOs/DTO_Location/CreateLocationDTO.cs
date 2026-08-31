@@ -10,8 +10,8 @@ namespace LarksWebApp.DTOs.DTO_Location
         [Required(ErrorMessage = "Please add category for this location")]
         public Guid CategoryId { get; set; }
 
-        [Required(ErrorMessage = "Please select an address for this location")]
-        public Guid AddressId { get; set; }
+ 
+        public Guid ? AddressId  { get; set; }
 
         [Required(ErrorMessage = "Please select a municipality for this location")]
         public Guid MunicipalityId { get; set; }

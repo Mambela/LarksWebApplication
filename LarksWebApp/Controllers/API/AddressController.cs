@@ -14,6 +14,7 @@ using LarksWebApp.Repository.ProviceRepository;
 using LarksWebApp.Services.ExternalService;
 using LarksWebApp.Services.Loggers;
 using LarksWebApp.Services.WebHooks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -66,18 +67,38 @@ namespace LarksWebApp.Controllers.API
         }
 
         [HttpGet("GetAddress")]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ViewAddressDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         public IActionResult GetAddress(Guid addressId)
         {
             try
             {
+                var addressObj = _addressRepository.GetAddress(addressId);
 
-                var endPoint = "https://localhost:44339/api/location/locationsinmunicipality?municipalityId=1&pageNumber=2&pageSize=";
-                var lastIndex = endPoint.LastIndexOf("=");
-                var item = endPoint.Substring(endPoint.LastIndexOf('='),1);
+                if (addressObj == null)
+                {
+                    return NotFound();
+                }
 
-                return Ok(item);
+                var addressDTO = new ViewAddressDTO
+                {
+                    Id = addressObj.Id,
+                    Country = addressObj.Country?.Designation,
+                    CountryID = addressObj.CountryID ?? Guid.Empty,
+                    Province = addressObj.Province?.Designation,
+                    ProvinceID = addressObj.ProvinceID ?? Guid.Empty,
+                    Municipality = addressObj.Municipality?.Designation,
+                    MunicipalityID = addressObj.MunicipalityID ?? Guid.Empty,
+                    Suburb = addressObj.Suburb?.Designation,
+                    SuburbId = addressObj.SuburbId ?? Guid.Empty,
+                    StreetName = addressObj.Street?.Designation,
+                    StreetID = addressObj.StreetID ?? Guid.Empty,
+                    StreetNumber = addressObj.StreetNumber,
+                    FullAddress = addressObj.StreetNumber + " " + addressObj.Street?.Designation + ", " + addressObj.Suburb?.Designation + ", " + addressObj.Province?.Designation
+                };
+
+                return Ok(addressDTO);
             }
             catch (Exception ex)
             {
@@ -247,13 +268,52 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
+        ///Looks up a lat/lng against Nominatim and returns the result shaped as a ViewAddressDTO.
+        ///This does not touch the database - it's a preview only, nothing is created or linked.
+        [HttpGet("PreviewAddressFromNominatim")]
+        [ProducesResponseType(typeof(ViewAddressDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> PreviewAddressFromNominatim(decimal latitude, decimal longitude)
+        {
+            try
+            {
+                externalHttpService = new ExternalHttpService(config);
+                var nominatimAddressDTO = await externalHttpService.RetrieveLocationByGeoLocationAsync(latitude, longitude);
+
+                if (nominatimAddressDTO?.Address == null)
+                {
+                    return BadRequest("No address could be resolved for the given coordinates");
+                }
+
+                var addressDTO = new ViewAddressDTO
+                {
+                    Country = nominatimAddressDTO.Address.Country ?? "",
+                    Province = nominatimAddressDTO.Address.Province ?? nominatimAddressDTO.Address.State ?? "",
+                    Municipality = nominatimAddressDTO.Address.Municipality ?? nominatimAddressDTO.Address.County ?? "",
+                    Suburb = nominatimAddressDTO.Address.Suburb ?? nominatimAddressDTO.Address.City_District ?? "",
+                    StreetName = nominatimAddressDTO.Address.Road ?? "",
+                    StreetNumber = nominatimAddressDTO.Address.HouseNumber ?? "",
+                    FullAddress = nominatimAddressDTO.DisplayName,
+                    Coordinates = new BaseCoordinatesDTO { lat = latitude, lng = longitude }
+                };
+
+                return Ok(addressDTO);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Error while previewing address from Nominatim " + ex.Message);
+                return BadRequest("Failed to retrieve address from Nominatim");
+            }
+        }
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("CreateAddress")]
-        [ProducesResponseType(typeof(Create_Addresses_DTO), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(CreateAddressDTO), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateAddress(Create_Addresses_DTO addressDTO)
+        public async Task<IActionResult> CreateAddress(CreateAddressDTO addressDTO)
         {
             try
             {
