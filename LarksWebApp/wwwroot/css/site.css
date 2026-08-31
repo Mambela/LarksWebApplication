@@ -37,28 +37,31 @@ body {
 :root {
     --sidebar-width: 264px;
     --topbar-height: 64px;
-    --color-primary: #9d6638;
-    --color-primary-dark: #4e220f;
-    --color-primary-soft: #eef0e6;
-    --color-bg: #f7f1de;
+    --color-primary: #f2622e;
+    --color-primary-dark: #d94f1f;
+    --color-primary-light: #ff9b57;
+    --color-primary-soft: #fff1e8;
+    --color-bg: #fafafb;
     --color-surface: #ffffff;
-    --color-border: #e6ddc2;
-    --color-text: #4e220f;
-    --color-text-muted: #94886f;
-    --color-success: #1faa59;
-    --color-success-soft: #e9f9ef;
-    --color-danger: #e9455a;
-    --color-danger-soft: #fdebec;
-    --radius-lg: 16px;
-    --radius-md: 12px;
-    --radius-sm: 8px;
-    --shadow-card: 0 1px 2px rgba(78, 34, 15, .05), 0 1px 3px rgba(78, 34, 15, .08);
+    --color-border: #ececf0;
+    --color-text: #17171c;
+    --color-text-muted: #7a7a85;
+    --color-success: #22c55e;
+    --color-success-soft: #e9fbf0;
+    --color-danger: #ef4444;
+    --color-danger-soft: #fdeeee;
+    --radius-lg: 0;
+    --radius-md: 0;
+    --radius-sm: 0;
+    --shadow-card: none;
+    --gradient-primary: linear-gradient(135deg, #f2622e, #ff9b57);
 }
 
 body {
     background-color: var(--color-bg);
     color: var(--color-text);
     margin-bottom: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 a {
@@ -93,8 +96,8 @@ a {
 .app-sidebar__logo {
     width: 36px;
     height: 36px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+    border-radius: 0;
+    background: var(--gradient-primary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -148,7 +151,7 @@ a {
 }
 
 .app-nav-link.active {
-    background: var(--color-primary-dark);
+    background: var(--gradient-primary);
     color: #fff;
 }
 
@@ -229,7 +232,7 @@ a {
 
 .app-env-pill {
     padding: .3rem .75rem;
-    border-radius: 999px;
+    border-radius: 0;
     background: var(--color-primary-soft);
     color: var(--color-primary);
     font-size: .75rem;
@@ -263,7 +266,7 @@ a {
 .stat-tile__icon {
     width: 40px;
     height: 40px;
-    border-radius: 10px;
+    border-radius: 0;
     background: var(--color-primary-soft);
     color: var(--color-primary);
     display: flex;
@@ -320,15 +323,21 @@ a {
 }
 
 /* Buttons */
+.btn {
+    border-radius: 6px;
+    font-weight: 600;
+}
+
 .btn-primary {
-    background-color: var(--color-primary);
+    background: var(--gradient-primary);
     border-color: var(--color-primary);
+    box-shadow: 0 4px 14px rgba(242, 98, 46, .28);
 }
 
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
-    background-color: var(--color-primary-dark) !important;
+    background: var(--color-primary-dark) !important;
     border-color: var(--color-primary-dark) !important;
 }
 
@@ -336,12 +345,12 @@ a {
     background: #fff;
     border: 1px solid var(--color-border);
     color: var(--color-text);
-    border-radius: var(--radius-sm);
+    border-radius: 6px;
 }
 
 .btn-outline-soft:hover {
-    background: var(--color-bg);
-    color: var(--color-text);
+    background: var(--color-primary-soft);
+    color: var(--color-primary-dark);
 }
 
 /* Table */
@@ -375,7 +384,7 @@ a {
     align-items: center;
     gap: .35rem;
     padding: .25rem .65rem;
-    border-radius: 999px;
+    border-radius: 0;
     font-size: .75rem;
     font-weight: 600;
 }
@@ -411,7 +420,7 @@ a {
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {
-    border-radius: 8px !important;
+    border-radius: 0 !important;
     border: 1px solid var(--color-border) !important;
     margin-left: .25rem !important;
     color: var(--color-text) !important;
@@ -434,4 +443,47 @@ a {
         position: fixed;
         left: -100%;
     }
+}
+
+/* Form controls - more compact, presentable sizing.
+   max-width keeps every plain (non-floating) text input/select from
+   stretching to fill wide, unconstrained form columns across the app. */
+.form-control,
+.form-select {
+    padding: .45rem .7rem;
+    font-size: .9rem;
+    border-radius: var(--radius-sm);
+    border-color: var(--color-border);
+    max-width: 420px;
+}
+
+/* Auth pages (Login/Register) - fixed width instead of a fluid grid
+   column, so it doesn't stretch on wide/sidebar-less layouts */
+.auth-form-col {
+    max-width: 380px;
+    width: 100%;
+}
+
+.form-floating > .form-control,
+.form-floating > .form-select {
+    height: calc(2.9rem + 2px);
+    min-height: calc(2.9rem + 2px);
+    padding: .85rem .75rem .35rem;
+}
+
+.form-floating > label {
+    padding: .65rem .75rem;
+    font-size: .85rem;
+}
+
+.form-floating > .form-control:focus,
+.form-floating > .form-control:not(:placeholder-shown) {
+    padding-top: 1.35rem;
+    padding-bottom: .35rem;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select ~ label {
+    transform: scale(.8) translateY(-.35rem) translateX(.15rem);
 }
