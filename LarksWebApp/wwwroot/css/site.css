@@ -61,7 +61,33 @@ body {
     background-color: var(--color-bg);
     color: var(--color-text);
     margin-bottom: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Typography - headings and paragraphs.
+   !important on weight/color/size for headings is deliberate: several
+   older views still carry Bootstrap's .display-* utility classes, which
+   set their own font-weight (300) and font-size without !important, so a
+   plain type-selector rule would silently lose to them otherwise. This
+   doesn't clobber intentional overrides like .text-success, since those
+   utilities carry their own !important at higher specificity. */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 800 !important;
+    color: #12122B !important;
+}
+
+h1 {
+    font-size: 60px !important;
+    line-height: 1.05 !important;
+}
+
+p {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 400;
+    font-size: 21px;
+    line-height: 1.5;
+    color: #6B6B7A;
 }
 
 a {
@@ -77,8 +103,8 @@ a {
 .app-sidebar {
     width: var(--sidebar-width);
     flex-shrink: 0;
-    background: var(--color-surface);
-    border-right: 1px solid var(--color-border);
+    background: #26262b;
+    border-right: 1px solid rgba(255, 255, 255, .08);
     display: flex;
     flex-direction: column;
     position: sticky;
@@ -112,9 +138,17 @@ a {
     line-height: 1.1;
 }
 
+.app-sidebar .app-sidebar__brand-name {
+    color: #fff;
+}
+
 .app-sidebar__brand-sub {
     font-size: .72rem;
     color: var(--color-text-muted);
+}
+
+.app-sidebar .app-sidebar__brand-sub {
+    color: rgba(255, 255, 255, .5);
 }
 
 .app-sidebar__nav {
@@ -132,7 +166,7 @@ a {
     gap: .7rem;
     padding: .6rem .75rem;
     border-radius: var(--radius-sm);
-    color: var(--color-text-muted);
+    color: rgba(255, 255, 255, .65);
     text-decoration: none;
     font-size: .875rem;
     font-weight: 500;
@@ -145,14 +179,15 @@ a {
 }
 
 .app-nav-link:hover {
-    background: var(--color-primary-soft);
-    color: var(--color-text);
+    background: rgba(255, 255, 255, .08);
+    color: #fff;
     text-decoration: none;
 }
 
 .app-nav-link.active {
     background: var(--gradient-primary);
     color: #fff;
+    border-radius: 6px;
 }
 
 .app-sidebar__user {

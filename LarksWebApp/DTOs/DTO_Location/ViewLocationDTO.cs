@@ -8,6 +8,8 @@ namespace LarksWebApp.DTOs.DTO_Location
 
         public Guid Id { get; set; }
         public string Designation { get; set; }
+
+        public Guid addressId { get; set; }
         public string AdditionalInformation { get; set; }
         public string Category { get; set; }
         public Guid CategoryId { get; set; }

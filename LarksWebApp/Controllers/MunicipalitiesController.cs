@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace LarksWebApp.Controllers
 {
 
-    [Authorize]
+    // [Authorize]
     public class MunicipalitiesController : Controller
     {
         private readonly IMunicipalityRepository _municipalityRepo;

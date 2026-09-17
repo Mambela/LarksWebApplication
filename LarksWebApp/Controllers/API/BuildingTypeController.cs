@@ -93,6 +93,26 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
+        [HttpGet("all")]
+        [ProducesResponseType(typeof(IList<Create_BuildingType_DTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        public IActionResult GetBuildingTypes()
+        {
+            try
+            {
+                var buildingTypeObjList = buildingTypeRepository.GetAll();
+
+                var buildingDTOList = _mapper.Map<IList<Create_BuildingType_DTO>>(buildingTypeObjList);
+
+                return Ok(buildingDTOList);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpGet("buildingTypesbyname")]
         [ProducesResponseType(typeof(IList<Create_BuildingType_DTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

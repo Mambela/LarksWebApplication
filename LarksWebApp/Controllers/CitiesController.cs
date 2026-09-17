@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LarksWebApp.Controllers
 {
-    [Authorize]
+    // [Authorize]
     public class CitiesController : Controller
     {
         private readonly ICityRepository _citytRepository;

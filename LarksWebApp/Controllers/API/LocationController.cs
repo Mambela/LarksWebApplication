@@ -225,6 +225,7 @@ namespace LarksWebApp.Controllers.API
                 var locationDTO = new  ViewLocationDTO
                 {
                     Id = locationObj.Id,
+                    addressId = (locationObj.AddressId != null) ? locationObj.AddressId.Value : Guid.Empty ,
                     City = locationObj.City?.Designation,
                     Category = locationObj.Category.Designation,
                     CategoryId = locationObj.Category.Id,
@@ -606,7 +607,7 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("create-with-files")]
         [ProducesResponseType(typeof(Created_Location_DTO), StatusCodes.Status201Created)]

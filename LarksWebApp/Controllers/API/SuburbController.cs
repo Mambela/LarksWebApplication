@@ -145,7 +145,7 @@ namespace LarksWebApp.Controllers.API
         }
 
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(CreateSuburbDTO), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(CreateSuburbDTO), StatusCodes.Status200OK)]
@@ -400,7 +400,7 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpPut]
         [ProducesResponseType(typeof(Create_suburb_DTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
@@ -432,7 +432,7 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

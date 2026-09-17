@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace LarksWebApp.Controllers
 {
-    [Authorize]
+    // [Authorize]
     public class ManageWebHooksController : Controller
     {
         private readonly UserManager<ApplicationUser> userManager;

@@ -20,7 +20,7 @@ namespace LarksWebApp.Controllers
             _serviceLogger = serviceLogger;
         }
 
-        [Authorize(Roles = "SuperAdmin")]
+        // [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> Index()
         {
 

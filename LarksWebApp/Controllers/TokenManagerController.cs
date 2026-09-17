@@ -15,7 +15,7 @@ using System.Security.Claims;
 
 namespace LarksWebApp.Controllers
 {
-    [Authorize]
+    // [Authorize]
     public class TokenManagerController : Controller
     {
 

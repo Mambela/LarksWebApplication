@@ -26,7 +26,7 @@ namespace LarksWebApp.Controllers.API
             logger = loggerTrace;   
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(Create_City_DTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -87,7 +87,7 @@ namespace LarksWebApp.Repository.StreetRepository
 
         public StreetModel VerifyStreetExistance(string designation)
         {
-            return _dbContext.Streets.FirstOrDefault(s => s.Designation.ToLower() == designation.ToLower());
+            return _dbContext.Streets.FirstOrDefault(s => s.Designation.Trim().ToLower() == designation.Trim().ToLower());
         }
 
         public bool VerifyStreetSuburbLink(Guid streetsId, Guid suburbId)

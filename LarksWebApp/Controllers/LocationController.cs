@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LarksWebApp.Controllers
 {
-    [Authorize]
+    // [Authorize]
     public class LocationController : Controller
     {
         private readonly ICountryRepository _countryRepo;

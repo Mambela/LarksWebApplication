@@ -92,7 +92,7 @@ namespace LarksWebApp.Controllers.API
             return Ok(provinceDTO);
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(Create_Province_DTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
@@ -184,7 +184,7 @@ namespace LarksWebApp.Controllers.API
 
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -211,7 +211,7 @@ namespace LarksWebApp.Controllers.API
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpPatch]
         [ProducesResponseType(typeof(ProvinceModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]

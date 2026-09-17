@@ -82,7 +82,7 @@ namespace LarksWebApp.Controllers.API
         }
 
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(Create_Municipality_DTO), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(Create_Municipality_DTO), StatusCodes.Status200OK)]
@@ -172,7 +172,7 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpPatch]
         [ProducesResponseType(typeof(Create_Municipality_DTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
@@ -244,7 +244,7 @@ namespace LarksWebApp.Controllers.API
 
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

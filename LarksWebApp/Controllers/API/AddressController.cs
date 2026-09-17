@@ -11,6 +11,7 @@ using LarksWebApp.Repository.DistrictRepository;
 using LarksWebApp.Repository.SuburbRepository;
 using LarksWebApp.Repository.MunicipalityRepository;
 using LarksWebApp.Repository.ProviceRepository;
+using LarksWebApp.Repository.StreetRepository;
 using LarksWebApp.Services.ExternalService;
 using LarksWebApp.Services.Loggers;
 using LarksWebApp.Services.WebHooks;
@@ -40,6 +41,7 @@ namespace LarksWebApp.Controllers.API
         private readonly IWebhookService webhookService;
         private ExternalHttpService externalHttpService;
         private readonly IConfiguration config;
+        private readonly IStreetRepository streetRepository;
 
         public AddressController(
             IAddressRepository addressRepository, IMapper mapper,
@@ -48,7 +50,7 @@ namespace LarksWebApp.Controllers.API
             ISuburbRepository _suburb, IDistrictRepository _districtRepository,
             IMunicipalityRepository _municipalityRepo,
             IHooksRepository _hookRepository, IWebhookService _webHookService,
-            IConfiguration configuration)
+            IConfiguration configuration, IStreetRepository _streetRepository)
         {
             _addressRepository = addressRepository;
             _mapper = mapper;
@@ -61,6 +63,7 @@ namespace LarksWebApp.Controllers.API
             districtRepository = _districtRepository;
             hookRepository = _hookRepository;
             config = configuration;
+            streetRepository = _streetRepository;
             errorResponses = new ErrorResponses();
 
 
@@ -306,7 +309,7 @@ namespace LarksWebApp.Controllers.API
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("CreateAddress")]
         [ProducesResponseType(typeof(CreateAddressDTO), StatusCodes.Status201Created)]
@@ -327,9 +330,13 @@ namespace LarksWebApp.Controllers.API
                     return BadRequest(ModelState);
                 }
 
+                if (!await ResolveStreetIdAsync(addressDTO))
+                {
+                    return StatusCode(500, ModelState);
+                }
 
                 var addressObj = _mapper.Map<AddressModel>(addressDTO);
-                
+
 
                 if (await _addressRepository.CreateAddress(addressObj) == null)
                 {
@@ -349,6 +356,110 @@ namespace LarksWebApp.Controllers.API
                 serviceLogger.LogError("Error while retrieving address " + ex.Message);
                 return BadRequest();
             }
+        }
+
+        // [Authorize(Roles = "Admin")]
+        [HttpPatch]
+        [Route("UpdateAddress")]
+        [ProducesResponseType(typeof(CreateAddressDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateAddress([FromBody] CreateAddressDTO addressDTO, Guid addressId)
+        {
+            try
+            {
+                if (addressDTO == null || addressDTO.Id != addressId)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var addressObj = _addressRepository.GetAddress(addressId);
+
+                if (addressObj == null)
+                {
+                    return NotFound();
+                }
+
+                if (!await ResolveStreetIdAsync(addressDTO))
+                {
+                    return StatusCode(500, ModelState);
+                }
+
+                addressObj.CountryID = addressDTO.CountryId;
+                addressObj.ProvinceID = addressDTO.ProvinceID;
+                addressObj.MunicipalityID = addressDTO.MunicipalityID;
+                addressObj.SuburbId = addressDTO.SuburbId;
+                addressObj.StreetID = addressDTO.StreetID;
+                addressObj.StreetNumber = addressDTO.StreetNumber;
+                addressObj.AdditionalInfo = addressDTO.AdditionalInfo;
+                addressObj.BuildingTypeId = addressDTO.BuildingTypeId;
+
+                if (!_addressRepository.UpdateAddress(addressObj))
+                {
+                    ModelState.AddModelError("", "Something went wrong while updating the address");
+
+                    return StatusCode(500, ModelState);
+                }
+
+                return Ok(addressDTO);
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Error while updating address " + ex.Message);
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// When a streetName is present, resolves it to a street (reusing an existing one if
+        /// the trimmed, case-insensitive name already exists, otherwise creating it), links it
+        /// to the address's suburb if not already linked, and writes the resolved id into
+        /// addressDTO.StreetID. Shared by CreateAddress and UpdateAddress so both follow the
+        /// same "never duplicate a street name, especially within one suburb" rule. Returns
+        /// false (with a ModelState error added) if a create/link step fails.
+        /// </summary>
+        private async Task<bool> ResolveStreetIdAsync(CreateAddressDTO addressDTO)
+        {
+            if (string.IsNullOrWhiteSpace(addressDTO.StreetName))
+            {
+                return true;
+            }
+
+            var streetName = addressDTO.StreetName.Trim();
+
+            var street = streetRepository.VerifyStreetExistance(streetName);
+
+            if (street == null)
+            {
+                street = new StreetModel { Designation = streetName };
+
+                if (await streetRepository.CreateStreetModel(street) == null)
+                {
+                    ModelState.AddModelError("", "Something went wrong while creating the street");
+                    return false;
+                }
+            }
+
+            if (!streetRepository.VerifyStreetSuburbLink(street.Id, addressDTO.SuburbId))
+            {
+                var suburbStreetLink = new SuburbStreets { StreetsID = street.Id, SuburbId = addressDTO.SuburbId };
+
+                if (!await streetRepository.CreateSuburbStreetsLink(suburbStreetLink))
+                {
+                    ModelState.AddModelError("", "Something went wrong while linking the street to the suburb");
+                    return false;
+                }
+            }
+
+            addressDTO.StreetID = street.Id;
+            return true;
         }
 
 

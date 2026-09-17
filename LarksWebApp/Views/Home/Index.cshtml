@@ -1,9 +1,584 @@
-﻿@{
+@using Microsoft.AspNetCore.Identity
+@using LarksWebApp.Models.Users
+@inject SignInManager<ApplicationUser> SignInManager
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome To Larks</h1>
-    <h4 class="display-6"> <span class="">L</span>ocation <span class="">A</span>ddress <span class="">R</span>outing <span class="">K</span>nowledge <span class="">S</span>ystem</h4>
-  
+<style>
+    .landing-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 3.5rem 1.5rem 3rem;
+        text-align: center;
+        isolation: isolate;
+        margin: -1.75rem -1.75rem 2.5rem;
+    }
+
+    .landing-hero::before,
+    .landing-hero::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(70px);
+        z-index: -1;
+    }
+
+    .landing-hero::before {
+        width: 460px;
+        height: 460px;
+        background: radial-gradient(circle, rgba(242, 98, 46, .22), transparent 70%);
+        top: -180px;
+        left: -120px;
+    }
+
+    .landing-hero::after {
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255, 155, 87, .20), transparent 70%);
+        bottom: -200px;
+        right: -100px;
+    }
+
+    .landing-hero__eyebrow {
+        display: inline-flex;
+        align-items: center;
+        padding: .3rem .9rem;
+        background: var(--color-primary-soft);
+        color: var(--color-primary-dark);
+        font-size: .75rem;
+        font-weight: 700;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+        margin-bottom: 1.1rem;
+    }
+
+    .landing-hero h1 {
+        font-weight: 800;
+        letter-spacing: -.02em;
+    }
+
+    .landing-hero p.lead {
+        max-width: 620px;
+        margin: 1rem auto 0;
+        color: var(--color-text-muted);
+        font-size: 1rem;
+    }
+
+    .chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+        justify-content: center;
+        margin-bottom: 3rem;
+    }
+
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .5rem .95rem;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface);
+        font-size: .82rem;
+        font-weight: 600;
+        color: var(--color-text);
+        text-decoration: none;
+    }
+
+    .chip:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary-dark);
+        text-decoration: none;
+    }
+
+    .chip svg {
+        width: 16px;
+        height: 16px;
+        color: var(--color-primary);
+        flex-shrink: 0;
+    }
+
+    .section-heading {
+        text-align: center;
+        margin-bottom: 2.25rem;
+    }
+
+    .section-heading h2 {
+        font-weight: 800;
+        margin-bottom: .35rem;
+    }
+
+    .section-heading p {
+        color: var(--color-text-muted);
+        margin: 0;
+    }
+
+    .step-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        position: relative;
+        margin-bottom: 3rem;
+    }
+
+    .step-row::before {
+        content: "";
+        position: absolute;
+        top: 27px;
+        left: 60px;
+        right: 60px;
+        border-top: 2px dashed var(--color-border);
+        z-index: 0;
+    }
+
+    .step {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+        text-align: center;
+        padding: 0 .5rem;
+    }
+
+    .step__circle {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--color-surface);
+        border: 2px solid var(--color-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto .85rem;
+        font-weight: 800;
+        color: var(--color-primary);
+        font-size: 1.1rem;
+    }
+
+    .step--active .step__circle {
+        background: var(--gradient-primary);
+        border-color: transparent;
+        color: #fff;
+    }
+
+    .step h5 {
+        font-weight: 700;
+        margin-bottom: .35rem;
+    }
+
+    .step p {
+        color: var(--color-text-muted);
+        font-size: .85rem;
+        margin: 0 auto;
+        max-width: 220px;
+    }
+
+    @@media (max-width: 700px) {
+        .step-row {
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        .step-row::before {
+            display: none;
+        }
+    }
+
+    .about-text {
+        max-width: 640px;
+        margin: 0 auto 4rem;
+        text-align: center;
+    }
+
+    .about-text p {
+        color: var(--color-text-muted);
+    }
+
+    .hierarchy-chain--standalone {
+        max-width: 420px;
+        margin: 0 auto 3rem;
+    }
+
+    .hierarchy-node {
+        display: flex;
+        align-items: center;
+        gap: .7rem;
+        padding: .65rem .95rem;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface);
+        font-weight: 600;
+        font-size: .86rem;
+    }
+
+    .hierarchy-node svg {
+        width: 18px;
+        height: 18px;
+        color: var(--color-primary);
+        flex-shrink: 0;
+    }
+
+    .hierarchy-connector {
+        padding-left: 1.4rem;
+        color: var(--color-border);
+        line-height: 0;
+        margin: .1rem 0;
+    }
+
+    .hierarchy-connector svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .step-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 1rem;
+        margin-bottom: 4rem;
+    }
+
+    .step-card {
+        position: relative;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface);
+        padding: 1.15rem 1.25rem 1.5rem;
+        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+    }
+
+    .step-card::after,
+    .feature-card::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, transparent 50%, var(--color-bg) 50%);
+        border-top: 1px solid var(--color-border);
+        border-left: 1px solid var(--color-border);
+    }
+
+    .step-card::after {
+        width: 16px;
+        height: 16px;
+    }
+
+    .feature-card::after {
+        width: 18px;
+        height: 18px;
+    }
+
+    .step-card__num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        background: var(--color-primary-soft);
+        color: var(--color-primary-dark);
+        font-weight: 800;
+        font-size: .78rem;
+        margin-bottom: .7rem;
+    }
+
+    .step-card h6 {
+        font-weight: 700;
+        font-size: .9rem;
+        margin-bottom: .35rem;
+    }
+
+    .step-card p {
+        color: var(--color-text-muted);
+        font-size: .82rem;
+        margin: 0;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+    }
+
+    .feature-card {
+        position: relative;
+        border: 1px solid var(--color-border);
+        background: var(--color-surface);
+        padding: 1.4rem 1.3rem 1.75rem;
+        clip-path: polygon(0 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%);
+    }
+
+    .feature-card__icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--color-primary-soft);
+        color: var(--color-primary);
+        margin-bottom: 1rem;
+    }
+
+    .feature-card__icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .feature-card__icon--purple {
+        background: #EEECFC;
+        color: #6C5CE7;
+    }
+
+    .feature-card__icon--teal {
+        background: #E3F7F6;
+        color: #10A0A0;
+    }
+
+    .feature-card__icon--blue {
+        background: #E7F0FE;
+        color: #3873E0;
+    }
+
+    .feature-card h6 {
+        font-weight: 700;
+        margin-bottom: .4rem;
+    }
+
+    .feature-card p {
+        color: var(--color-text-muted);
+        font-size: .85rem;
+        margin: 0;
+    }
+
+</style>
+
+<div class="landing-hero">
+    <span class="landing-hero__eyebrow">Location Directory Platform</span>
+    <h1 class="display-5">Welcome to Larks</h1>
+    <p class="lead">
+        Larks is a structured, searchable directory of real-world places, built on a proper geographic hierarchy
+        instead of loose text addresses - and industry-agnostic by design. A "Location" here can be a shop, a
+        landmark, a police station, or anything else with a place in the world, all managed from this admin panel
+        and served to other applications through a REST API.
+    </p>
 </div>
+
+<div class="chip-row">
+    <a class="chip" asp-controller="Country" asp-action="Index">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3Z"/></svg>
+        Geography
+    </a>
+    <a class="chip" asp-controller="Location" asp-action="Index">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        Locations
+    </a>
+    <a class="chip" asp-controller="Addresses" asp-action="Index">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        Addresses
+    </a>
+    <a class="chip" asp-controller="ManageWebHooks" asp-action="Index">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15 15 9"/><path d="M10 6.5 12 4.4a3.6 3.6 0 0 1 5.1 5.1L15 11.6"/><path d="M14 17.5 12 19.6a3.6 3.6 0 0 1-5.1-5.1L9 12.4"/></svg>
+        Webhooks
+    </a>
+    <a class="chip" asp-controller="TokenManager" asp-action="Index">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12 20 3M16.5 7.5 19 5M20 9l2-2"/></svg>
+        Tokens
+    </a>
+    <a class="chip" asp-controller="Apispecification" asp-action="Index">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 8-4 4 4 4M15 8l4 4-4 4"/></svg>
+        API Specification
+    </a>
+</div>
+
+<div class="section-heading">
+    <h2>What is Larks?</h2>
+    <p>A structured, searchable directory of real-world places.</p>
+</div>
+
+<div class="about-text">
+    <p>
+        Larks is a location directory: a structured, searchable database of real-world places, built on top of
+        a proper geographic hierarchy rather than free-text addresses. It's industry-agnostic - a "Location"
+        can be a shop, a landmark, a police station, or anything else with a place in the world - which is
+        what makes the same data model reusable across very different use cases.
+    </p>
+    <p class="mb-0">
+        This site is the admin panel for maintaining that data; the same records are also served to external
+        applications through the REST API (see <a asp-controller="Apispecification" asp-action="Index">API Specification</a>).
+    </p>
+</div>
+
+<div class="section-heading">
+    <h2>Built to be integrated</h2>
+    <p>The same records this panel manages are served over a REST API - these are the kinds of applications that consume it.</p>
+</div>
+
+<div class="feature-grid">
+    <div class="feature-card">
+        <div class="feature-card__icon feature-card__icon--purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+        </div>
+        <h6>Mobile Apps</h6>
+        <p>Nearby search and address lookups for apps where a user's current location matters.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <h6>Web Platforms &amp; E-commerce</h6>
+        <p>Store locators, delivery-area checks, and structured address entry at checkout.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-card__icon feature-card__icon--teal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="4" width="3" height="14"/></svg>
+        </div>
+        <h6>Analytics &amp; Reporting</h6>
+        <p>Reliable geography for rolling up activity by suburb, city, or province.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-card__icon feature-card__icon--blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="7" width="13" height="10"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="5.5" cy="19.5" r="1.5"/><circle cx="17.5" cy="19.5" r="1.5"/></svg>
+        </div>
+        <h6>Field Operations</h6>
+        <p>Routing and dispatch tools that need verified addresses and coordinates.</p>
+    </div>
+</div>
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="section-heading">
+        <h2>How a Location gets created</h2>
+        <p>Three stages, from raw geography to a searchable place.</p>
+    </div>
+
+    <div class="step-row">
+        <div class="step step--active">
+            <div class="step__circle">1</div>
+            <h5>Set up the geography</h5>
+            <p>Country, Province, Municipality, Suburb and Street - usually only needs doing once per area.</p>
+        </div>
+        <div class="step step--active">
+            <div class="step__circle">2</div>
+            <h5>Add an Address</h5>
+            <p>A street number and building type, tied to the Suburb above.</p>
+        </div>
+        <div class="step step--active">
+            <div class="step__circle">3</div>
+            <h5>Create the Location</h5>
+            <p>Name it, pick a Category, attach the Address and coordinates, add photos.</p>
+        </div>
+    </div>
+
+    <div class="section-heading">
+        <h2>The full breakdown</h2>
+        <p>A Location is anchored to a real address, so the geography beneath it has to exist first - work through these in order.</p>
+    </div>
+
+    <div class="hierarchy-chain hierarchy-chain--standalone">
+        <div class="hierarchy-node">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3Z"/></svg>
+            Country
+        </div>
+        <div class="hierarchy-connector"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+        <div class="hierarchy-node">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2Z"/><path d="M9 4v14M15 6v14"/></svg>
+            Province
+        </div>
+        <div class="hierarchy-connector"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+        <div class="hierarchy-node">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="12"/><path d="M9 21v-6h6v6"/><path d="M12 3 3 9h18L12 3Z"/></svg>
+            Municipality / City / District
+        </div>
+        <div class="hierarchy-connector"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+        <div class="hierarchy-node">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+            Suburb
+        </div>
+        <div class="hierarchy-connector"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+        <div class="hierarchy-node">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3 4 21"/><path d="M15 3l5 18"/><path d="M11 10h2M10 15h4"/></svg>
+            Street
+        </div>
+        <div class="hierarchy-connector"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></div>
+        <div class="hierarchy-node">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.1-7-11a7 7 0 0 1 14 0c0 4.9-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            Address
+        </div>
+    </div>
+
+    <div class="step-grid">
+        <div class="step-card">
+            <div class="step-card__num">1</div>
+            <h6>Country</h6>
+            <p>The top of the hierarchy. Create it if it doesn't already exist.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-card__num">2</div>
+            <h6>Provinces</h6>
+            <p>Belongs to a Country.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-card__num">3</div>
+            <h6>Municipalities &amp; Cities</h6>
+            <p>Belong to a Province. A Location needs a Municipality; a City is optional but recommended.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-card__num">4</div>
+            <h6>Suburbs</h6>
+            <p>Belong to a Municipality. City and District are optional refinements.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-card__num">5</div>
+            <h6>Streets</h6>
+            <p>Linked to one or more Suburbs.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-card__num">6</div>
+            <h6>Addresses</h6>
+            <p>A street number on a Street, with a Building Type. This is the record a Location attaches to.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-card__num">7</div>
+            <h6>Categories</h6>
+            <p>What kind of place this is. Subcategories are optional and must belong to the chosen Category.</p>
+        </div>
+        <div class="step-card">
+            <div class="step-card__num">8</div>
+            <h6>Location</h6>
+            <p>Name it, pick a Category, attach the Address above, its Municipality, coordinates, and photos.</p>
+        </div>
+    </div>
+
+    <div class="section-heading">
+        <h2>Everything else on this site</h2>
+        <p>Beyond building the directory itself.</p>
+    </div>
+
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="feature-card__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+            </div>
+            <h6>Search</h6>
+            <p>Find Locations by name, by category, by suburb/city/municipality, or by proximity to a coordinate.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-card__icon feature-card__icon--purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15 15 9"/><path d="M10 6.5 12 4.4a3.6 3.6 0 0 1 5.1 5.1L15 11.6"/><path d="M14 17.5 12 19.6a3.6 3.6 0 0 1-5.1-5.1L9 12.4"/></svg>
+            </div>
+            <h6>Webhooks</h6>
+            <p>Register an endpoint to be notified when data changes, so an external system stays in sync without polling.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-card__icon feature-card__icon--teal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12 20 3M16.5 7.5 19 5M20 9l2-2"/></svg>
+            </div>
+            <h6>Tokens</h6>
+            <p>Manage the credentials external applications use to authenticate against the API.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-card__icon feature-card__icon--blue">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 8-4 4 4 4M15 8l4 4-4 4"/></svg>
+            </div>
+            <h6>API Specification</h6>
+            <p>The full interactive Swagger documentation for every endpoint this admin panel is built on top of.</p>
+        </div>
+    </div>
+}

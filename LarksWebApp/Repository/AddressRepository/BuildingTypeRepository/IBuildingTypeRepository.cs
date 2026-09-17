@@ -8,6 +8,8 @@ namespace LarksWebApp.Repository.AddressRepository.BuildingTypeRepository
 
         IList<BuildingTypeModel> GetAll(string lng);
 
+        IList<BuildingTypeModel> GetAll();
+
         BuildingTypeModel GetBuildingType(Guid id);
 
         bool UpdateBuildingType(BuildingTypeModel buildingType);        

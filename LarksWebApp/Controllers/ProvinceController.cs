@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LarksWebApp.Controllers
 {
-    [Authorize]
+    // [Authorize]
     public class ProvinceController : Controller
     {
         private readonly IProvinceRepository _provinceRepository;

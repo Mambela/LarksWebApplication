@@ -1,0 +1,2 @@
+2026-08-30 16:51:02.896 +02:00 [ERR] Error updating Location An error occurred while saving the entity changes. See the inner exception for details.
+2026-08-30 22:17:16.232 +02:00 [ERR] Object reference not set to an instance of an object.

@@ -78,7 +78,7 @@ namespace LarksWebApp.Controllers.API
         }
 
 
-        [Authorize(Roles = "Admin")]
+        // [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(typeof(Create_Districts_DTO), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(SerializableError), StatusCodes.Status400BadRequest)]

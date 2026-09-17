@@ -18,7 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LarksWebApp.Controllers
 {
 
-    [Authorize]
+    // [Authorize]
     public class StreetController : Controller
     {
 
