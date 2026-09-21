@@ -18,6 +18,8 @@ using LarksWebApp.Services.WebHooks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.Net;
 using System.Runtime.CompilerServices;
 
@@ -335,6 +337,17 @@ namespace LarksWebApp.Controllers.API
                     return StatusCode(500, ModelState);
                 }
 
+                var duplicate = _addressRepository.FindDuplicate(
+                    addressDTO.CountryId, addressDTO.ProvinceID, addressDTO.MunicipalityID,
+                    addressDTO.SuburbId, addressDTO.StreetID!.Value, addressDTO.StreetNumber);
+
+                if (duplicate != null)
+                {
+                    ModelState.AddModelError("", "An address already exists for this country/province/municipality/suburb/street/street number combination.");
+
+                    return Conflict(ModelState);
+                }
+
                 var addressObj = _mapper.Map<AddressModel>(addressDTO);
 
 
@@ -350,6 +363,13 @@ namespace LarksWebApp.Controllers.API
 
                 return StatusCode(StatusCodes.Status201Created, addressDTO);
 
+            }
+            catch (DbUpdateException dbEx) when (dbEx.InnerException is PostgresException pgEx && pgEx.SqlState == PostgresErrorCodes.UniqueViolation)
+            {
+                serviceLogger.LogError("Duplicate address rejected by database constraint: " + dbEx.Message);
+                ModelState.AddModelError("", "An address already exists for this country/province/municipality/suburb/street/street number combination.");
+
+                return Conflict(ModelState);
             }
             catch (Exception ex)
             {
@@ -392,6 +412,17 @@ namespace LarksWebApp.Controllers.API
                     return StatusCode(500, ModelState);
                 }
 
+                var duplicate = _addressRepository.FindDuplicate(
+                    addressDTO.CountryId, addressDTO.ProvinceID, addressDTO.MunicipalityID,
+                    addressDTO.SuburbId, addressDTO.StreetID!.Value, addressDTO.StreetNumber, addressId);
+
+                if (duplicate != null)
+                {
+                    ModelState.AddModelError("", "Another address already exists for this country/province/municipality/suburb/street/street number combination.");
+
+                    return Conflict(ModelState);
+                }
+
                 addressObj.CountryID = addressDTO.CountryId;
                 addressObj.ProvinceID = addressDTO.ProvinceID;
                 addressObj.MunicipalityID = addressDTO.MunicipalityID;
@@ -410,10 +441,50 @@ namespace LarksWebApp.Controllers.API
 
                 return Ok(addressDTO);
             }
+            catch (DbUpdateException dbEx) when (dbEx.InnerException is PostgresException pgEx && pgEx.SqlState == PostgresErrorCodes.UniqueViolation)
+            {
+                serviceLogger.LogError("Duplicate address rejected by database constraint: " + dbEx.Message);
+                ModelState.AddModelError("", "Another address already exists for this country/province/municipality/suburb/street/street number combination.");
+
+                return Conflict(ModelState);
+            }
             catch (Exception ex)
             {
                 serviceLogger.LogError("Error while updating address " + ex.Message);
                 return BadRequest();
+            }
+        }
+
+        // [Authorize(Roles = "Admin")]
+        [HttpDelete]
+        [Route("DeleteAddress")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(SerializableError), StatusCodes.Status500InternalServerError)]
+        public IActionResult DeleteAddress(Guid addressId)
+        {
+            try
+            {
+                var addressObj = _addressRepository.GetAddress(addressId);
+
+                if (addressObj == null)
+                {
+                    return NotFound();
+                }
+
+                if (!_addressRepository.DeleteAddress(addressObj))
+                {
+                    ModelState.AddModelError("", "Something went wrong while deleting the address");
+
+                    return StatusCode(500, ModelState);
+                }
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                serviceLogger.LogError("Error while deleting address " + ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 

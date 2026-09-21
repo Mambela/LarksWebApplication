@@ -60,8 +60,6 @@ namespace LarksWebApp.Migrations
 
                     b.HasIndex("BuildingTypeId");
 
-                    b.HasIndex("CountryID");
-
                     b.HasIndex("MunicipalityID");
 
                     b.HasIndex("ProvinceID");
@@ -69,6 +67,9 @@ namespace LarksWebApp.Migrations
                     b.HasIndex("StreetID");
 
                     b.HasIndex("SuburbId");
+
+                    b.HasIndex("CountryID", "ProvinceID", "MunicipalityID", "SuburbId", "StreetID", "StreetNumber")
+                        .IsUnique();
 
                     b.ToTable("Addresses");
                 });

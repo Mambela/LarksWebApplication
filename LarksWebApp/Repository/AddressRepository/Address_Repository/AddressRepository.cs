@@ -98,5 +98,19 @@ namespace LarksWebApp.Repository.AddressRepository.Address_Repository
               .Include(p => p.Province)
               .ToList();
         }
+
+        public AddressModel FindDuplicate(Guid countryId, Guid provinceId, Guid municipalityId, Guid suburbId, Guid streetId, string streetNumber, Guid? excludeAddressId = null)
+        {
+            var normalizedStreetNumber = streetNumber?.Trim().ToLower();
+
+            return _dbContext.Addresses.FirstOrDefault(a =>
+                a.CountryID == countryId &&
+                a.ProvinceID == provinceId &&
+                a.MunicipalityID == municipalityId &&
+                a.SuburbId == suburbId &&
+                a.StreetID == streetId &&
+                a.StreetNumber.Trim().ToLower() == normalizedStreetNumber &&
+                (excludeAddressId == null || a.Id != excludeAddressId));
+        }
     }
 }

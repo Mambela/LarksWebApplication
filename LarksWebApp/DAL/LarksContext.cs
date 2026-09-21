@@ -80,7 +80,13 @@ namespace LarksWebApp.DAL
             modelBuilder.Entity<SuburbModel>().HasQueryFilter(s => !s.IsDeleted);
 
             modelBuilder.Entity<LocationModelSubcategoryModel>().HasKey(n => new { n.LocationId, n.SubcategoriesId });
-            
+
+            // An address is uniquely identified by where it sits in the geography chain
+            // plus its street number - the same combination can never be saved twice.
+            modelBuilder.Entity<AddressModel>()
+                .HasIndex(a => new { a.CountryID, a.ProvinceID, a.MunicipalityID, a.SuburbId, a.StreetID, a.StreetNumber })
+                .IsUnique();
+
 
             #region SQL SERVER 
             //modelBuilder.HasDefaultSchema("LARKS_UAT");
